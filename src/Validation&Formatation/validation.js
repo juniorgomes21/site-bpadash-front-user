@@ -1,5 +1,5 @@
 
-export function isValidCPF(cpf: String) {
+export function isValidCPF(cpf) {
     
     cpf = cpf.replace(/[\s.-]*/igm, '');
     var soma = 0;
@@ -37,7 +37,7 @@ export function isValidCPF(cpf: String) {
     return true;
 }
 
-export function isValidName(name: string) {
+export function isValidName(name) {
     const regexEspecial = /[^a-zA-Z 0-9]+/g;
     const regexNum = /[0-9]/
 
@@ -59,7 +59,7 @@ export function isValidName(name: string) {
     }
 }
 
-export function isValidCodeCollaborator(code: string) {
+export function isValidCodeCollaborator(code) {
     if(code === ""){
         return false;
     } else if(code.length < 4){
@@ -69,7 +69,7 @@ export function isValidCodeCollaborator(code: string) {
     }
 }
 
-export function isValidCodeEmail(code: number) {
+export function isValidCodeEmail(code) {
     if(Number.isInteger(code) && code.toString().length == 6) {
         return true
     }
@@ -77,7 +77,7 @@ export function isValidCodeEmail(code: number) {
     return false;
 }
 
-export function isValidEmail(email: string) {
+export function isValidEmail(email) {
     const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i;
 
     if(emailRegex.test(email)) {
@@ -89,7 +89,7 @@ export function isValidEmail(email: string) {
     }
 }
 
-export function isValidCell(num: string) {
+export function isValidCell(num) {
     num = num.replace(/[^\w\s]/gi, '');
     num = num.replace(/\s+/g, '');
 
@@ -104,7 +104,41 @@ export function isValidCell(num: string) {
     }
 }
 
-export function isValidPassword(password: string) {
+export function isValidPassword(password) {
     
     return password.length >= 8;
+}
+
+export function isValidProfessional(professional) {
+    const erros = [];
+    const name = professional.name.trim();
+    const cns = professional.cns.trim();
+    const cbo = professional.cbo.trim();
+
+    if(name == '' || name.length < 3) {
+        const obj = {
+            field: "name",
+            message: name.length < 3 ? "Caracteres insuficientes" : "O Nome é obrigatório"
+        }
+        erros.push(obj);
+    }
+    
+    if(cns == '' || cns.length < 14) {
+        const obj = {
+            field: "cns",
+            message: cns.length < 14 ? "Caracteres insuficientes" : "O CNS é obrigatório"
+        }
+        erros.push(obj);
+
+    }
+    
+    if(cbo == '' || cbo.length < 6) {
+        const obj = {
+            field: "cbo",
+            message: cbo.length < 6 ? "Caracteres insuficientes" : "O CBO é obrigatório"
+        }
+        erros.push(obj);
+    }
+
+    return erros;
 }

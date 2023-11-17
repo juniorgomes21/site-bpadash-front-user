@@ -5,6 +5,7 @@ import MetisMenu from "metismenujs";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { withTranslation } from "react-i18next";
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 function SidebarContent(props) {
 
@@ -153,13 +154,28 @@ function SidebarContent(props) {
 
             <li>
               <Link to="/#" className="has-arrow">
+                <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }}/>
+                <span>{props.t("Linha do Tempo")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/timeline/bpa">{props.t("BPA")}</Link>
+                </li>
+                <li>
+                  <Link to="/timeline/fpo">{props.t("FPO")}</Link>
+                </li>
+                <li>
+                  <Link to="/timeline/professionals">{props.t("Profissionais")}</Link>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <Link to="/#" className="has-arrow">
                 <i className="bx bxs-file-doc"></i>
                 <span>{props.t("Meus Arquivos")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/timeline/bpa">{props.t("Linha do Tempo")}</Link>
-                </li>
                 <li>
                   <Link to="/file/bpa">{props.t("BPA")}</Link>
                 </li>
@@ -182,12 +198,6 @@ function SidebarContent(props) {
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/upload/fpo">{props.t("FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/fpo/line">{props.t("Linha FPO")}</Link>
-                </li>
-                <li>
                   <Link to="/upload/bpa">{props.t("BPA")}</Link>
                 </li>
                 <li>
@@ -195,6 +205,15 @@ function SidebarContent(props) {
                 </li>
                 <li>
                   <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
+                </li>
+                <li>
+                  <Link to="/upload/fpo">{props.t("FPO")}</Link>
+                </li>
+                <li>
+                  <Link to="/upload/fpo/line">{props.t("Linha FPO")}</Link>
+                </li>
+                <li>
+                  <Link to="/upload/professionals">{props.t("Profissionais")}</Link>
                 </li>
               </ul>
             </li>

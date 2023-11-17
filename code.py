@@ -1,124 +1,187 @@
-def rel_sespa():
-    answer = askokcancel(title='Upload de Arquivo R0004790F da SESPA?',
-                         message='Esta tarefa faz UPLOAD do realatório da SESPA para o banco de dados - Deseja continuar?',
-                         icon=WARNING)
-    if answer:
-        filename = filedialog.askopenfilename(initialdir="/",
-                                              title="Selecione o Arquivo R0004790F",
-                                              filetypes=(("all files","*.*"),("Arquivo de Texto","*.txt*")))
+@app.route('/upload_xml', methods=['GET', 'POST'])
+def upload_xml():
+    # Processamento do arquivo
+    dbase = sqlite3.connect("//10.0.0.59/Faturamento/FPO.db")
+    cursor_obj = dbase.cursor()
 
-        word = filename
-        ARQ = word
+    cursor_obj.execute('''
+        CREATE TABLE IF NOT EXISTS profissionais (
+            prof_id TEXT PRIMARY KEY,
+            cpf_prof TEXT,
+            pispasep TEXT,
+            nome_prof TEXT,
+            nome_mae TEXT,
+            data_nasc TEXT,
+            cod_mun TEXT,
+            sexo TEXT,
+            num_livro TEXT,
+            num_folha TEXT,
+            num_termo TEXT,
+            codorgemis TEXT,
+            data_emiss TEXT,
+            num_ident TEXT,
+            sigla_est TEXT,
+            dtemiident TEXT,
+            data_entra TEXT,
+            ctps_numer TEXT,
+            serie TEXT,
+            sigestctps TEXT,
+            dtemisctps TEXT,
+            logradouro TEXT,
+            numero TEXT,
+            complement TEXT,
+            bairrodist TEXT,
+            cod_cep TEXT,
+            sigla_uf TEXT,
+            codescolar TEXT,
+            cod_certid TEXT,
+            ind_nacio TEXT,
+            nome_carto TEXT,
+            cod_banco TEXT,
+            nome_pais TEXT,
+            num_agenc TEXT,
+            conta_cc TEXT,
+            cod_cns TEXT,
+            d_tercsih TEXT,
+            status TEXT,
+            statusmov TEXT,
+            data_atu TEXT,
+            usuario TEXT,
+            cd_raca TEXT,
+            telefone TEXT,
+            nome_pai TEXT,
+            cd_tp_logr TEXT,
+            portaria TEXT,
+            dt_natur TEXT,
+            cd_pais TEXT,
+            cod_cbo TEXT, 
+            ind_vinc,cghoraoutr TEXT, 
+            cghoraamb,conselhoid TEXT, 
+            n_registro TEXT, 
+            vinculo_sus TEXT, 
+            usuario_vinculo TEXT, 
+            cghorahosp TEXT
+        )
+    ''')
 
-        dbase = sqlite3.connect("//10.0.0.59/Faturamento/FPO.db")  # Open a database File
-        cursor_obj = dbase.cursor()
-        cursor_obj.execute("SELECT * FROM relsespaF")
-        print(cursor_obj.fetchall())
+    if request.method == 'POST':
+        file = request.files.get('file')
 
-        # delete data
-        '''It will delete all rows from
-           the table
-        '''
-        cursor_obj.execute("DELETE FROM relsespaF")
-        print()
-        print("After deleting all rows")
-        cursor_obj.execute("SELECT * FROM relsespaF")
-        print(cursor_obj.fetchall())
+        if not file or file.filename == '':
+            # Se o arquivo não for fornecido ou não for um arquivo de texto válido, redirecione
+            return redirect(request.url)
+
+        # Deleta os dados existentes
+        cursor_obj.execute("DELETE FROM profissionais")
         dbase.commit()
-        # Close the connection
-        dbase.close()
 
-        with open(ARQ, 'r+') as arquivo:
-            arquivo = arquivo.readlines()
-        for linha in arquivo:
-            linha = linha.rstrip()
-            if linha[2:4].isnumeric():
-                print(linha[2:12] + linha[14:74] + linha[85:94] + linha[93:105] + linha[103:120] + linha[
-                                                                                                   119:128] + linha[
-                                                                                                              127:143] + linha[
-                                                                                                                         143:151] + linha[
-                                                                                                                                    150:166])
-                pa = linha[2:12]
-                descricao = linha[14:74]
-                qtorcada = linha[85:94]
-                vlunit = linha[93:105]
-                vltotal = linha[104:120]
-                qtprd = linha[119:128]
-                vlprd = linha[127:143]
-                qtapr = linha[143:151]
-                vlapr = linha[150:166]
-                # criar banco temporário
-                dbase = sqlite3.connect("//10.0.0.59/Faturamento/FPO.db")  # Open a database File
-                print('Database opened')
-                cursor = dbase.cursor()
-                table = """CREATE TABLE IF NOT EXISTS relsespaF (
-                                                                                                                       cod INTEGER PRIMARY KEY,
-                                                                                                                       pa CHAR(9),
-                                                                                                                       descricao CHAR(100),
-                                                                                                                       qtorcada CHAR(100),
-                                                                                                                       vlunit CHAR(100),
-                                                                                                                       vltotal CHAR(100),
-                                                                                                                       qtprd CHAR(100),
-                                                                                                                       vlprd CHAR(100),
-                                                                                                                       qtapr CHAR(100),
-                                                                                                                       vlapr CHAR(100));"""
-                cursor.execute(table)
+        # Processa as linhas do arquivo XML
+        tree = ET.parse(file)
 
-                cursor.execute(
-                    """ INSERT INTO relsespaF (pa, descricao, qtorcada, vlunit, vltotal, qtprd, vlprd, qtapr, vlapr) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (pa, descricao, qtorcada, vlunit, vltotal, qtprd, vlprd, (qtapr), vlapr))
-                # Commit your changes in the database
-
-                dbase.commit()
-                dbase.close()
-        root = tk.Tk()
-        root.title('SINTESE DE FATURAMETNTO (SESPA)')
-        root.iconbitmap('Arquivos/icone.ico')
-        root.geometry("800x700")
-        tv = ttk.Treeview(root, show='headings', height=3)
-        conn = sqlite3.connect("//10.0.0.59/Faturamento/FPO.db")
+        # Conexão com o banco SQLite
+        conn = sqlite3.connect(caminho)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM relsespaF")
-        columns = [description[0] for description in cursor.description]
-        tv.configure(columns=columns)
 
-        # Define a largura de cada coluna
-        for col in columns:
-            tv.heading(col, text=col, anchor=W)
-            tv.column("pa", width=70)
-            tv.column("descricao", width=560)
+        # Criação da tabela
 
-        entry1 = ttk.Entry(root)
-        entry2 = ttk.Entry(root)
+        # Iteração sobre os elementos do XML e inserção no banco SQLite
+        for profissional_elem in tree.findall('.//DADOS_PROFISSIONAIS'):
+            prof_id = profissional_elem.get('PROF_ID')
+            cpf_prof = profissional_elem.get('CPF_PROF')
+            pispasep = profissional_elem.get('PISPASEP')
+            nome_prof = profissional_elem.get('NOME_PROF')
+            nome_mae = profissional_elem.get('NOME_MAE')
+            data_nasc = profissional_elem.get('DATA_NASC')
+            cod_mun = profissional_elem.get('COD_MUN')
+            sexo = profissional_elem.get('SEXO')
+            num_livro = profissional_elem.get('NUM_LIVRO')
+            num_folha = profissional_elem.get('NUM_FOLHA')
+            num_termo = profissional_elem.get('NUM_TERMO')
+            codorgemis = profissional_elem.get('CODORGEMIS')
+            data_emiss = profissional_elem.get('DATA_EMISS')
+            num_ident = profissional_elem.get('NUM_IDENT')
+            sigla_est = profissional_elem.get('SIGLA_EST')
+            dtemiident = profissional_elem.get('DTEMIIDENT')
+            data_entra = profissional_elem.get('DATA_ENTRA')
+            ctps_numer = profissional_elem.get('CTPS_NUMER')
+            serie = profissional_elem.get('SERIE')
+            sigestctps = profissional_elem.get('SIGESTCTPS')
+            dtemisctps = profissional_elem.get('DTEMISCTPS')
+            logradouro = profissional_elem.get('LOGRADOURO')
+            numero = profissional_elem.get('NUMERO')
+            complement = profissional_elem.get('COMPLEMENT')
+            bairrodist = profissional_elem.get('BAIRRODIST')
+            cod_cep = profissional_elem.get('COD_CEP')
+            sigla_uf = profissional_elem.get('SIGLA_UF')
+            codescolar = profissional_elem.get('CODESCOLAR')
+            cod_certid = profissional_elem.get('COD_CERTID')
+            ind_nacio = profissional_elem.get('IND_NACIO')
+            nome_carto = profissional_elem.get('NOME_CARTO')
+            cod_banco = profissional_elem.get('COD_BANCO')
+            nome_pais = profissional_elem.get('NOME_PAIS')
+            num_agenc = profissional_elem.get('NUM_AGENC')
+            conta_cc = profissional_elem.get('CONTA_CC')
+            cod_cns = profissional_elem.get('COD_CNS')
+            d_tercsih = profissional_elem.get('D_TERCSIH')
+            status = profissional_elem.get('STATUS')
+            statusmov = profissional_elem.get('STATUSMOV')
+            data_atu = profissional_elem.get('DATA_ATU')
+            usuario = profissional_elem.get('USUARIO')
+            cd_raca = profissional_elem.get('CD_RACA')
+            telefone = profissional_elem.get('TELEFONE')
+            nome_pai = profissional_elem.get('NOME_PAI')
+            cd_tp_logr = profissional_elem.get('CD_TP_LOGR')
+            portaria = profissional_elem.get('PORTARIA')
+            dt_natur = profissional_elem.get('DT_NATUR')
+            cd_pais = profissional_elem.get('CD_PAIS')
 
-        label1 = ttk.Label(root, text="Procedimento:")
-        label2 = ttk.Label(root, text="Descrição:")
+            data = (
+                prof_id, cpf_prof, pispasep, nome_prof, nome_mae, data_nasc, cod_mun, sexo, num_livro,
+                num_folha, num_termo, codorgemis, data_emiss, num_ident, sigla_est, dtemiident, data_entra,
+                ctps_numer, serie, sigestctps, dtemisctps, logradouro, numero, complement, bairrodist, cod_cep,
+                sigla_uf, codescolar, cod_certid, ind_nacio, nome_carto, cod_banco, nome_pais, num_agenc, conta_cc,
+                cod_cns, d_tercsih, status, statusmov, data_atu, usuario, cd_raca, telefone, nome_pai, cd_tp_logr,
+                portaria, dt_natur, cd_pais
+            )
 
-        label1.pack()
-        entry1.pack()
-        label2.pack()
-        entry2.pack()
+            vinculos_elem = profissional_elem.find('.//VINCULOS_PROF/DADOS_VINC_PROF')  # Ajuste na busca
+            if vinculos_elem is not None:
+                cod_cbo = vinculos_elem.get('COD_CBO')
+                ind_vinc = vinculos_elem.get('IND_VINC')
+                cghoraoutr = vinculos_elem.get('CGHORAOUTR')
+                cghoraamb = vinculos_elem.get('CG_HORAAMB')
+                conselhoid = vinculos_elem.get('CONSELHOID')
+                n_registro = vinculos_elem.get('N_REGISTRO')
+                vinculo_sus = vinculos_elem.get('VINCULO_SUS')
+                usuario_vinculo = vinculos_elem.get('USUARIO')
+                cghorahosp = vinculos_elem.get('CGHORAHOSP')
 
-        def filter_table(event):
-            try:
-                filter_text1 = entry1.get()
-                filter_text2 = entry2.get()
+                # Adicione esses dados à lista 'data'
+                # Adicione esses dados à lista 'data'
+                data = (
+                    prof_id, cpf_prof, pispasep, nome_prof, nome_mae, data_nasc, cod_mun, sexo, num_livro,
+                    num_folha, num_termo, codorgemis, data_emiss, num_ident, sigla_est, dtemiident, data_entra,
+                    ctps_numer, serie, sigestctps, dtemisctps, logradouro, numero, complement, bairrodist, cod_cep,
+                    sigla_uf, codescolar, cod_certid, ind_nacio, nome_carto, cod_banco, nome_pais, num_agenc, conta_cc,
+                    cod_cns, d_tercsih, status, statusmov, data_atu, usuario, cd_raca, telefone, nome_pai, cd_tp_logr,
+                    portaria, dt_natur, cd_pais,
+                    cod_cbo, ind_vinc, cghoraoutr, cghoraamb, conselhoid, n_registro, vinculo_sus, usuario_vinculo,
+                    cghorahosp
+                )
 
-                for item in tv.get_children():
-                    tv.delete(item)
-                cursor.execute(
-                    f'SELECT * FROM relsespaF WHERE pa LIKE "%{filter_text1}%" AND descricao LIKE "%{filter_text2}%"COLLATE NOCASE')
-                for row in cursor:
-                    tv.insert('', END, values=row, iid=row[0])
-            except Exception as e:
-                print(e)
+                # Imprima os dados para depuração
+                print("Dados de VINCULOS_PROF:", data)
 
-        entry1.bind("<KeyRelease>", filter_table)
-        entry2.bind("<KeyRelease>", filter_table)
+                # Adicione a tupla 'data' ao banco de dados
+                insert_data(cursor, data)
 
-        tv.pack(fill=tk.BOTH, expand=True)
-        for row in cursor:
-            tv.insert('', END, values=row, iid=str(uuid.uuid4()))
-        root.mainloop()
-        messagebox.showinfo("Relatório de SESPA",
-                                    "SINTESE DE FATURAMENTO gerado com sucesso!")
+        # Commit e fechamento da conexão
+        conn.commit()
+        conn.close()
+
+    # Recupera os dados do banco de dados
+    cursor_obj.execute("SELECT * FROM profissionais")
+    data = cursor_obj.fetchall()
+    dbase.close()
+    username = session.get('username')
+    return render_template('upload_xml.html', data=data, username=username)

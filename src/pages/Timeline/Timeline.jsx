@@ -17,6 +17,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import loadingSvg from "../../assets/images/svg/loading.svg";
 import SnackBarContext from "../../contexts/managerService";
+import AlertCustom from "../../GlobalComponents/AlertCustom";
 
 function Timeline(props) {
     document.title="Linha do Tempo";
@@ -115,49 +116,55 @@ function Timeline(props) {
                                         </div>
                                 }
                                 {
-                                    timeLine.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex justify-between items-center border-b-[1px] border-zinc-300 hover:border-zinc-400 cursor-pointer"
-                                            onClick={() => selectOnBPA(item.date)}
-                                        >
-                                            <div className="flex items-center w-10/12">
-                                                <div
-                                                    onClick={ e => {
-                                                            selectBPA(item.identifier);
-                                                            e.stopPropagation();
-                                                        }}
-                                                >
-                                                    <Checkbox
-                                                        size="small"
-                                                    />
+                                    timeLine.length == 0 ?
+                                        <AlertCustom
+                                            type="info"
+                                            msg="Você não possui nenhum arquivo BPA!"
+                                        />
+                                    :
+                                        timeLine.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex justify-between items-center border-b-[1px] border-zinc-300 hover:border-zinc-400 cursor-pointer"
+                                                onClick={() => selectOnBPA(item.date)}
+                                            >
+                                                <div className="flex items-center w-10/12">
+                                                    <div
+                                                        onClick={ e => {
+                                                                selectBPA(item.identifier);
+                                                                e.stopPropagation();
+                                                            }}
+                                                    >
+                                                        <Checkbox
+                                                            size="small"
+                                                        />
+                                                    </div>
+                                                    {
+                                                        isDate(item) &&
+                                                        <Tooltip title="BPA selecionado" placement="top">
+                                                            <BookmarkIcon color="success" sx={{ fontSize: 20, mr: 1 }}/>
+                                                        </Tooltip>
+                                                    }
+                                                    <div className="w-44">
+                                                        <p>{item.name}</p>
+                                                    </div>
+                                                    {
+                                                        screenSize > 990 &&
+                                                            <div className="overflow-hidden whitespace-nowrap ml-2">
+                                                                {item.description}
+                                                            </div>
+                                                    }
                                                 </div>
-                                                {
-                                                    isDate(item) &&
-                                                    <Tooltip title="BPA selecionado" placement="top">
-                                                        <BookmarkIcon color="success" sx={{ fontSize: 20, mr: 1 }}/>
-                                                    </Tooltip>
-                                                }
-                                                <div className="w-44">
-                                                    <p>{item.name}</p>
+                                                <div className="flex w-2/12">
+                                                    <div className="flex justify-end font-bold w-3/4">
+                                                        <p>{item.fileSize}</p>
+                                                    </div>
+                                                    <div className="flex justify-end font-bold w-1/4">
+                                                        <p>{formatDate(item.date)}</p>
+                                                    </div>
                                                 </div>
-                                                {
-                                                    screenSize > 990 &&
-                                                        <div className="overflow-hidden whitespace-nowrap ml-2">
-                                                            {item.description}
-                                                        </div>
-                                                }
                                             </div>
-                                            <div className="flex w-2/12">
-                                                <div className="flex justify-end font-bold w-3/4">
-                                                    <p>{item.fileSize}</p>
-                                                </div>
-                                                <div className="flex justify-end font-bold w-1/4">
-                                                    <p>{formatDate(item.date)}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
+                                        ))
                                 }
                             </div>
                     }

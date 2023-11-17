@@ -14,6 +14,7 @@ import SnackBarContext from "../../contexts/managerService";
 import "react-datepicker/dist/react-datepicker.css";
 import DivErrors from "./DivErrors";
 
+
 function Upload() {
 
     document.title="Novo Documento";
@@ -35,7 +36,7 @@ function Upload() {
             const paramNewBpa = {
                 name: 'Nome do objeto', // até 20 caracteres
                 description: 'Descrição do objeto', // até 100 caracteres
-                date: '2023-07-01',
+                date: '2023-10-01',
                 bytes: bytes
             };
             const formData = new FormData();

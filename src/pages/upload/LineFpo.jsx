@@ -188,9 +188,14 @@ function LineFpo() {
         return monthNames[monthNumber - 1];
     };
 
-    function applyMask(value, mask) {
+    function applyMask(value, mask, validationRegex) {
         if (!value) return ''; // Evita erro quando o valor é nulo ou indefinido
     
+        // if (!validationRegex.test(value)) {
+        //     // Se não atender, retorna o valor sem a máscara
+        //     return value;
+        // }
+
         switch (mask) {
             case 'int':
                 return value.replace(".", "").replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -278,7 +283,6 @@ function LineFpo() {
                                         <div className="w-full mb-16">
                                             {
                                                 field.map((fieldName, index) => {
-                                                    const regex = /^[0-9]$/;
                                                     const config = fieldConfig[fieldName];
                                                     const error = errorMessages.find(error => error.field === fieldName);
                                                     const message = error ? error.message : '';
@@ -290,24 +294,16 @@ function LineFpo() {
                                                                 error={error ? true : false}
                                                                 id={fieldName}
                                                                 name={fieldName}
-                                                                type="number"
+                                                                type="text"
                                                                 label={config.label}
                                                                 variant="outlined"
-                                                                value={applyMask(fpo[fieldName], config.mask)}
+                                                                value={applyMask(fpo[fieldName], config.mask, config.validation)}
                                                                 helperText={message}
                                                                 size="small"
                                                                 onChange={(e) => {
                                                                     const inputValue = e.target.value;
-                                                                    // console.log("inputValue", inputValue);
-                                                                    // console.log("config.type", config.type);
-                                                                    // console.log("regex.test(inputValue)", regex.test(inputValue));
                                                                     if (inputValue.length <= config.maxLength) {
                                                                         handleChangeInput({ target: { name: fieldName, value: inputValue } });
-                                                                        // if(config.type === "number" && regex.test(inputValue)) {
-                                                                        //     handleChangeInput({ target: { name: fieldName, value: inputValue } });
-                                                                        // } else {
-                                                                        //     handleChangeInput({ target: { name: fieldName, value: inputValue } });
-                                                                        // }
                                                                     }
                                                                 }}
                                                                 className="mt-4"
@@ -336,3 +332,18 @@ function LineFpo() {
 };
 
 export default LineFpo;
+
+
+// const regex = /^-?\d+(\.\d+)?$/;
+// onChange={(e) => {
+//     const inputValue = e.target.value;
+//     if (inputValue.length <= config.maxLength) {
+//         if(config.type === "number" && inputValue === '' || regex.test(inputValue.replace(/\./g, "").replace(",", ""))) {
+//             console.log("entrou number");
+//             handleChangeInput({ target: { name: fieldName, value: inputValue } });
+//         } else if(config.type === "text") {
+//             console.log("entrou text");
+//             handleChangeInput({ target: { name: fieldName, value: inputValue } });
+//         }
+//     }
+// }}

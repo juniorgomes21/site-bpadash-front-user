@@ -192,6 +192,7 @@ import Timeline from "../pages/Timeline/Timeline";
 import Title from "../pages/bpa/title/edit/Title";
 import Fpo from "../pages/upload/Fpo";
 import LineFpo from "../pages/upload/LineFpo";
+import Professionals from "../pages/upload/Professionals";
 
 
 const authProtectedRoutes = [
@@ -205,6 +206,7 @@ const authProtectedRoutes = [
   { path: "/upload/bpa", component: Upload },
   { path: "/upload/bpai", component: UploadBpai },
   { path: "/upload/bpac", component: UploadBpac },
+  { path: "/upload/professionals", component: Professionals },
   { path: "/download/bpa", component: Download },
   { path: "/validation/file", component: Validation },
   { path: "/timeline/bpa", component: Timeline },

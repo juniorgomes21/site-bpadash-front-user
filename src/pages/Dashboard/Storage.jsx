@@ -9,9 +9,8 @@ import api from "../../services/api";
 
 
 const storagexy = {
-  storageTotal: "1 GB",
-  storagePorcent: 50
-
+  storageTotal: "0 GB",
+  storagePorcent: 0
 }
 
 function Storage({ dataColors }) { 
@@ -103,9 +102,5 @@ function Storage({ dataColors }) {
   );
 };
 
-Storage.propTypes = {
-  options: PropTypes.any,
-  series: PropTypes.any,
-};
 
 export default Storage;
