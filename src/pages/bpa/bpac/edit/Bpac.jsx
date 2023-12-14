@@ -36,6 +36,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 import TextField from '@mui/material/TextField';
 import Slide from '@mui/material/Slide';
+import { formatMonth } from "../../../../Validation&Formatation/formatation";
 
 const names = [
   'cnes',
@@ -212,13 +213,6 @@ function Bpac(props) {
     setBpac({...bpac, [name]: value});
   }
 
-  function formatMonth(month) {
-    if(month.length == 1) {
-      return "0" + month;
-    }
-
-    return month;
-  }
 
   return (
     <>

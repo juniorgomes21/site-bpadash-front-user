@@ -181,18 +181,22 @@ import ContactsList from "../pages/Contacts/ContactList/contacts-list";
 import ContactsProfile from "../pages/Contacts/ContactsProfile/contacts-profile";
 import Bpa from "../pages/bpa/bpa/Bpa";
 import StorageMemory from "../pages/Dashboard/StorageMemory";
-import Upload from "../pages/upload/Upload";
+import Upload from "../pages/upload/file/Upload";
 import Download from "../pages/Download/Download";
 import Bpai from "../pages/bpa/bpai/edit/Bpai";
 import Bpac from "../pages/bpa/bpac/edit/Bpac";
-import UploadBpai from "../pages/upload/UploadBpai";
-import UploadBpac from "../pages/upload/UploadBpac";
+import UploadBpai from "../pages/upload/file/UploadBpai";
+import UploadBpac from "../pages/upload/file/UploadBpac";
 import Validation from "../pages/Validation/Validation";
 import Timeline from "../pages/Timeline/Timeline";
 import Title from "../pages/bpa/title/edit/Title";
-import Fpo from "../pages/upload/Fpo";
-import LineFpo from "../pages/upload/LineFpo";
-import Professionals from "../pages/upload/Professionals";
+import Fpo from "../pages/upload/file/Fpo";
+import LineFpo from "../pages/upload/line/LineFpo";
+import ProfessionalLine from "../pages/upload/line/ProfessionalLine";
+import UploadProfessional from "../pages/upload/file/UploadProfessional";
+import Inconsistency from "../pages/Inconsistency/Inconsistency";
+import InconsistencyConf from "../pages/Inconsistency/InconsistencyConf";
+import ProfessionalEdit from "../pages/sigtap/ProfessionalsEdit";
 
 
 const authProtectedRoutes = [
@@ -200,17 +204,20 @@ const authProtectedRoutes = [
   { path: "/file/edit/title", component: Title },
   { path: "/file/edit/bpai", component: Bpai },
   { path: "/file/edit/bpac", component: Bpac },
+  { path: "/file/edit/professionals", component: ProfessionalEdit },
   { path: "/storage/memory", component: StorageMemory },
   { path: "/upload/fpo", component: Fpo },
   { path: "/upload/fpo/line", component: LineFpo },
   { path: "/upload/bpa", component: Upload },
   { path: "/upload/bpai", component: UploadBpai },
   { path: "/upload/bpac", component: UploadBpac },
-  { path: "/upload/professionals", component: Professionals },
+  { path: "/upload/professionals", component: UploadProfessional },
+  { path: "/upload/professionals/line", component: ProfessionalLine },
   { path: "/download/bpa", component: Download },
   { path: "/validation/file", component: Validation },
   { path: "/timeline/bpa", component: Timeline },
-
+  { path: "/inconsistency", component: Inconsistency },
+  { path: "/inconsistency/configurations", component: InconsistencyConf },
 
 
   { path: "/dashboard", component: Dashboard },

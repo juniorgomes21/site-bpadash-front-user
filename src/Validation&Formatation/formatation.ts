@@ -12,6 +12,20 @@ export function unformatCode(code: string) {
     return code;
 }
 
+export function formatMonth(month: number) {
+    const meses = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
+    // Verifica se o número do mês está dentro do intervalo válido (1 a 12)
+    if (month >= 1 && month <= 12) {
+        return meses[month - 1];
+    } else {
+        return "Mês inválido";
+    }
+}
+
 export function maskCPF(cpf: string) {
 
     cpf = cpf.replace(/\D/g, "");
@@ -20,6 +34,47 @@ export function maskCPF(cpf: string) {
     cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   
     return cpf;
+}
+
+export function formatBytes(bytes: number, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
+
+export function unformatDate(date: string) {
+    return date.split("-")[2] + date.split("-")[1] + date.split("-")[0]
+}
+
+export function formatarCEP(cep: string) {
+    // Remove qualquer caractere não numérico
+    const cepApenasNumeros = cep.replace(/\D/g, '');
+  
+    // Adiciona os separadores no CEP
+    const cepFormatado = cepApenasNumeros.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+  
+    return cepFormatado;
+}
+
+export function formatDate(date: Date) {
+
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return year + "-" + (month < 10 ? "0" + month : month) + "-01";
+}
+
+export function formatDateString(date: string, showDay: boolean) {
+    
+    let day = date.substring(8, 10);
+    let month = date.substring(5, 7);
+    let year = date.substring(0, 4);
+
+    return (showDay ? day + "-" : "") + month + "-" + year;
 }
 
 export function maskName(name: string) {
@@ -51,34 +106,30 @@ export function maskBitSorte(bitSorte: Number) {
 }
 
 
-export function formatQuantPlayers(players: string) {
+export function formatCode3(players: string) {
 
     players = players.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 
     return players;
 }
 
-export function formatDate(coupon: string) {
-    return coupon.substring(5, 7) + "/" + coupon.substring(0, 4);
-}
+export function formatNameMonth(monthNumber: number) {
+    const monthNames = [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril',
+      'Maio', 'Junho', 'Julho', 'Agosto',
+      'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+
+    return monthNames[monthNumber - 1];
+};
+
 
 export function formatarDataHora(date: string) {
-
-    // let hora = data[3];
-    // let min = data[4];
-
-    // if(hora < 9) hora = '0' + hora;
-
-    // if ( hora <= 12 ) {
-    //     return (hora + ':' + min + ' AM')
-    // }
 
     let hour = date.substring(11, 13);
     let minute = date.substring(14, 16);
 
-    // return (hour + ':' + minute + ' PM')
     return (hour + ':' + minute)
-
 }
 
 export function extractDate(date: string) {
@@ -120,21 +171,8 @@ export function unformatCell(num: string) {
     return num;
 }
 
-export function formatProtocol(protocol: string) {
-
-    // protocol = protocol.replace(/(\d{3})(\d)/, "$1.$2");
-    // protocol = protocol.replace(/(\d{3})(\d)/, "$1.$2");
-    // protocol = protocol.replace(/(\d{3})(\d)/, "$1-$2");
-    const regex = /(\d{1,3})(?=(\d{3})+(?!\d))/g;
-
-    return protocol.replace(regex, "$1.");
-}
-
 export function getDateTime() {
     const date = new Date().toLocaleString();
 
-    // "(" + num.substring(6, 9) + ") " + num.substring(2, 3) + " " + num.substring(3, 7) + "-" + num.substring(7, 11)
-
     return (date.substring(6, 10) + "-" + date.substring(3, 5) + "-" + date.substring(0, 2)+"T"+date.substring(11, 19));
-    
 }

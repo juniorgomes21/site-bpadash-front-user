@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from "../../services/api";
-import { formatDate } from "../../Validation&Formatation/formatation";
+import { formatDateString } from "../../Validation&Formatation/formatation";
 import Tooltip from '@mui/material/Tooltip';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Button from '@mui/material/Button';
@@ -81,8 +81,8 @@ function Timeline(props) {
     }
 
     function isDate(item) {
-        const date = formatDate(item.date);
-        const dateSelect = formatDate(`${year}-${month}-01`);
+        const date = formatDateString(item.date);
+        const dateSelect = formatDateString(`${year}-${month}-01`);
 
         if(date === dateSelect) {
             return true;
@@ -160,7 +160,7 @@ function Timeline(props) {
                                                         <p>{item.fileSize}</p>
                                                     </div>
                                                     <div className="flex justify-end font-bold w-1/4">
-                                                        <p>{formatDate(item.date)}</p>
+                                                        <p>{formatDateString(item.date)}</p>
                                                     </div>
                                                 </div>
                                             </div>

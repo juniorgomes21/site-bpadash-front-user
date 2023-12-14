@@ -36,7 +36,7 @@ function CardShop({ item, api, loading }) {
                       <p className="text-muted mb-2 text-truncate">
                         Data
                       </p>
-                      <h5>{formatDate(item.date)}</h5>
+                      {/* <h5>{formatDate(item.date)}</h5> */}
                     </div>
                   </Col>
                 </Row>

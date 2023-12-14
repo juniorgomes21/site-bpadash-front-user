@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Container } from "reactstrap";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import api from "../../services/api";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
+import api from "../../../services/api";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import SnackBarContext from "../../contexts/managerService";
+import SnackBarContext from "../../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import "react-datepicker/dist/react-datepicker.css";
 import { LoadingButton } from "@mui/lab";
@@ -16,8 +16,8 @@ import DialogActions from '@mui/material/DialogActions';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Typography from '@mui/material/Typography';
-import { isValidProfessional } from "../../Validation&Formatation/validation";
-import { maskCPF } from "../../Validation&Formatation/formatation";
+import { isValidProfessional } from "../../../Validation&Formatation/validation";
+import { maskCPF } from "../../../Validation&Formatation/formatation";
 
 
 const field = [
@@ -108,7 +108,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-function Professionals() {
+function ProfessionalLine() {
 
     document.title="Profissionais";
     
@@ -119,7 +119,6 @@ function Professionals() {
     const [errorMessages, setErrorMessages] = useState([]);
     const [countProfessionalFree, setCountProfessionalFree] = useState(0);
     const [loadingAddProfessional, setLoadingAddProfessional] = useState(false);
-    const [dates, setDates] = useState([]);
     const [loadingDates, setLoadingDates] = useState(true);
     const [professionalVisible, setProfessionalVisible] = useState(false);
     const [openDetails, setOpenDetails] = useState(false);
@@ -394,4 +393,4 @@ function Professionals() {
     );
 };
 
-export default Professionals;
+export default ProfessionalLine;

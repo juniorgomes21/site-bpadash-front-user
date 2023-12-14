@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Container } from "reactstrap";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import api from "../../services/api";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
+import api from "../../../services/api";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import SnackBarContext from "../../contexts/managerService";
+import SnackBarContext from "../../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import "react-datepicker/dist/react-datepicker.css";
 import { LoadingButton } from "@mui/lab";
@@ -121,6 +121,7 @@ function LineFpo() {
     const uniqueYears = Array.from(new Set(dates.map(item => item[1])));
     const [month, setMonth] = useState('');
     const [year, setYear] = useState('');
+    const monthsForSelectedYear = dates.filter(item => item[1] === parseInt(year, 10)).map(item => item[0]);
 
     useEffect(() => {
         getDates();
@@ -132,7 +133,7 @@ function LineFpo() {
     
         // Atualizar os meses disponíveis no estado do mês
         setMonth(availableMonths.length > 0 ? availableMonths[0] : '');
-      }, [year]);
+    }, [year]);
 
     async function getDates() {
         try {
@@ -206,12 +207,6 @@ function LineFpo() {
         }
     }
 
-    function dataProcessing(obj) {
-
-    }
-
-    const monthsForSelectedYear = dates.filter(item => item[1] === parseInt(year, 10)).map(item => item[0]);
-
     return (
         <>
             <div className="page-content relative">
@@ -243,17 +238,18 @@ function LineFpo() {
                                             <FormControl fullWidth>
                                                 <InputLabel id="demo-simple-select-label">{'Mês'}</InputLabel>
                                                 <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={month}
-                                                label={'Mês'}
-                                                onChange={handleChangeMonth}
-                                                >
-                                                {monthsForSelectedYear.map((item, index) => (
-                                                    <MenuItem key={index} value={item}>
-                                                        {getMonthName(item)}
-                                                    </MenuItem>
-                                                ))}
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    disabled={year === ''}
+                                                    value={month}
+                                                    label={'Mês'}
+                                                    onChange={handleChangeMonth}
+                                                    >
+                                                    {monthsForSelectedYear.map((item, index) => (
+                                                        <MenuItem key={index} value={item}>
+                                                            {getMonthName(item)}
+                                                        </MenuItem>
+                                                    ))}
                                                 </Select>
                                             </FormControl>
                                         </div>

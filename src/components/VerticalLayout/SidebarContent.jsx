@@ -1,16 +1,32 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import SimpleBar from "simplebar-react";
 import MetisMenu from "metismenujs";
-import { withRouter } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DatePicker from "react-datepicker";
+import pt from 'date-fns/locale/pt-BR';
+import { registerLocale, setDefaultLocale } from 'react-datepicker';
+import DatePickerContext from "../../contexts/DatePicker";
+
+const months = [
+  "Janeiro", "Fevereiro", "Março",
+  "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro",
+  "Outubro", "Novembro", "Dezembro"
+];
 
 function SidebarContent(props) {
 
-  const ref = useRef()
-  
+  const ref = useRef();
+  registerLocale('pt-BR', pt);
+  setDefaultLocale('pt-BR');
+  const { month, year, startDateChange } = useContext(DatePickerContext);
+  const [startDate, setStartDate] = useState(new Date());
+
   useEffect(() => {
     const pathName = props.location.pathname;
 
@@ -88,11 +104,39 @@ function SidebarContent(props) {
     return false
   }
 
+  function getMonthName(monthNumber) {
+    if (monthNumber >= 1 && monthNumber <= 12) {
+        return months[monthNumber - 1];
+    } else {
+        return "Mês Inválido";
+    }
+  }
+
   return (
     <>
       <SimpleBar className="h-100" ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
+            <li className="menu-title">{props.t("Data Geral")} </li>
+            <DatePicker
+                selected={startDate}
+                onChange={startDateChange}
+                dateFormat="MM/yyyy"
+                showMonthYearPicker
+                customInput={
+                  <div className="ml-6 cursor-pointer mb-3 w-full text-white">
+                    <CalendarMonthIcon sx={{ fontSize: 20, mr: 1.5 }}/>
+                    <span>{props.t(`${getMonthName(month)} de ${year}`)}</span>
+                  </div>
+                }
+                popperClassName="some-custom-class"
+                popperModifiers={{
+                  offset: {
+                    enabled: true,
+                    offset: '10px, 10px',
+                  }
+                }}
+            />
             <li className="menu-title">{props.t("Menu")} </li>
 
             <li>
@@ -188,32 +232,86 @@ function SidebarContent(props) {
                 <li>
                   <Link to="/file/edit/bpac">{props.t("BPA-C")}</Link>
                 </li>
+                <li>
+                  <Link to="/#" className="has-arrow">
+                    {props.t("SIGTAP")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="false">
+                    <li>
+                      <Link to="/file/edit/professionals">{props.t("Profissionais")}</Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <Link to="/#" className="has-arrow ">
+                <i className="bx bxs-cloud-upload"></i>
+                <span>{props.t("Uploads")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="true">
+                <li>
+                  <Link to="/#" className="has-arrow">
+                    {props.t("Arquivo")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="false">
+                    <li>
+                      <Link to="/upload/bpa">{props.t("BPA")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/fpo">{props.t("FPO")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/fpo">{props.t("CEP")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/professionals">{props.t("Profissionais")}</Link>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <Link to="/#" className="has-arrow">
+                    {props.t("Linha")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/fpo/line">{props.t("FPO")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/fpo/line">{props.t("CEP")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/upload/professionals/line">{props.t("Profissionais")}</Link>
+                    </li>
+                  </ul>
+                </li>
               </ul>
             </li>
 
             <li>
               <Link to="/#" className="has-arrow">
-                <i className="bx bxs-cloud-upload"></i>
-                <span>{props.t("Uploads")}</span>
+                <WarningAmberIcon sx={{ fontSize: 20, mr: 1.5 }}/>
+                <span>{props.t("Inconsistências BPA")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/upload/bpa">{props.t("BPA")}</Link>
+                  <Link to="/inconsistency">{props.t("Inconsistências")}</Link>
                 </li>
                 <li>
-                  <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/fpo">{props.t("FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/fpo/line">{props.t("Linha FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/professionals">{props.t("Profissionais")}</Link>
+                  <Link to="/inconsistency/configurations">{props.t("Configurações")}</Link>
                 </li>
               </ul>
             </li>

@@ -9,6 +9,9 @@ module.exports = {
       colors: {
         'default': '#2a3042',
       },
+      gradientColorStops: ({
+        'green-transparent': 'rgba(0, 255, 0, 0.5)',
+      }),
     },
   },
   plugins: [],

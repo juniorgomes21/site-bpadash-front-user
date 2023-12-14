@@ -35,6 +35,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import SnackBarContext from "../../../../contexts/managerService";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
 import Alert from '@mui/material/Alert';
+import { formatMonth } from "../../../../Validation&Formatation/formatation";
 
 const names = [
     'ident',
@@ -267,13 +268,6 @@ function Bpai(props) {
         return str;
     }
 
-    function formatMonth(month) {
-        if(month.length == 1) {
-          return "0" + month;
-        }
-    
-        return month;
-    }
 
     return (
         <>
