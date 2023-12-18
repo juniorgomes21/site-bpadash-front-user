@@ -43,13 +43,10 @@ export function StackBarProvider({ children }) {
     };
 
     function setHaveErrors(key, value) {
-        console.log("setHaveErrors", errorsFile);
-        console.log("value", value);
         setErrorsfiles({ ...errorsFile, [key]: value});
     }
 
     function haveErrors() {
-        console.log("haveErrors", errorsFile);
         return errorsFile.inFpo || errorsFile.ageDate || errorsFile.ageMinMax || errorsFile.inCep || errorsFile.inQtService || errorsFile.indateService || errorsFile.inRace || errorsFile.inProfessionals || errorsFile.inProcedure || errorsFile.inOccupation;
     }
 

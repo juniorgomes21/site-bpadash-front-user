@@ -197,6 +197,9 @@ import UploadProfessional from "../pages/upload/file/UploadProfessional";
 import Inconsistency from "../pages/Inconsistency/Inconsistency";
 import InconsistencyConf from "../pages/Inconsistency/InconsistencyConf";
 import ProfessionalEdit from "../pages/sigtap/ProfessionalsEdit";
+import TreatmentPa from "../pages/Treatment/TreatmentPa";
+import TreatmentPaCbo from "../pages/Treatment/TreatmentPaCbo";
+import DeletePerPa from "../pages/Treatment/DeletePerPa";
 
 
 const authProtectedRoutes = [
@@ -218,7 +221,10 @@ const authProtectedRoutes = [
   { path: "/timeline/bpa", component: Timeline },
   { path: "/inconsistency", component: Inconsistency },
   { path: "/inconsistency/configurations", component: InconsistencyConf },
-
+  { path: "/treatment/pa", component: TreatmentPa },
+  { path: "/treatment/pa/cbo", component: TreatmentPaCbo },
+  { path: "/treatment/pa/delete", component: DeletePerPa },
+  
 
   { path: "/dashboard", component: Dashboard },
   { path: "/dashboard-saas", component: DashboardSaas },

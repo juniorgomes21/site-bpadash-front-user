@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
 import { registerLocale, setDefaultLocale } from 'react-datepicker';
 import DatePickerContext from "../../contexts/DatePicker";
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 
 const months = [
   "Janeiro", "Fevereiro", "Março",
@@ -297,6 +298,24 @@ function SidebarContent(props) {
                       <Link to="/upload/professionals/line">{props.t("Profissionais")}</Link>
                     </li>
                   </ul>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <Link to="/#" className="has-arrow">
+                <DomainVerificationIcon sx={{ fontSize: 20, mr: 1.5 }}/>
+                <span>{props.t("Tratamento BPA")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/treatment/pa">{props.t("PA")}</Link>
+                </li>
+                <li>
+                  <Link to="/treatment/pa/cbo">{props.t("PA & CBO")}</Link>
+                </li>
+                <li>
+                  <Link to="/treatment/pa/delete">{props.t("Apagar por PA")}</Link>
                 </li>
               </ul>
             </li>

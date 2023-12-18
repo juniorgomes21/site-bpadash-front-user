@@ -12,20 +12,26 @@
 (x) Se cep em (bpaI)  está em CEP (banco de ceps válidos)
 (x) Se qt em (bpaI) está dentro do permitido em tb_procedimento (quantidade máxima)
 
+
+=================================== Incosistencia =========================================
+
+() simplificar a exibição de muitos dados de erro e colocar a quantidade de errors encontradas.
+() remover a possibilidade de escolha de arquivos em toda a aplicação.
+
 =================================== TRATAMENTO =========================================
 
 
 Tratamentos
 Substituição em BPA-C e BPA-I
 
-() [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) Substituir por (entry) Ex.: Onde PA (Combobox com os campos) igual a 0301010048 substituir por 0301010072
-() [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) e (Combobox com os campos) igual a c Substituir (Combobox com os campos) por (entry) Ex.: Onde PA igual a 0301010072 e cbo igual a 225320 substituir cbo por 225120
-() [Excluir Linha por PA em BPA-C e BPA-I] Onde PA igual a (entry) excluir linha inteira
+(x) [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) Substituir por (entry) Ex.: Onde PA (Combobox com os campos) igual a 0301010048 substituir por 0301010072
+(x) [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) e (Combobox com os campos) igual a c Substituir (Combobox com os campos) por (entry) Ex.: Onde PA igual a 0301010072 e cbo igual a 225320 substituir cbo por 225120
+(x) [Excluir Linha por PA em BPA-C e BPA-I] Onde PA igual a (entry) excluir linha inteira
 () "o sistema já está executando" [Tratamento de CEPS inválidos em BPA-I] Identificar no campo cep_pcnte se está no banco de CEPS VÁLIDOS (extraído do arquivo de competência após extrair  arquivo, fazer upload de S_CEP onde está organizado por CEP e Município, ex.: 66070025150140 cep 8 dígitos e município 6 digitos.
 () "colocar isso nas validações" [Tratamento de CEPS inválidos em BPA-I] Propor substituição de CEP Inválidos em BPA-I pelo CEP mais próximo no banco.
-() [Tratamento de Endereços inválidos em BPA-I] Propor substituição dos campos ibge, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte via consulta url="https://viacep.com.br/ws/{cep}/json/"
-() [Tratamento de endereço em BPA-I] Identificar se os campos cep_pcnte, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte estão em branco propor troca por endereço da unidade
-() [Tratamento de endereço em BPA-I] Identificar se um dos campos de endereço estão em branco propor substituir por consulta via url = f"https://viacep.com.br/ws/{cep}/json/"
+() [Tratamento de endereços inválidos em BPA-I] Propor substituição dos campos ibge, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte via consulta url="https://viacep.com.br/ws/{cep}/json/"
+() [Tratamento de endereços em BPA-I] Identificar se os campos cep_pcnte, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte estão em branco propor troca por endereço da unidade
+() [Tratamento de endereços em BPA-I] Identificar se um dos campos de endereço estão em branco propor substituir por consulta via url = f"https://viacep.com.br/ws/{cep}/json/"
 
 // isso aqui é na hora do dowload
 () [Organizar folhas e sequencias em BPA-C e BPA-I] flh 001 seq 01 a 99 após isso flh 002, assim por diante.
