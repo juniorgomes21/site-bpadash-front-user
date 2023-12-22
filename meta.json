@@ -27,8 +27,8 @@ Substituição em BPA-C e BPA-I
 (x) [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) Substituir por (entry) Ex.: Onde PA (Combobox com os campos) igual a 0301010048 substituir por 0301010072
 (x) [Substituição em BPA-C e BPA-I] Onde (Combobox com os campos) igual a (entry) e (Combobox com os campos) igual a c Substituir (Combobox com os campos) por (entry) Ex.: Onde PA igual a 0301010072 e cbo igual a 225320 substituir cbo por 225120
 (x) [Excluir Linha por PA em BPA-C e BPA-I] Onde PA igual a (entry) excluir linha inteira
-() "o sistema já está executando" [Tratamento de CEPS inválidos em BPA-I] Identificar no campo cep_pcnte se está no banco de CEPS VÁLIDOS (extraído do arquivo de competência após extrair  arquivo, fazer upload de S_CEP onde está organizado por CEP e Município, ex.: 66070025150140 cep 8 dígitos e município 6 digitos.
-() "colocar isso nas validações" [Tratamento de CEPS inválidos em BPA-I] Propor substituição de CEP Inválidos em BPA-I pelo CEP mais próximo no banco.
+(x) "o sistema já está executando" [Tratamento de CEPS inválidos em BPA-I] Identificar no campo cep_pcnte se está no banco de CEPS VÁLIDOS (extraído do arquivo de competência após extrair  arquivo, fazer upload de S_CEP onde está organizado por CEP e Município, ex.: 66070025150140 cep 8 dígitos e município 6 digitos.
+(x) "colocar isso nas validações" [Tratamento de CEPS inválidos em BPA-I] Propor substituição de CEP Inválidos em BPA-I pelo CEP mais próximo no banco.
 () [Tratamento de endereços inválidos em BPA-I] Propor substituição dos campos ibge, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte via consulta url="https://viacep.com.br/ws/{cep}/json/"
 () [Tratamento de endereços em BPA-I] Identificar se os campos cep_pcnte, lograd_pcnte, compl_pcnte, end_pcnte e bairro_pcnte estão em branco propor troca por endereço da unidade
 () [Tratamento de endereços em BPA-I] Identificar se um dos campos de endereço estão em branco propor substituir por consulta via url = f"https://viacep.com.br/ws/{cep}/json/"
@@ -38,10 +38,12 @@ Substituição em BPA-C e BPA-I
 
 obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tarefa	
 
+=================================== CORREÇÕES ===============================================
 
-
-
+() pegar a data do BPA pelo titulo do documento no Upload do arquivo.
+() Arrumar "key" em BPAC e validar as entradas do primeiro e ultimo
 =================================== A POS CONCLUSÂO =========================================
 
 () Verificar todas as informações salvas se precisão ser criptrografadas -- medicos e usuários
 () Verificar e validar todas as entras por paramentros na aplicação
+() Validar o campo data de nascimento "Dtnasc" se está no formato "yyyymmdd" na entrada do documento na aplicação

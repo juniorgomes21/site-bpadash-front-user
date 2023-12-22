@@ -11,18 +11,30 @@ const SnackBarContext = createContext(StackBarProvider);
 
 export function StackBarProvider({ children }) {
     const [msg, setMsg] = useState("");
+    const [loadingErrorsFiles, setLoadingErrorsfiles] = useState({
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+    });
     const [errorsFile, setErrorsfiles] = useState({
-        "inFpo": false,
-        "ageDate": false,
-        "ageMinMax": false,
-        "inCep": false,
-        "inQtService":false,
-        "indateService": false,
-        "inRace": false,
-        "inProfessionals": false,
-        "inProcedure": false,
-        "inOccupation": false
-    }) 
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+    });
     const [reloadErrors, setReloadErrors] = useState(false);
     const [error, setError] = useState(false);
     const [state, setState] = useState({ openSnackBar: false, vertical: 'top', horizontal: 'center' });
@@ -43,15 +55,23 @@ export function StackBarProvider({ children }) {
     };
 
     function setHaveErrors(key, value) {
-        setErrorsfiles({ ...errorsFile, [key]: value});
+        setErrorsfiles( errorsOld => ({ ...errorsOld,  [key]: value }));
+    }
+
+    function setLoadingErrorsFun(key, value) {
+        setLoadingErrorsfiles( loadingOld => ({ ...loadingOld,  [key]: value }));
+    }
+
+    function haveLoading() {
+        return Object.values(loadingErrorsFiles).some((temErro) => temErro);
     }
 
     function haveErrors() {
-        return errorsFile.inFpo || errorsFile.ageDate || errorsFile.ageMinMax || errorsFile.inCep || errorsFile.inQtService || errorsFile.indateService || errorsFile.inRace || errorsFile.inProfessionals || errorsFile.inProcedure || errorsFile.inOccupation;
+        return Object.values(errorsFile).some((temErro) => temErro);
     }
 
     return (
-        <SnackBarContext.Provider value={{ openSnackBarFun, closeSnackBarFun, reloadErrors, reloadErrorsFun, errorsFile, setHaveErrors, haveErrors }}>
+        <SnackBarContext.Provider value={{ openSnackBarFun, closeSnackBarFun, reloadErrors, haveLoading, setLoadingErrorsFun, reloadErrorsFun, setErrorsfiles, setLoadingErrorsfiles, errorsFile, setHaveErrors, haveErrors }}>
             {children}
             <Snackbar
                 open={openSnackBar}

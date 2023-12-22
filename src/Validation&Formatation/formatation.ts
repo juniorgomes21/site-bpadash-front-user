@@ -77,6 +77,16 @@ export function formatDateString(date: string, showDay: boolean) {
     return (showDay ? day + "-" : "") + month + "-" + year;
 }
 
+export function formatDateStringFull(date: string) {
+    
+    let day = date.substring(6, 8);
+    let month = date.substring(4, 6);
+    let year = date.substring(0, 4);
+
+    return (day + "/" + month + "/" + year);
+}
+
+
 export function maskName(name: string) {
 
     name = name.replace(/[^a-zA-Z\s]/g, "");

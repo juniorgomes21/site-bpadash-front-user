@@ -11,42 +11,56 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import LoadingButton from "@mui/lab/LoadingButton";
+import SouthIcon from '@mui/icons-material/South';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Tooltip from "@mui/material/Tooltip";
+
 
 function InQtService({ dateBpa }) {
 
-    const { reloadErrors, reloadErrorsFun, openSnackBarFun} = useContext(SnackBarContext);
+    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun} = useContext(SnackBarContext);
     const [service, setService] = useState({});
     const [qtService, setQtService] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [errorsQtService, setErrorsQtService] = useState([]);
+    const [open, setOpen] = useState({ "single": false, "all": false });
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [startIndex, setStartIndex] = useState(5);
 
 
     useEffect(() => {
         inQtService();
+        setStartIndex(5);
     }, [dateBpa, reloadErrors]);
 
     async function inQtService() {
         try {
-            const obj = {
-                "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/qtServices", obj);
+            const response = await api.post("/bpa/inconsistency/qtServices", { "dateBPA": dateBpa });
             setQtService(response.data);
-
+            setErrorsQtService(response.data.slice(0, 5));
+            setHaveErrors("inQtService", response.data.length > 0);
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inQtService", false);
     }
 
-    async function update() {
+    async function update(upAll) {
         setLoading(true);
         try {
-            const obj = {
-                "qtService": [service.qt, service.qtMax]
+            if(upAll) {
+                const ids = [];
+
+                qtService.forEach( qt => {
+                    ids.push(qt.id);
+                });
+
+                await api.post(`/bpai/update/${0}`, { "key": "qtService", "ids": ids });
+
+            } else {
+                await api.post(`/bpai/update/${service.id}`, { "qtService": [service.qt, service.qtMax] });
             }
-            await api.post(`/bpai/update/${service.id}`, obj);
             await inQtService();
             handleClose();
             openSnackBarFun(false, "Quntidade alterada");
@@ -67,18 +81,32 @@ function InQtService({ dateBpa }) {
         }
     }
 
-    function handleClickOpen(id) {
-        setService(qtService.find(item => item.id === id));
-        setOpen(true);
-    };
+    function handleClickOpen(id, dialogAll) {
+        if(dialogAll) {
+            setOpen({ ...open, "all": true });
+        } else {
+            setService(qtService.find(item => item.id === id));
+            setOpen({ ...open, "single": true });
+        }
+    }
 
     function handleClose() {
         if(!loading) {
-            setOpen(false);
+            setOpen({ "single": false, "all": false });
             setError(false);
             setMsgError('');
         }
-    };
+    }
+
+    function loadMoreErrors() {
+        const nextErrors = qtService.slice(startIndex, startIndex + 5);
+
+        // Adicionar os próximos erros à lista de erros exibidos
+        setErrorsQtService( prevErrors => [...prevErrors, ...nextErrors]);
+    
+        // Atualizar o índice para o próximo conjunto de erros
+        setStartIndex(startIndex + 5);
+    }
 
     return (
         <>
@@ -91,9 +119,21 @@ function InQtService({ dateBpa }) {
                                 msg="Procedimentos de BPAI que excedem a quantidade máxima de procedimentos"
                             />
                         </div>
+                        <div className="text-center font-bold text-sm mb-3">
+                            <p>{qtService.length} erros</p>
+                        </div>
+                        <div className="flex justify-center w-full">
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleClickOpen(0, true)}
+                            >
+                                Atualizar todos
+                            </Button>
+                        </div>
                         <div className="flex flex-col items-center w-full">
                             {
-                                qtService.map((item, index) => (
+                                errorsQtService.map((item, index) => (
                                     !item.msg.includes("NOT EXIST PA") &&
                                         <div key={index} className="w-3/4 mt-4">
                                             <div className="flex justify-between items-end font-bold">
@@ -107,9 +147,16 @@ function InQtService({ dateBpa }) {
                                                     <p className="mr-2">
                                                         FOLHA: {item.flh}
                                                     </p>
-                                                    <p>
-                                                        QT MAX: {item.qtMax}
-                                                    </p>
+                                                    <div className="flex items-center">
+                                                        <p>
+                                                            QT MAX: {item.qtMax}
+                                                        </p>
+                                                        <div className="mx-1 mb-[2px]">
+                                                            <Tooltip title={`Quantidade máxima do procedimento ${item.pa}`}>
+                                                                <HelpOutlineIcon sx={{ fontSize: 17 }}/>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
@@ -118,17 +165,30 @@ function InQtService({ dateBpa }) {
                                                         QT INVÁLIDA: {item.qt}
                                                     </p>
                                                 </div>
-                                                <div className="cursor-pointer" onClick={() => handleClickOpen(item.id)}>
+                                                <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, false)}>
                                                     <EditIcon />
                                                 </div>
                                             </div>
                                         </div>
                                 ))
                             }
+                            {
+                                startIndex < qtService.length && (
+                                    <div className="flex justify-center w-full my-10">
+                                        <Button
+                                            variant="contained"
+                                            endIcon={<SouthIcon />}
+                                            onClick={loadMoreErrors}
+                                        >
+                                            Mostrar mais
+                                        </Button>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
             }
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open.single} onClose={handleClose}>
                 <DialogTitle>EDITAR QUANTIDADE DE SERVIÇOS</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
@@ -147,9 +207,7 @@ function InQtService({ dateBpa }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            const inputValue = e.target.value;
-                            const numericValue = inputValue.replace(/\D/g, '');
-                            if(numericValue.length <= 3) setService({...service, ["qt"]: numericValue})
+                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 3) setService({...service, ["qt"]: e.target.value});
                         }}
                     />
                 </div>
@@ -173,6 +231,40 @@ function InQtService({ dateBpa }) {
                 >
                     SalVar
                 </LoadingButton>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={open.all} onClose={handleClose}>
+                <DialogTitle>EDITAR TODOS</DialogTitle>
+                <DialogContent>
+                <AlertCustom
+                    type="warning"
+                    msg={`Todos os ${qtService.length} erros serão atualizados`}
+                />
+                <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
+                    <p className="text-center">
+                        ATENÇÃO, a quantidade de serviços será alterada pela quantidade máxima de seus respectivos procedimentos.
+                    </p>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                    {
+                        !loading &&
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={handleClose}
+                            >
+                                Fechar
+                            </Button>
+                    }
+                    <LoadingButton
+                        color="success"
+                        loading={loading}
+                        variant="contained"
+                        onClick={() => update(true)}
+                    >
+                        Atualizar
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         </>

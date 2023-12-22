@@ -18,7 +18,7 @@ import AgeMinMax from "./AgeMinMax";
 import AgeDate from "./AgeDate";
 import InCep from "./InCep";
 import InQtService from "./InQtService";
-import IndateService from "./InDateService";
+import InDateService from "./InDateService";
 import InRace from "./InRace";
 import InProfessionals from "./InProfessionals";
 import InFpo from "./InFpo";
@@ -32,6 +32,7 @@ import { formatMonth } from "../../Validation&Formatation/formatation";
 import CachedIcon from '@mui/icons-material/Cached';
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SnackBarContext from "../../contexts/managerService";
+import { CircularProgress } from "@mui/material";
 
 const files = [
   {
@@ -62,20 +63,16 @@ function Inconsistency(props) {
 
   const monthL = localStorage.getItem("@Month");
   const yearL = localStorage.getItem("@Year");
-  const dateCurrenty = yearL + "-" + monthL + "-01"
+  const dateCurrenty = yearL + "-" + ( monthL < 10 ? "0" + monthL : monthL) + "-01"
 
   const { dates } = useContext(AuthContext);
-  const { haveErrors, errorsFile } = useContext(SnackBarContext);
+  const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
   const [month, setMonth] = useState(monthL);
   const [year, setYear] = useState(yearL);
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [dateBpa, setDateBpa] = useState(dateCurrenty);
 
-
-  useEffect(() => {
-    console.log(haveErrors());
-  }, []);
 
   function handleClickOpen() {
     setOpen(true);
@@ -86,10 +83,36 @@ function Inconsistency(props) {
   };
 
   function handleListItemClick(date) {
-    setYear(date[1]);
-    setMonth(date[0]);
-    setDateBpa(date[1] + "-" + date[0] + "-01");
-    setOpen(false);
+    if(!((date[1] + "-" + date[0] + "-01") === dateBpa)) {
+      setErrorsfiles({
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+      });
+      setLoadingErrorsfiles({
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+      });
+      setYear(date[1]);
+      setMonth(date[0]);
+      setDateBpa(date[1] + "-" + (date[0] < 10 ? "0" + date[0] : date[0]) + "-01");
+      setOpen(false);
+    }
   };
 
 
@@ -111,32 +134,37 @@ function Inconsistency(props) {
           </div>
           <div>
             {
-              !haveErrors() &&
-                <AlertCustom
-                  msg="Nenhum erro encontrado no arquivo selecionado"
-                  type="info"
-                />
+              haveLoading() ?
+                <div className="flex w-full justify-center">
+                  <CircularProgress size={20} />
+                </div>
+              :
+                !haveErrors() &&
+                  <AlertCustom
+                    msg="Nenhum erro encontrado no arquivo selecionado"
+                    type="info"
+                  />
             }
           </div>
           <InFpo // precisa de PA
             dateBpa={dateBpa}
           />
-          <AgeDate
-            dateBpa={dateBpa}
-          />
           <AgeMinMax
             dateBpa={dateBpa}
           /> {/* dividir por mes */}
+          <AgeDate
+            dateBpa={dateBpa}
+          />
           <InCep
             dateBpa={dateBpa}
           />
           <InQtService // precisa de PA
             dateBpa={dateBpa}
           />
-          <IndateService
+          <InDateService
             dateBpa={dateBpa}
           />
-          <InRace
+          <InRace // alta implementar automação
             dateBpa={dateBpa}
           />
           <InProfessionals

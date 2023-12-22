@@ -50,7 +50,6 @@ function Upload() {
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    console.log(e);
                     switch (e.response.data[0].errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
@@ -77,7 +76,7 @@ function Upload() {
 
     function startDateChange(date) {
         setStartDate(date);
-    };
+    }
 
     function handleAcceptedFiles(files) {
         files.map(file =>
@@ -99,7 +98,7 @@ function Upload() {
     
         // Atualizar o índice para o próximo conjunto de erros
         setStartIndex(startIndex + 5);
-    };
+    }
 
     function reset() {
         setName('');

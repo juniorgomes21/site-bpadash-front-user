@@ -1,61 +1,78 @@
 import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/api";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
-import EditIcon from '@mui/icons-material/Edit';
 import SnackBarContext from "../../contexts/managerService";
 import LoadingButton from "@mui/lab/LoadingButton";
+import SouthIcon from '@mui/icons-material/South';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
-// 0202010023
 function InProcedure({ dateBpa }) {
-    const { reloadErrors, openSnackBarFun } = useContext(SnackBarContext);
 
-    const [open, setOpen] = useState(false);
+    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
     const [procedures, setProcedures] = useState({"errorsPaBpac": [], "errorsSexBpai": []});
-
+    const [errorsProcedures, setErrorsProcedures] = useState([]);
+    const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
         inProcedure();
+        setStartIndex(5);
     }, [dateBpa, reloadErrors]);
 
 
     async function inProcedure() {
         try {
-            const obj = {
-              "dateBPA": dateBpa,
-            }
-            const response = await api.post("/bpa/inconsistency/procedure", obj);
+            const response = await api.post("/bpa/inconsistency/procedure", { "dateBPA": dateBpa });
             setProcedures(response.data);
+            setErrorsProcedures(response.data["errorsSexBpai"].slice(0, 5));
+            setHaveErrors("inProcedure", response.data.length > 0);
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inProcedure", false);
     }
 
     async function update() {
         setLoading(true);
         try {
-            const error = false;
             const lengthSerives = procedures["errorsSexBpai"].length;
-            for(let i = 0; i < lengthSerives; i++) {
-                const obj = {
-                    "sexCurrent": procedures["errorsSexBpai"][i].sexCurrent
-                }
-
-                try {
-                    await api.post(`/bpai/update/${procedures["errorsSexBpai"][i].id}`, obj);
-                } catch(e) {
-                    openSnackBarFun();
-                    error = true;
-                }
-            }
+            const ids = [];
+            procedures.errorsSexBpai.forEach( procedure => {
+                ids.push(procedure.id);
+            });
+            await api.post(`/bpai/update/${0}`, { "ids": ids, "key": "sexProcedure" });
             await inProcedure();
-            if(!error) {
-                openSnackBarFun(false, lengthSerives > 1 ? "Sexos Alterados" : "Sexo Alterado");
-            }
+            openSnackBarFun(false, lengthSerives > 1 ? "Sexos Alterados" : "Sexo Alterado");
         } catch(e) {
-            console.log(e.response);
+            console.log(e);
+            openSnackBarFun();
         }
         setLoading(false);
+    }
+
+    function loadMoreErrors() {
+        const nextErrors = procedures["errorsSexBpai"].slice(startIndex, startIndex + 5);
+
+        // Adicionar os próximos erros à lista de erros exibidos
+        setErrorsProcedures( prevErrors => [...prevErrors, ...nextErrors]);
+    
+        // Atualizar o índice para o próximo conjunto de erros
+        setErrorsProcedures(startIndex + 5);
+    }
+
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        if(!loading) {
+            setOpen(false);
+        }
     }
 
     return (
@@ -63,21 +80,23 @@ function InProcedure({ dateBpa }) {
             {
                 procedures["errorsSexBpai"].length > 0 &&
                     <div className="flex flex-col items-center border-[1px] border-default rounded-md p-2 mt-6">
-                        <div className="flex justify-end w-11/12 mt-2">
-                            <LoadingButton
-                                variant="contained"
-                                color="success"
-                                loading={loading}
-                                onClick={update}
-                            >
-                                CORRIGIR TODOS OS SEXOS
-                            </LoadingButton>
-                        </div>
                         <div className="my-4">
                             <AlertCustom
                                 type="error"
                                 msg="Campo SEXO de BPAI não compativel em procedimentos"
                             />
+                            <div className="text-center font-bold text-sm my-3">
+                                <p>{procedures["errorsSexBpai"].length} erros</p>
+                            </div>
+                            <div className="flex justify-center w-full">
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={handleClickOpen}
+                                >
+                                    CORRIGIR TODOS OS SEXOS
+                                </Button>
+                            </div>
                         </div>
                         <div className="flex flex-col items-center w-full">
                             {
@@ -87,7 +106,7 @@ function InProcedure({ dateBpa }) {
                                     </div>
                             }
                             {
-                                procedures["errorsSexBpai"].map((item, index) => (
+                                errorsProcedures.map((item, index) => (
                                     item.msg.includes("ERROR SEX") &&
                                         <div key={index} className="w-3/4 mt-2">
                                             <div className="flex justify-between items-end font-bold">
@@ -113,9 +132,54 @@ function InProcedure({ dateBpa }) {
                                         </div>
                                 ))
                             }
+                            { startIndex < procedures["errorsSexBpai"].length && (
+                                <div className="flex justify-center w-full my-10">
+                                    <Button
+                                        variant="contained"
+                                        endIcon={<SouthIcon />}
+                                        onClick={loadMoreErrors}
+                                    >
+                                        Mostrar mais
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
             }
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>EDITAR TODOS</DialogTitle>
+                <DialogContent>
+                <AlertCustom
+                    type="warning"
+                    msg={`Todos os ${procedures.errorsSexBpai.length} erros serão atualizados`}
+                />
+                <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
+                    <p className="text-center">
+                        ATENÇÃO, a atualização do sexo é baseada no sexo esperado no procedimento.
+                    </p>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                {
+                    !loading &&
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleClose}
+                        >
+                            Fechar
+                        </Button>
+                }
+                <LoadingButton
+                    color="success"
+                    loading={loading}
+                    variant="contained"
+                    onClick={update}
+                >
+                    Atualizar
+                </LoadingButton>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }

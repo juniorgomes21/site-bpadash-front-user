@@ -17,21 +17,25 @@ import Tooltip from "@mui/material/Tooltip";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 import Radio from '@mui/material/Radio';
+import SouthIcon from '@mui/icons-material/South';
 
 
 function InProfessionals({ dateBpa }) {
 
-    const { openSnackBarFun } = useContext(SnackBarContext);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [professional, setProfessional] = useState({});
     const [professionals, setProfessionals] = useState([]);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
+    const [errorsProfessionals, setErrorsProfessionals] = useState([]);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
     const [updateAll, setUpdateAll] = useState('false');
+    const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
         inProfessionals();
+        setStartIndex(5);
     }, [dateBpa]);
 
     async function inProfessionals() {
@@ -41,20 +45,19 @@ function InProfessionals({ dateBpa }) {
             }
             const response = await api.post("/bpa/inconsistency/professionals", obj);
             setProfessionals(response.data);
-    
+            setErrorsProfessionals(response.data.slice(0, 5));
+            setHaveErrors("inProfessionals", response.data.length > 0);
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inProfessionals", false);
     }
 
-    async function updatePA() {
+    async function update() {
         setLoading(true);
         try {
-            const cnsmedA = professionals.find(item => item.id === professional.id).cnsmed;
-            const obj = {
-                "cnsmed": professional.cnsmed + "-" + (updateAll === 'false' ? '0' : '1') + "-" + cnsmedA
-            }
-            await api.post(`/bpai/update/${professional.id}`, obj);
+            const cnsmedOld = professionals.find(item => item.id === professional.id).cnsmed;
+            await api.post(`/bpai/update/${professional.id}`, { "cnsmed": (professional.cnsmed + "-" + (updateAll === 'false' ? '0' : '1') + "-" + cnsmedOld), "dateBpa": dateBpa, "key": "cnsmedProfessional"});
             setUpdateAll('false');
             await inProfessionals();
             handleClose();
@@ -75,14 +78,14 @@ function InProfessionals({ dateBpa }) {
             setError(true);
             setMsgError("CEP deve conter 8 caracteres");
         } else {
-            updatePA();
+            update();
         }
     }
     
     function handleClickOpen(id) {
         setProfessional(professionals.find(item => item.id === id));
         setOpen(true);
-    };
+    }
 
     function handleClose() {
         if(!loading) {
@@ -91,11 +94,11 @@ function InProfessionals({ dateBpa }) {
             setError(false);
             setMsgError('');
         }
-    };
+    }
 
     function handleChange(event) {
         setUpdateAll(event.target.value);
-    };
+    }
 
 
     return (
@@ -109,9 +112,12 @@ function InProfessionals({ dateBpa }) {
                                 msg="CNSMED em BPAI não está presente no arquivo de Profissionais"
                             />
                         </div>
+                        <div className="text-center font-bold text-sm mb-3">
+                            <p>{professionals.length} erros</p>
+                        </div>
                         <div className="flex flex-col items-center w-full">
                             {
-                                professionals.map((item, index) => (
+                                errorsProfessionals.map((item, index) => (
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end font-bold">
                                             <p className="">
@@ -128,19 +134,17 @@ function InProfessionals({ dateBpa }) {
                                                     <p>
                                                         CONTAGEM: {item.count}
                                                     </p>
-                                                    <Tooltip title="Contagem de ocorrencia desse CNSMED no arquivo BPAI" className="mx-1">
-                                                        <HelpOutlineIcon sx={{ fontSize: 17 }}/>
-                                                    </Tooltip>
-                                                    <div className="cursor-pointer">
+                                                    <div className="mx-1 mb-1">
                                                         {
-                                                            item.count > 5 &&
-                                                            <Link to="/file/edit/professionals">
-                                                                <Tooltip title="Contagem muito alta recomendamos que atualize o CNSMED no arquivo PROFISSIONAIS, clique para atualizar">
+                                                            item.count > 10 &&
+                                                                <Tooltip title="Contagem muito alta, recomendamos que atualize o CNSMED no arquivo BPAI">
                                                                     <ReportProblemOutlinedIcon sx={{ fontSize: 17, color: "red" }}/>
                                                                 </Tooltip>
-                                                            </Link>
                                                         }
                                                     </div>
+                                                    <Tooltip title="Contagem de ocorrencia desse CNSMED no arquivo BPAI" className="">
+                                                        <HelpOutlineIcon sx={{ fontSize: 17 }}/>
+                                                    </Tooltip>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,39 +161,51 @@ function InProfessionals({ dateBpa }) {
                                     </div>
                                 ))
                             }
+                            {
+                                startIndex < professionals.length && (
+                                    <div className="flex justify-center w-full my-10">
+                                        <Button
+                                            variant="contained"
+                                            endIcon={<SouthIcon />}
+                                            onClick={() => loadMoreErrors()}
+                                        >
+                                            Mostrar mais
+                                        </Button>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
             }
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle >EDITAR CNSMED</DialogTitle>
+                <DialogTitle >Editar CNSMED</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
-                    Edite o campo CNSMED { updateAll === 'false' && `da folha ${professional.flh} sequência ${professional.seq}`}
+                    {
+                        updateAll === 'false' ?
+                            `Edite o campo CNSMED da folha ${professional.flh} sequência ${professional.seq}`
+                        :
+                            `Atuliza todas as ocorrências desse CNSMED no arquivo BPAI`
+                    }
                 </DialogContentText>
                 <div className="flex justify-around w-full my-3">
                     <div className="flex items-center">
-                    <Radio
-                        checked={updateAll === 'false'}
-                        value="false"
-                        onClick={handleChange}
-                        name="radio-buttons"
-                    />
-                    <p className="mr-2">Atualizar um</p>
-                    <Tooltip title="Atualiza apenas esse CNSMED">
-                        <HelpOutlineIcon sx={{ fontSize: 20 }}/>
-                    </Tooltip>
+                        <Radio
+                            checked={updateAll === 'false'}
+                            value="false"
+                            onClick={handleChange}
+                            name="radio-buttons"
+                        />
+                        <p className="mr-2">Atualizar um</p>
                     </div>
                     <div className="flex items-center">
-                    <Radio
-                        checked={updateAll === 'true'}
-                        value="true"
-                        onClick={handleChange}
-                        name="radio-buttons"
-                    />
-                    <p className="mr-2">Atualizar todos</p>
-                    <Tooltip title="Atuliza todas as ocorrências desse CNSMED">
-                        <HelpOutlineIcon sx={{ fontSize: 20 }}/>
-                    </Tooltip>
+                        <Radio
+                            checked={updateAll === 'true'}
+                            value="true"
+                            onClick={handleChange}
+                            name="radio-buttons"
+                        />
+                        <p className="mr-2">Atualizar todos</p>
                     </div>
                 </div>
                 <div className="mt-3">
@@ -197,7 +213,7 @@ function InProfessionals({ dateBpa }) {
                         fullWidth
                         autoFocus
                         label="CNSMED"
-                        type="number"
+                        type="text"
                         variant="standard"
                         error={error}
                         value={professional.cnsmed}
@@ -205,9 +221,7 @@ function InProfessionals({ dateBpa }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            const inputValue = e.target.value;
-                            const numericValue = inputValue.replace(/\D/g, '');
-                            if(numericValue.length <= 15) setProfessional({...professional, ["cnsmed"]: numericValue})
+                            if(!isNaN(Number(e.target.value)) && e.target.value.length <= 15) setProfessional({...professional, ["cnsmed"]: e.target.value});
                         }}
                     />
                 </div>

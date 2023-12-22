@@ -14,21 +14,26 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import SouthIcon from '@mui/icons-material/South';
+
 
 function InRace({ dateBpa }) {
 
-    const { openSnackBarFun } = useContext(SnackBarContext);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [age, setAge] = useState('');
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState({ "single": false, "all": false });
     const [race, setRace] = useState({});
     const [races, setRaces] = useState([]);
+    const [errorsRaces, setErrorsRaces] = useState([]);
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [startIndex, setStartIndex] = useState(5);
 
 
     useEffect(() => {
         inRace();
+        setStartIndex(5);
     }, [dateBpa]);
 
     async function inRace() {
@@ -38,13 +43,15 @@ function InRace({ dateBpa }) {
             }
             const response = await api.post("/bpa/inconsistency/race", obj);
             setRaces(response.data);
-    
+            setErrorsRaces(response.data.slice(0, 5));
+            setHaveErrors("inRace", response.data.length > 0);
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inRace", false);
     }
 
-    async function updatePA() {
+    async function update() {
         setLoading(true);
         try {
             const obj = {
@@ -69,28 +76,43 @@ function InRace({ dateBpa }) {
             setError(true);
             setMsgError("Valores válidos para raça 01, 02, 03, 04, 05");
         } else {
-            updatePA();
+            update();
         }
     }
     
-    function handleClickOpen(id) {
-        setRace(races.find(item => item.id === id));
-        setOpen(true);
-    };
+    function handleClickOpen(id, dialogAll) {
+        if(dialogAll) {
+            setOpen({ ...open, "all": true });
+        } else {
+            setRace(races.find(item => item.id === id));
+            setOpen({ ...open, "single": true });
+        }
+    }
 
     function handleClose() {
         if(!loading) {
-            setOpen(false);
+            setOpen({ "single": false, "all": false });
             setError(false);
             setMsgError('');
         }
-    };
+    }
 
     function handleChange(event) {
         const raceSelect = event.target.value;
         setAge(raceSelect);
         setRace({ ...race, ["raceInvalid"]: raceSelect});
-    };
+    }
+
+    function loadMoreErrors() {
+        const nextErrors = races.slice(startIndex, startIndex + 5);
+
+        // Adicionar os próximos erros à lista de erros exibidos
+        setErrorsRaces( prevErrors => [...prevErrors, ...nextErrors]);
+    
+        // Atualizar o índice para o próximo conjunto de erros
+        setStartIndex(startIndex + 5);
+    }
+
 
     return (
         <>
@@ -103,9 +125,21 @@ function InRace({ dateBpa }) {
                                 msg="A raça em BPAI é diferente de 01, 02, 03, 04, 05"
                             />
                         </div>
+                        <div className="text-center font-bold text-sm mb-3">
+                            <p>{races.length} erros</p>
+                        </div>
+                        {/* <div className="flex justify-center w-full">
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleClickOpen(0, true)}
+                            >
+                                Atualizar todos
+                            </Button>
+                        </div> */}
                         <div className="flex flex-col items-center w-full">
                             {
-                                races.map((item, index) => (
+                                errorsRaces.map((item, index) => (
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between font-bold">
                                             <p className="">
@@ -126,17 +160,30 @@ function InRace({ dateBpa }) {
                                                     RAÇA INVÁLIDA: {item.raceInvalid}
                                                 </p>
                                             </div>
-                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id)}>
+                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, false)}>
                                                 <EditIcon />
                                             </div>
                                         </div>
                                     </div>
                                 ))
                             }
+                            {
+                                startIndex < races.length && (
+                                    <div className="flex justify-center w-full my-10">
+                                        <Button
+                                            variant="contained"
+                                            endIcon={<SouthIcon />}
+                                            onClick={() => loadMoreErrors()}
+                                        >
+                                            Mostrar mais
+                                        </Button>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
             }
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open.single} onClose={handleClose}>
                 <DialogTitle>EDITAR RAÇA</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -180,6 +227,40 @@ function InRace({ dateBpa }) {
                         onClick={isValidValue}
                     >
                         SalVar
+                    </LoadingButton>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={open.all} onClose={handleClose}>
+                <DialogTitle>EDITAR TODOS</DialogTitle>
+                <DialogContent>
+                <AlertCustom
+                    type="warning"
+                    msg={`Todos os ${races.length} erros serão atualizados`}
+                />
+                <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
+                    <p className="text-center">
+                        ATENÇÃO, a raça dos paciêntes será atualizada de acordo com procedimentos antigos.
+                    </p>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                    {
+                        !loading &&
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={handleClose}
+                            >
+                                Fechar
+                            </Button>
+                    }
+                    <LoadingButton
+                        color="success"
+                        loading={loading}
+                        variant="contained"
+                        onClick={() => update(true)}
+                    >
+                        Atualizar
                     </LoadingButton>
                 </DialogActions>
             </Dialog>

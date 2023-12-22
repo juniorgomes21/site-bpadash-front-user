@@ -11,20 +11,29 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import LoadingButton from "@mui/lab/LoadingButton";
+import SouthIcon from '@mui/icons-material/South';
+import { formatDateStringFull } from "../../Validation&Formatation/formatation";
+import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
+import Tooltip from "@mui/material/Tooltip";
 
 function AgeMinMax({ dateBpa }) {
 
-    const { openSnackBarFun } = useContext(SnackBarContext);
+    const dateNow = new Date();
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [ageMaxMin, setAgeMaxMin] = useState({});
     const [ageMaxMins, setAgeMaxMins] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [errorsDates, setErrorsDates] = useState([]);
+    const [open, setOpen] = useState({ "single": false, "all": false });
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
         inAgeMaxMin();
+        setStartIndex(5);
     }, [dateBpa]);
+
 
     async function inAgeMaxMin() {
         try {
@@ -33,18 +42,28 @@ function AgeMinMax({ dateBpa }) {
             }
             const response = await api.post("/bpa/inconsistency/date/procedure", obj);
             setAgeMaxMins(response.data);
+            setErrorsDates(response.data.slice(0, 5));
+            setHaveErrors("ageMinMax", response.data.length > 0);
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("ageMinMax", false);
     }
 
-    async function update() {
+    async function update(upAll) {
         setLoading(true);
         try {
-            const obj = {
-                "age": ageMaxMin.age
+            if(upAll) {
+                const ids = [];
+                ageMaxMins.forEach( age => {
+                    ids.push(age.id);
+                });
+
+                await api.post(`/bpai/update/${0}`, { "ids": ids, "key": "ageMaxMin" });
+
+            } else {
+                await api.post(`/bpai/update/${ageMaxMin.id}`, { "age": ageMaxMin.age });
             }
-            await api.post(`/bpai/update/${ageMaxMin.id}`, obj);
             await inAgeMaxMin();
             handleClose();
             openSnackBarFun(false, "IDADE salva");
@@ -63,37 +82,65 @@ function AgeMinMax({ dateBpa }) {
             setError(true);
             setMsgError("Idade deve estar entre 0 à 130 anos");
         } else {
-            update();
+            update(false);
         }
     }
     
-    function handleClickOpen(id) {
-        setAgeMaxMin(ageMaxMins.find(item => item.id === id));
-        setOpen(true);
-    };
+    function handleClickOpen(id, type) {
+        if(type === "single") {
+            setAgeMaxMin(ageMaxMins.find(item => item.id === id));
+            setOpen({ ...open, "single": true });
+        } else {
+            setOpen({ ...open, "all": true });
+        }
+
+
+    }
 
     function handleClose() {
         if(!loading) {
-            setOpen(false);
+            setOpen({ "single": false, "all": false });
             setError(false);
             setMsgError('');
         }
-    };
+    }
+
+    function loadMoreErrors() {
+        const nextErrors = ageMaxMins.slice(startIndex, startIndex + 5);
+
+        // Adicionar os próximos erros à lista de erros exibidos
+        setErrorsDates( prevErrors => [...prevErrors, ...nextErrors]);
+    
+        // Atualizar o índice para o próximo conjunto de erros
+        setStartIndex(startIndex + 5);
+    }
 
     return (
         <>
             {
                 ageMaxMins.length > 0 &&
-                    <div className="flex flex-col items-center border-[1px] border-default rounded-md p-2 mt-6">
+                    <div className="flex flex-col items-center border-[1px] border-default rounded-md p-2 my-6">
                         <div className="my-4">
                             <AlertCustom
-                            type="error"
-                            msg="Idade em BPAI não está dentro do intervalo de idade máxima e mínima do arquivo de procedimentos"
+                                type="error"
+                                msg="Idade em BPAI não está dentro do intervalo de idade máxima e mínima do arquivo de procedimentos"
                             />
+                        </div>
+                        <div className="text-center font-bold text-sm mb-3">
+                            <p>{ageMaxMins.length} erros</p>
+                        </div>
+                        <div className="flex justify-center w-full">
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleClickOpen(-1, "all")}
+                            >
+                                Atualizar todas as Idades
+                            </Button>
                         </div>
                         <div className="flex flex-col items-center w-full">
                             {
-                                ageMaxMins.map((item, index) => (
+                                errorsDates.map((item, index) => (
                                     !item.msg.includes("NOT EXIST PA") &&
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end w-full font-bold">
@@ -113,6 +160,19 @@ function AgeMinMax({ dateBpa }) {
                                                 <p>
                                                     IDADE MAX: {item.ageMax}
                                                 </p>
+                                                <div className="flex items-center">
+                                                    <p>
+                                                        DATA NASC: {formatDateStringFull(item.dateNasc)}
+                                                    </p>
+                                                    <div className="mx-1 mb-1">
+                                                        {
+                                                            (item.dateNasc.substring(0, 4) < 1900 || item.dateNasc.substring(0, 4) >  dateNow.getFullYear()) &&
+                                                                <Tooltip title="Data inválida, Atualize manualmente">
+                                                                    <ReportProblemOutlinedIcon sx={{ fontSize: 17, color: "red" }}/>
+                                                                </Tooltip>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
@@ -121,7 +181,7 @@ function AgeMinMax({ dateBpa }) {
                                                     IDADE INVÁLIDA: {item.age}
                                                 </p>
                                             </div>
-                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id)}>
+                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, "single")}>
                                                 <EditIcon />
                                             </div>
                                         </div>
@@ -129,9 +189,22 @@ function AgeMinMax({ dateBpa }) {
                                 ))
                             }
                         </div>
+                        {
+                            startIndex < ageMaxMins.length && (
+                                <div className="flex justify-center w-full my-10">
+                                    <Button
+                                        variant="contained"
+                                        endIcon={<SouthIcon />}
+                                        onClick={() => loadMoreErrors("errorsPaBpacDTOS")}
+                                    >
+                                        Mostrar mais
+                                    </Button>
+                                </div>
+                            )
+                        }
                     </div>
             }
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open.single} onClose={handleClose}>
                 <DialogTitle>EDITAR IDADE</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
@@ -142,7 +215,7 @@ function AgeMinMax({ dateBpa }) {
                         fullWidth
                         autoFocus
                         label="IDADE"
-                        type="number"
+                        type="text"
                         variant="standard"
                         error={error}
                         value={ageMaxMin.age}
@@ -150,9 +223,7 @@ function AgeMinMax({ dateBpa }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            const inputValue = e.target.value;
-                            const numericValue = inputValue.replace(/\D/g, '');
-                            if(numericValue.length <= 3) setAgeMaxMin({...ageMaxMin, ["age"]: numericValue})
+                            if(!isNaN(Number(e.target.value)) && e.target.value.length <= 3) setAgeMaxMin({...ageMaxMin, ["age"]: e.target.value});
                         }}
                     />
                 </div>
@@ -175,6 +246,40 @@ function AgeMinMax({ dateBpa }) {
                     onClick={isValidValue}
                 >
                     SalVar
+                </LoadingButton>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={open.all} onClose={handleClose}>
+                <DialogTitle>EDITAR TODOS</DialogTitle>
+                <DialogContent>
+                <AlertCustom
+                    type="warning"
+                    msg={`Todos os ${ageMaxMins.length} erros serão atualizados`}
+                />
+                <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
+                    <p className="text-center">
+                        ATENÇÃO, a atualização da idade é baseada na data de nascimento do paciênte já salva no banco de dados
+                    </p>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                {
+                    !loading &&
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleClose}
+                        >
+                            Fechar
+                        </Button>
+                }
+                <LoadingButton
+                    color="success"
+                    loading={loading}
+                    variant="contained"
+                    onClick={() => update(true)}
+                >
+                    Atualizar
                 </LoadingButton>
                 </DialogActions>
             </Dialog>

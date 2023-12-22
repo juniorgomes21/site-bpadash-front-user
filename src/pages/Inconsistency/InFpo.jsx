@@ -12,49 +12,71 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { formatCode3 } from "../../Validation&Formatation/formatation";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackBarContext from "../../contexts/managerService";
+import SouthIcon from '@mui/icons-material/South';
+import Radio from '@mui/material/Radio';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Tooltip from "@mui/material/Tooltip";
+
 
 function InFpo({ dateBpa }) {
 
-    const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun } = useContext(SnackBarContext);
+    const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [fpo, setFpo] = useState({});
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
     const [fpoList, setFpoList] = useState({"errorsPaBpacDTOS": [], "errorsPaBpaiDTOS": []});
+    const [errorsPaBpacDTOS, setErrorsPaBpacDTOS] = useState([]);
+    const [errorsPaBpaiDTOS, setErrorsPaBpaiDTOS] = useState([]);
+    const [startIndexBpac, setStartIndexBpac] = useState(5);
+    const [startIndexBpai, setStartIndexBpai] = useState(5);
+    const [occurrencePa, setOccurrencePa] = useState(0);
+    const [updateAll, setUpdateAll] = useState('false');
 
     useEffect(() => {
         inFpo();
+        setStartIndexBpac(5);
+        setStartIndexBpai(5);
     }, [dateBpa, reloadErrors]);
+
 
     async function inFpo() {
         try {
             const obj = {
-              "dateBPA": dateBpa,
-              "dateLinkFpo": "2023-11-1"
+              "dateBPA": dateBpa
             }
             const response = await api.post("/bpa/inconsistency/fpo", obj);
             setFpoList(response.data);
+            setErrorsPaBpacDTOS(response.data["errorsPaBpacDTOS"].slice(0, 5));
+            setErrorsPaBpaiDTOS(response.data["errorsPaBpaiDTOS"].slice(0, 5));
             setHaveErrors("inFpo", (response.data["errorsPaBpacDTOS"].length > 0 || response.data["errorsPaBpaiDTOS"].length > 0));
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inFpo", false);
     }
 
     async function updatePA() {
         setLoading(true);
-        const arqName = fpo.msg.includes("BPAC") ? "bpac" : "bpai";
-
+        let pa = "";
+        if(fpo.type === "bpac") {
+            pa = fpoList["errorsPaBpacDTOS"].find(item => item.id === fpo.id).pa;
+        } else {
+            pa = fpoList["errorsPaBpaiDTOS"].find(item => item.id === fpo.id).pa;
+        }
         try {
             const obj = {
-                "pa": fpo.pa
-            }
-            await api.post(`/${arqName}/update/${fpo.id}`, obj);
+                "dateBpa": dateBpa,
+                "pa": fpo.pa + "-" + (updateAll === 'false' ? '0' : '1') + "-" + pa,
+                "key": "pa"
+            };
+            await api.post(`/${fpo.type}/update/${fpo.id}`, obj);
             reloadErrorsFun();
             handleClose();
             openSnackBarFun(false, "PA salvo");
         } catch (e) {
-            console.log(e);
+            console.log(e.response);
             setMsgError("Ops, algo deu errado");
             setError(true);
         }
@@ -72,10 +94,12 @@ function InFpo({ dateBpa }) {
         }
     }
     
-    function handleClickOpen(type, id) {
-        setFpo(fpoList[type].find(item => item.id === id));
+    function handleClickOpen(key, id) {
+        const fpox = fpoList[key].find(item => item.id === id);
+        setOccurrencePa(fpoList[key].filter(item => item.pa === fpox.pa).length);
+        setFpo(fpox);
         setOpen(true);
-    };
+    }
 
     function handleClose() {
         if(!loading) {
@@ -83,7 +107,32 @@ function InFpo({ dateBpa }) {
             setError(false);
             setMsgError('');
         }
-    };
+    }
+
+    function loadMoreErrors(array) {
+        if(array === "errorsPaBpacDTOS") {
+            const nextErrors = fpoList["errorsPaBpacDTOS"].slice(startIndexBpac, startIndexBpac + 5);
+    
+            // Adicionar os próximos erros à lista de erros exibidos
+            setErrorsPaBpacDTOS( prevErrors => [...prevErrors, ...nextErrors]);
+        
+            // Atualizar o índice para o próximo conjunto de erros
+            setStartIndexBpac(startIndexBpac + 5);
+
+        } else {
+            const nextErrors = fpoList["errorsPaBpaiDTOS"].slice(startIndexBpai, startIndexBpai + 5);
+    
+            // Adicionar os próximos erros à lista de erros exibidos
+            setErrorsPaBpaiDTOS( prevErrors => [...prevErrors, ...nextErrors]);
+        
+            // Atualizar o índice para o próximo conjunto de erros
+            setStartIndexBpai(startIndexBpai + 5);
+        }
+    }
+
+    function handleChange(event) {
+        setUpdateAll(event.target.value);
+    }
 
     return (
         <>
@@ -93,22 +142,23 @@ function InFpo({ dateBpa }) {
                         <div className="my-4">
                             <AlertCustom
                                 type="error"
-                                msg="PA de BPAC e BPAI não encontrados em FPO, ocupação e procedimentos"
+                                msg="PA de BPAC e BPAI não encontrados em um ou mais arquivos FPO, Ocupação e Procedimentos"
                             />
                         </div>
                         <div className="flex flex-col items-center w-full">
                             {
                                 fpoList["errorsPaBpacDTOS"].length > 0 &&
-                                    <div className="font-bold">
+                                    <div className="text-center font-bold">
                                         <p>BPAC</p>
+                                        <p>{fpoList["errorsPaBpacDTOS"].length} erros</p>
                                     </div>
                             }
                             {
-                                fpoList["errorsPaBpacDTOS"].map((item, index) => (
+                                errorsPaBpacDTOS.map((item, index) => (
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end font-bold">
                                             <p className="mr-2">
-                                                ARQ: {item.type}
+                                                ARQ: {item.msg.replace(/\s+/g, "/")}
                                             </p>
                                             <div>
                                                 <p className="mr-2">
@@ -132,20 +182,32 @@ function InFpo({ dateBpa }) {
                                     </div>
                                 ))
                             }
+                            { startIndexBpac < fpoList["errorsPaBpacDTOS"].length && (
+                                <div className="flex justify-center w-full my-10">
+                                    <Button
+                                        variant="contained"
+                                        endIcon={<SouthIcon />}
+                                        onClick={() => loadMoreErrors("errorsPaBpacDTOS")}
+                                    >
+                                        Mostrar mais
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col items-center w-full mt-6">
                             {
                                 fpoList["errorsPaBpaiDTOS"].length > 0 &&
-                                    <div className="font-bold">
+                                    <div className="text-center font-bold">
                                         <p>BPAI</p>
+                                        <p>{fpoList["errorsPaBpaiDTOS"].length} erros</p>
                                     </div>
                             }
                             {
-                                fpoList["errorsPaBpaiDTOS"].map((item, index) => (
+                                errorsPaBpaiDTOS.map((item, index) => (
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end font-bold">
                                             <p className="mr-2">
-                                                ARQ: {item.type}
+                                                ARQ: {item.msg.replace(/\s+/g, "/")}
                                             </p>
                                             <div>
                                                 <p className="mr-2">
@@ -169,15 +231,60 @@ function InFpo({ dateBpa }) {
                                     </div>
                                 ))
                             }
+                            { startIndexBpai < fpoList["errorsPaBpaiDTOS"].length && (
+                                <div className="flex justify-center w-full my-10">
+                                    <Button
+                                        variant="contained"
+                                        endIcon={<SouthIcon />}
+                                        onClick={() => loadMoreErrors("errorsPaBpaiDTOS")}
+                                    >
+                                        Mostrar mais
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
             }
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>EDITAR PA</DialogTitle>
                 <DialogContent>
-                <DialogContentText>
-                    Edite o campo PA da folha {fpo.flh} sequência {fpo.seq}
+                <DialogContentText className="mb-2">
+                    Número de ocorrência desse PA na lista de erros ({occurrencePa})
                 </DialogContentText>
+                <DialogContentText>
+                    {
+                        updateAll === 'false' ?
+                            `Edite o campo PA da folha ${fpo.flh} sequência ${fpo.seq}, ${occurrencePa}`
+                        :
+                            `Editar todos os campos PA`
+                    }
+                </DialogContentText>
+                <div className="flex justify-around w-full my-3">
+                    <div className="flex items-center">
+                    <Radio
+                        checked={updateAll === 'false'}
+                        value="false"
+                        onClick={handleChange}
+                        name="radio-buttons"
+                    />
+                    <p className="mr-2">Atualizar um</p>
+                    <Tooltip title={`Atualiza apenas esse PA da folha ${fpo.flh} sequência ${fpo.seq}`}>
+                        <HelpOutlineIcon sx={{ fontSize: 20 }}/>
+                    </Tooltip>
+                    </div>
+                    <div className="flex items-center">
+                    <Radio
+                        checked={updateAll === 'true'}
+                        value="true"
+                        onClick={handleChange}
+                        name="radio-buttons"
+                    />
+                    <p className="mr-2">Atualizar todos</p>
+                    <Tooltip title={`Atuliza todas as ocorrências do PA ${fpo.pa}`}>
+                        <HelpOutlineIcon sx={{ fontSize: 20 }}/>
+                    </Tooltip>
+                    </div>
+                </div>
                 <div className="mt-3">
                     <TextField
                         fullWidth
@@ -191,8 +298,7 @@ function InFpo({ dateBpa }) {
                         onChange={e => {
                             setError(false);
                             setMsgError('');
-                            const inputValue = e.target.value;
-                            if(inputValue.length <= 10) setFpo({...fpo, ["pa"]: e.target.value})
+                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 10) setFpo({...fpo, ["pa"]: e.target.value});
                         }}
                     />
                 </div>

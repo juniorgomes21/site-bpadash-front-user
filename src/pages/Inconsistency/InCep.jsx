@@ -12,44 +12,58 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import LoadingButton from "@mui/lab/LoadingButton";
+import SouthIcon from '@mui/icons-material/South';
 
 function InCep({ dateBpa }) {
 
-    const { openSnackBarFun } = useContext(SnackBarContext);
-    const [open, setOpen] = useState(false);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const [open, setOpen] = useState({ "single": false, "all": false });
     const [cep, setCep] = useState({});
     const [ceps, setCeps] = useState([]);
+    const [errorsDates, setErrorsDates] = useState([]);
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [startIndex, setStartIndex] = useState(5);
+
 
     useEffect(() => {
         inCep();
+        setStartIndex(5);
     }, [dateBpa]);
+
 
     async function inCep() {
         try {
-            const obj = {
-                "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/cep", obj);
+            const response = await api.post("/bpa/inconsistency/cep", { "dateBPA": dateBpa });
             setCeps(response.data);
+            setErrorsDates(response.data.slice(0, 5));
+            setHaveErrors("inCep", response.data.length > 0);
 
         } catch (e) {
             console.log("error", e.response);
         }
+        setLoadingErrorsFun("inCep", false);
     }
 
-    async function update() {
+    async function update(upAll) {
         setLoading(true);
         try {
-            const obj = {
-                "cep": cep.cepInvalid
+            if(upAll) {
+                const ids = [];
+
+                ceps.forEach( cep => {
+                    ids.push(cep.id);
+                });
+
+                await api.post(`/bpai/update/${0}`, { "key": "cep", "ids": ids });
+                
+            } else {
+                await api.post(`/bpai/update/${cep.id}`, { "cep": cep.cepInvalid });
             }
-            await api.post(`/bpai/update/${cep.id}`, obj);
             await inCep();
             handleClose();
-            openSnackBarFun(false, "PA salvo");
+            openSnackBarFun(false, ( upAll ? "Todos CEPs atualizados" : "CEP salvo"));
         } catch (e) {
             console.log(e);
             setMsgError("Ops, algo deu errado");
@@ -65,22 +79,36 @@ function InCep({ dateBpa }) {
             setError(true);
             setMsgError("CEP deve conter 8 caracteres");
         } else {
-            update();
+            update(false);
         }
     }
     
-    function handleClickOpen(id) {
-        setCep(ceps.find(item => item.id === id));
-        setOpen(true);
-    };
+    function handleClickOpen(id, dialogAll) {
+        if(dialogAll) {
+            setOpen({ ...open, "all": true });
+        } else {
+            setCep(ceps.find(item => item.id === id));
+            setOpen({ ...open, "single": true });
+        }
+    }
 
     function handleClose() {
         if(!loading) {
-            setOpen(false);
+            setOpen({ "single": false, "all": false });
             setError(false);
             setMsgError('');
         }
-    };
+    }
+
+    function loadMoreErrors() {
+        const nextErrors = ceps.slice(startIndex, startIndex + 5);
+
+        // Adicionar os próximos erros à lista de erros exibidos
+        setErrorsDates( prevErrors => [...prevErrors, ...nextErrors]);
+    
+        // Atualizar o índice para o próximo conjunto de erros
+        setStartIndex(startIndex + 5);
+    }
 
 
     return (
@@ -94,9 +122,21 @@ function InCep({ dateBpa }) {
                                 msg="CEP de BPAI não encontrados no arquico de CEPs"
                             />
                         </div>
+                        <div className="text-center font-bold text-sm mb-3">
+                            <p>{ceps.length} erros</p>
+                        </div>
+                        <div className="flex justify-center w-full">
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleClickOpen(0, true)}
+                            >
+                                Atualizar todos
+                            </Button>
+                        </div>
                         <div className="flex flex-col items-center w-full">
                             {
-                                ceps.map((item, index) => (
+                                errorsDates.map((item, index) => (
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-end font-bold">
                                             <p className="mr-2">
@@ -112,17 +152,30 @@ function InCep({ dateBpa }) {
                                                     CEP INVÁLIDO: {formatarCEP(item.cepInvalid)}
                                                 </p>
                                             </div>
-                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id)}>
+                                            <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, false)}>
                                                 <EditIcon />
                                             </div>
                                         </div>
                                     </div>
                                 ))
                             }
+                            {
+                                startIndex < ceps.length && (
+                                    <div className="flex justify-center w-full my-10">
+                                        <Button
+                                            variant="contained"
+                                            endIcon={<SouthIcon />}
+                                            onClick={() => loadMoreErrors("errorsPaBpacDTOS")}
+                                        >
+                                            Mostrar mais
+                                        </Button>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
             }
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open.single} onClose={handleClose}>
                 <DialogTitle>EDITAR CEP</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
@@ -133,7 +186,7 @@ function InCep({ dateBpa }) {
                         fullWidth
                         autoFocus
                         label="CEP"
-                        type="number"
+                        type="text"
                         variant="standard"
                         error={error}
                         value={cep.cepInvalid}
@@ -141,9 +194,7 @@ function InCep({ dateBpa }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            const inputValue = e.target.value;
-                            const numericValue = inputValue.replace(/\D/g, '');
-                            if(numericValue.length <= 8) setCep({...cep, ["cepInvalid"]: numericValue})
+                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 8) setCep({...cep, ["cepInvalid"]: e.target.value});
                         }}
                     />
                 </div>
@@ -166,6 +217,40 @@ function InCep({ dateBpa }) {
                     onClick={isValidValue}
                 >
                     SalVar
+                </LoadingButton>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={open.all} onClose={handleClose}>
+                <DialogTitle>EDITAR TODOS</DialogTitle>
+                <DialogContent>
+                <AlertCustom
+                    type="warning"
+                    msg={`Todos os ${ceps.length} erros serão atualizados`}
+                />
+                <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
+                    <p className="text-center">
+                        ATENÇÃO, os CEPs seram atualizados pelo CEP mais próximo.
+                    </p>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                {
+                    !loading &&
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleClose}
+                        >
+                            Fechar
+                        </Button>
+                }
+                <LoadingButton
+                    color="success"
+                    loading={loading}
+                    variant="contained"
+                    onClick={() => update(true)}
+                >
+                    Atualizar
                 </LoadingButton>
                 </DialogActions>
             </Dialog>
