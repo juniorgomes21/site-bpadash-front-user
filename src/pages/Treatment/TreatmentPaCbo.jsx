@@ -19,7 +19,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import SnackBarContext from "../../contexts/managerService";
 import { CircularProgress } from "@mui/material";
-import DatePickerContext from "../../contexts/DatePicker";
+import DatePickerContext from "../../contexts/DateGlobalBpa";
 import Radio from '@mui/material/Radio';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 

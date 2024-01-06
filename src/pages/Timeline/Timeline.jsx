@@ -18,20 +18,24 @@ import DialogTitle from '@mui/material/DialogTitle';
 import loadingSvg from "../../assets/images/svg/loading.svg";
 import SnackBarContext from "../../contexts/managerService";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
+import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
+import AuthContext from "../../contexts/Auth";
+
 
 function Timeline(props) {
+
     document.title="Linha do Tempo";
 
     const screenSize = window.screen.width;
     
+    const { month, year } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
+    const { getDates } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [timeLine, setTimeLine] = useState([]);
     const [select, setSelect] = useState([]);
-    const [reload, setReload] = useState(false);
     const [open, setOpen] = useState(false);
-    const [month, setMonth] = useState(localStorage.getItem("@Month"));
-    const [year, setYear] = useState(localStorage.getItem("@Year"));
+
     
     useEffect(() => {
         apiGetTimeLine();
@@ -43,7 +47,6 @@ function Timeline(props) {
             const response = await api.get("/user/timeline");
             setTimeLine(response.data);
         } catch(e) {
-            console.log(e.response, "Erro na requisição");
         }
         setLoading(false);
     }
@@ -52,14 +55,15 @@ function Timeline(props) {
         try {
             setLoading(true);
             await api.post("/bpa/delete", select);
+            await getDates();
             openSnackBarFun(false, "Arquivos apagados!")
             setSelect([]);
             apiGetTimeLine();
         } catch(e) {
-            console.log(e.response, "Erro na requisição");
             setLoading(false);
         }
     }
+
 
     function selectBPA(identifier) {
         if(select.includes(identifier)) {
@@ -70,19 +74,10 @@ function Timeline(props) {
         }
     }
 
-    function selectOnBPA(date) {
-        const month = date.substring(5, 7);
-        const year = date.substring(0, 4);
-
-        localStorage.setItem("@Month", month);
-        localStorage.setItem("@Year", year);
-        setMonth(month);
-        setYear(year);
-    }
 
     function isDate(item) {
         const date = formatDateString(item.date);
-        const dateSelect = formatDateString(`${year}-${month}-01`);
+        const dateSelect = formatDateString(`${year}-${(month < 9 ? "0" + month : month)}-01`);
 
         if(date === dateSelect) {
             return true;
@@ -91,6 +86,9 @@ function Timeline(props) {
         return false;
     }
 
+    function handleClick() {
+        setOpen(true);
+    }
 
     return (
         <>
@@ -108,7 +106,7 @@ function Timeline(props) {
                                     select.length > 0 &&
                                         <div
                                             className="flex  justify-start ml-2 w-full my-3 cursor-pointer"
-                                            onClick={() => apiDelete()}
+                                            onClick={() => handleClick()}
                                         >
                                             <Tooltip title="Apagar" placement="top">
                                                 <DeleteIcon color="error"/>
@@ -125,8 +123,7 @@ function Timeline(props) {
                                         timeLine.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className="flex justify-between items-center border-b-[1px] border-zinc-300 hover:border-zinc-400 cursor-pointer"
-                                                onClick={() => selectOnBPA(item.date)}
+                                                className="flex justify-between items-center border-b-[1px] border-zinc-300 hover:border-zinc-400"
                                             >
                                                 <div className="flex items-center w-10/12">
                                                     <div

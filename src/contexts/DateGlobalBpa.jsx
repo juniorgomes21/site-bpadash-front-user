@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 import 'regenerator-runtime/runtime'
 
 
-const DatePickerContext = createContext(DatePickerProvider);
+const DateGlobalBpaContext = createContext(DateGlobalBpaProvider);
 
-export function DatePickerProvider({ children }) {
+export function DateGlobalBpaProvider({ children }) {
     const date = new Date();
     const [month, setMonth] = useState(localStorage.getItem("@Month") == null ? date.getMonth() + 1 : localStorage.getItem("@Month"));
     const [year, setYear] = useState(localStorage.getItem("@Year") == null ? date.getFullYear() : localStorage.getItem("@Year"));
@@ -14,13 +14,13 @@ export function DatePickerProvider({ children }) {
     }, [])
 
     function startDateChange(date) {
-        const month = date.getMonth() + 1; // Adiciona 1 porque os meses começam do zero
-        const year = date.getFullYear();
+        const month = date[0];
+        const year = date[1];
         setMonth(month);
         localStorage.setItem("@Month", month);
         setYear(year);
         localStorage.setItem("@Year", year);
-    };
+    }
 
     function checkDateLocal() {
         if(localStorage.getItem("@Month") == null) localStorage.setItem("@Month", date.getMonth() + 1);
@@ -29,10 +29,10 @@ export function DatePickerProvider({ children }) {
 
 
     return (
-        <DatePickerContext.Provider value={{ month, year, startDateChange }}>
+        <DateGlobalBpaContext.Provider value={{ month, year, startDateChange }}>
             {children}
-        </DatePickerContext.Provider>
+        </DateGlobalBpaContext.Provider>
     )
 }
 
-export default DatePickerContext;
+export default DateGlobalBpaContext;

@@ -7,35 +7,51 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import Switch from '@mui/material/Switch';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Tooltip from '@mui/material/Tooltip';
 
 
-function TablePer({ bpa, setBpa, api }) {
+const bpacValidation = [
+    {
+        key: 'cnes',
+        name: 'Código CNES'
+    },
+    {
+        key: 'cmp',
+        name: 'Competência'
+    },
+    {
+        key: 'cbo',
+        name: 'Código CBO'
+    },
+    {
+        key: 'pa',
+        name: 'Procedimento Ambulatorial (PA)'
+    },
+    {
+        key: 'idade',
+        name: 'Idade'
+    },
+    {
+        key: 'qt',
+        name: 'Quantidade de procedimentos'
+    },
+    {
+        key: 'org',
+        name: 'Origem das informações'
+    }
+]
+
+
+function TableBpac({ bpa, setBpa, api }) {
 
     return (
-        <div>
-            <div className="flex justify-end w-full mt-5 -mb-1">
-                <div
-                    // onClick={() => setEditActive(!editActive)}
-                    className="bg-default p-2 rounded-t-lg cursor-pointer relative"
-                >
-                    <div className="">
-                        <LoadingButton
-                            color="success"
-                            variant="contained"
-                            onClick={api}
-                        >
-                            SALVAR
-                        </LoadingButton>
-                    </div>
-                </div>
-            </div>
+        <div className='mt-10'>
             <Toolbar
                 sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 }
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 }
                 }}
                 className="bg-[#2a3042] text-white"
             >
@@ -45,25 +61,29 @@ function TablePer({ bpa, setBpa, api }) {
                     id="tableTitle"
                     component="div"
                 >
-                    BPA-I
+                    BPA-C
                 </Typography>
             </Toolbar>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 1200 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            {Object.keys(bpa).map((name, index) => (
-                                <TableCell
-                                    key={index}
-                                    align={'center'}
-                                    padding={'normal'}
-                                    className="p-4"
-                                >
-                                    <p className="uppercase font-bold text-default">
-                                        {name}
-                                    </p>
-                                </TableCell>
-                            ))}
+                            {
+                                bpacValidation.map((bpac, index) => (
+                                    <TableCell
+                                        key={index}
+                                        align={'center'}
+                                        padding={'normal'}
+                                        className="p-4"
+                                    >
+                                        <Tooltip title={bpac.name} placement="top">
+                                            <p className="uppercase font-bold text-default">
+                                                {bpac.key}
+                                            </p>
+                                        </Tooltip>
+                                    </TableCell>
+                                ))
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -91,4 +111,4 @@ function TablePer({ bpa, setBpa, api }) {
     )
 }
 
-export default TablePer;
+export default TableBpac;

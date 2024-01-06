@@ -289,9 +289,9 @@ function UploadBpai(props) {
                                                                             <DescriptionIcon style={{ fontSize: 45, color: "green" }}/>
                                                                         </Col>
                                                                         <Col>
-                                                                        <p className="text-muted font-weight-bold text-base">
-                                                                            {f.name}
-                                                                        </p>
+                                                                            <p className="text-muted font-weight-bold text-base">
+                                                                                {f.name}
+                                                                            </p>
                                                                         </Col>
                                                                     </Row>
                                                                 </div>
@@ -310,7 +310,6 @@ function UploadBpai(props) {
                                         selectedFiles.length > 0 && !loading &&
                                             <Button
                                                 variant="contained"
-                                                loading={loading}
                                                 onClick={() => {
                                                     setSelectedFiles([]);
                                                 }}

@@ -24,7 +24,7 @@ function SelectColl({ names, handleClick }) {
 
     return (
         <div>
-            <FormControl sx={{ width: 300 }}>
+            <FormControl size="small" sx={{ width: 300 }}>
                 <InputLabel id="demo-multiple-checkbox-label">Colunas Visíveis</InputLabel>
                 <Select
                     labelId="demo-multiple-checkbox-label"

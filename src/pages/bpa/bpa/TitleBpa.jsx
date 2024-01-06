@@ -21,6 +21,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DateGlobalBpaContext from '../../../contexts/DateGlobalBpa';
+import AuthContext from '../../../contexts/Auth';
 
 const headCells = [
     {
@@ -79,6 +81,7 @@ const headCells = [
 
 export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
 
+  const { getDates } = useContext(AuthContext);
   const { openSnackBarFun } = useContext(SnackBarContext);
   const [titleBpa, setTitleBpa] = useState({});
   const [loading, setLoading] = useState(true);
@@ -102,6 +105,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     try {
       setLoadingBpa(true);
       await api.post(`/bpa/delete/${identifier}`);
+      getDates();
       setBpa({});
       setLoadingBpa(false);
       openSnackBarFun(false, "BPA apagado com sucesso!");
@@ -202,7 +206,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
           </DialogTitle>
           <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                  Se apagar não voltará a ver o conteudo!
+                  Essa ação apagará permanentemente o arquivo BPA
               </DialogContentText>
           </DialogContent>
           <DialogActions>

@@ -158,7 +158,7 @@ function InFpo({ dateBpa }) {
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end font-bold">
                                             <p className="mr-2">
-                                                ARQ: {item.msg.replace(/\s+/g, "/")}
+                                                ARQ: {item.msg.replace(/\s+/g, ";")}
                                             </p>
                                             <div>
                                                 <p className="mr-2">
@@ -207,7 +207,7 @@ function InFpo({ dateBpa }) {
                                     <div key={index} className="w-3/4 mt-4">
                                         <div className="flex justify-between items-end font-bold">
                                             <p className="mr-2">
-                                                ARQ: {item.msg.replace(/\s+/g, "/")}
+                                                ARQ: {item.msg.replace(/\s+/g, ";")}
                                             </p>
                                             <div>
                                                 <p className="mr-2">
@@ -254,7 +254,7 @@ function InFpo({ dateBpa }) {
                 <DialogContentText>
                     {
                         updateAll === 'false' ?
-                            `Edite o campo PA da folha ${fpo.flh} sequência ${fpo.seq}, ${occurrencePa}`
+                            `Edite o campo PA da folha ${fpo.flh} sequência ${fpo.seq}`
                         :
                             `Editar todos os campos PA`
                     }

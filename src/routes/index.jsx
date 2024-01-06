@@ -195,11 +195,12 @@ import LineFpo from "../pages/upload/line/LineFpo";
 import ProfessionalLine from "../pages/upload/line/ProfessionalLine";
 import UploadProfessional from "../pages/upload/file/UploadProfessional";
 import Inconsistency from "../pages/Inconsistency/Inconsistency";
-import InconsistencyConf from "../pages/Inconsistency/InconsistencyConf";
-import ProfessionalEdit from "../pages/sigtap/ProfessionalsEdit";
+import FilesConf from "../pages/configurations/FilesConf";
+import ProfessionalEdit from "../pages/consult/ProfessionalsEdit";
 import TreatmentPa from "../pages/Treatment/TreatmentPa";
 import TreatmentPaCbo from "../pages/Treatment/TreatmentPaCbo";
 import DeletePerPa from "../pages/Treatment/DeletePerPa";
+import PublicPlace from "../pages/Treatment/PublicPlace";
 
 
 const authProtectedRoutes = [
@@ -207,7 +208,7 @@ const authProtectedRoutes = [
   { path: "/file/edit/title", component: Title },
   { path: "/file/edit/bpai", component: Bpai },
   { path: "/file/edit/bpac", component: Bpac },
-  { path: "/file/edit/professionals", component: ProfessionalEdit },
+  { path: "/file/consult/professionals", component: ProfessionalEdit },
   { path: "/storage/memory", component: StorageMemory },
   { path: "/upload/fpo", component: Fpo },
   { path: "/upload/fpo/line", component: LineFpo },
@@ -220,10 +221,11 @@ const authProtectedRoutes = [
   { path: "/validation/file", component: Validation },
   { path: "/timeline/bpa", component: Timeline },
   { path: "/inconsistency", component: Inconsistency },
-  { path: "/inconsistency/configurations", component: InconsistencyConf },
+  { path: "/configurations/files", component: FilesConf },
   { path: "/treatment/pa", component: TreatmentPa },
   { path: "/treatment/pa/cbo", component: TreatmentPaCbo },
   { path: "/treatment/pa/delete", component: DeletePerPa },
+  { path: "/treatment/public/place", component: PublicPlace },
   
 
   { path: "/dashboard", component: Dashboard },

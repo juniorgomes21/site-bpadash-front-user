@@ -37,6 +37,7 @@ import Alert from '@mui/material/Alert';
 import TextField from '@mui/material/TextField';
 import Slide from '@mui/material/Slide';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
+import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 
 const names = [
   'cnes',
@@ -59,7 +60,7 @@ function Bpac(props) {
 
   document.title="Editar BPA-C";
 
-  const { keyIdentifier } = useParams();
+  const { month, year } = useContext(DateGlobalBpaContext);
   const { openSnackBarFun } = useContext(SnackBarContext);
   const [bpacList, setBpacList] = useState([]);
   const [bpac, setBpac] = useState({
@@ -75,7 +76,6 @@ function Bpac(props) {
     fim: '',
   });
   const [loadingTable, setLoadingTable] = useState(true);
-  const [identifier, setIdentifier] = useState(keyIdentifier);
   const [bpacNamesList, setBpacNamesList] = useState(names.copyWithin());
   const [filterActive, setFilterActive] = useState("");
   const [selected, setSelected] = useState([]);
@@ -87,24 +87,20 @@ function Bpac(props) {
   const [totalPage, setTotalPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [errorMessages, setErrorMessages] = useState([]);
-  const [editActive, setEditActive] = useState(true);
-  const [month, setMonth] = useState(localStorage.getItem("@Month"));
-  const [year, setYear] = useState(localStorage.getItem("@Year"));
 
   useEffect(() => {
     apiGetBPAC();
-  }, [page, size]);
+  }, [month, year, page, size]);
 
   async function apiGetBPAC() {
+    setLoadingTable(true);
     try {
       const response = await api.get(`/bpac/get/${month}/${year}?page=${page > 0 ? page - 1 : page}&size=${size}`);
-      setIdentifier(response.data.content[0].identifier);
       setBpacList(response.data.content);
       setTotalPage(response.data.totalPages);
       setTotalElements(response.data.totalElements);
     } catch(e) {
       setBpacList([]);
-      console.log("Erro: ", e);
     }
     setLoadingTable(false);
   }
@@ -230,7 +226,7 @@ function Bpac(props) {
                     <div>
                         <LoadingButton
                             color="error"
-                            disabled={!editActive && !(selected.length > 0)}
+                            disabled={!(selected.length > 0)}
                             variant="contained"
                             onClick={() => setOpenDelete(true)}
                         >
@@ -244,33 +240,20 @@ function Bpac(props) {
                         />
                     </div>
                 </div>
-                <div className="flex justify-end w-full mt-5 -mb-1">
-                    <div
-                        onClick={() => setEditActive(!editActive)}
-                        className="bg-default p-2 rounded-t-lg cursor-pointer relative"
-                    >
-                        <div className="rotate-0 hover:-rotate-90 transform-none">
-                            <CachedIcon color="primary" sx={{ fontSize: 40 }}/>
-                        </div>
-                    </div>
-                </div>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} className="my-5">
                   <Table sx={{ minWidth: 1200 }} size="small" aria-label="a dense table">
                     <TableHead>
                       <TableRow>
                           <TableCell
                               align="center"
                               padding="normal"
-                              className={`sticky left-0 ${ editActive ? "bg-transparent" : "bg-white"}` }
+                              className="p-2 sticky left-0 bg-default"
                           >
-                              {
-                                  !editActive &&
-                                      <Checkbox
-                                          checked={selected.length == size}
-                                          className="text-default"
-                                          onClick={handleSelectAllClick}
-                                      />
-                              } 
+                          <Checkbox
+                              checked={selected.length == size}
+                              className="text-white"
+                              onClick={handleSelectAllClick}
+                          />
                           </TableCell>
                           {names.map((name, index) => {
                               return bpacNamesList.includes(name) && 
@@ -278,7 +261,7 @@ function Bpac(props) {
                                           key={index}
                                           align="center"
                                           padding="normal"
-                                          className="p-4 bg-default"
+                                          className="bg-default"
                                       >   
                                           <div className="flex justify-center">
                                               <p className="mr-1 uppercase font-bold text-white">
@@ -307,41 +290,31 @@ function Bpac(props) {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {bpacList.map((item) => (
-                        <TableRow
-                          key={item.id}
-                          onClick={() => handleClick(item.id)}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          className={`cursor-pointer ${selected.includes(item.id) ? "bg-green-200" : ""}`}
-                        >
-                          <TableCell align="center" className="sticky left-0 bg-white">
-                              {
-                                  editActive ?
-                                      <IconButton onClick={ e => {
-                                              handleOpenEdit(item.id);
-                                              e.stopPropagation();
-                                          }}
-                                      >
-                                          <EditIcon className="text-default"/>
-                                      </IconButton>
-                                  :
-                                      <IconButton onClick={ () => {
-                                              setOpenDelete(true);
-                                          }}
-                                      >
-                                          <DeleteIcon className="text-red-500"/>
-                                      </IconButton>
-                              }
-                          </TableCell>
-                          {
-                              names.map((name, index) => {
-                                  return bpacNamesList.includes(name) &&
-                                      <TableCell key={index} align="center" className="truncate">
-                                          {hasOnlyWhitEspace(item[name])}
-                                      </TableCell>
-                              })
-                          }
-                        </TableRow>
+                      { bpacList.map((item) => (
+                          <TableRow
+                            key={item.id}
+                            onClick={() => handleClick(item.id)}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            className={`cursor-pointer ${selected.includes(item.id) ? "bg-green-200" : ""}`}
+                          >
+                            <TableCell align="center" className="sticky left-0 bg-default w-[4.5rem]">
+                              <IconButton onClick={ e => {
+                                      handleOpenEdit(item.id);
+                                      e.stopPropagation();
+                                  }}
+                              >
+                                  <EditIcon className="text-white"/>
+                              </IconButton>
+                            </TableCell>
+                            {
+                                names.map((name, index) => {
+                                    return bpacNamesList.includes(name) &&
+                                        <TableCell key={index} align="center" className="truncate">
+                                            {hasOnlyWhitEspace(item[name])}
+                                        </TableCell>
+                                })
+                            }
+                          </TableRow>
                       ))}
                     </TableBody>
                   </Table>

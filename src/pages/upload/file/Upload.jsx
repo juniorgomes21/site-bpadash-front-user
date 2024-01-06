@@ -15,6 +15,7 @@ import DivErrors from "../DivErrors";
 import { formatDate } from "../../../Validation&Formatation/formatation";
 import DivLoadingSvg from "../DivLoadingSvg";
 import "react-datepicker/dist/react-datepicker.css";
+import AuthContext from "../../../contexts/Auth";
 
 
 function Upload() {
@@ -22,11 +23,11 @@ function Upload() {
     document.title="Upload BPA";
     
     const { openSnackBarFun } = useContext(SnackBarContext);
+    const { getDates } = useContext(AuthContext);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [bytes, setBytes] = useState(0);
-    const [startDate, setStartDate] = useState(new Date());
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [displayedErrors, setDisplayedErrors] = useState([]);
     const [startIndex, setStartIndex] = useState(5);
@@ -40,13 +41,13 @@ function Upload() {
                     const paramNewBpa = {
                         name: name.trim() === '' ? 'Arquivo BPA' : name, // até 20 caracteres
                         description: description.trim() === '' ? 'Sem descrição' : description, // até 100 caracteres
-                        date: formatDate(startDate),
                         bytes: bytes
                     };
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewBpa', JSON.stringify(paramNewBpa));
                     await api.post('/bpa/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await getDates();
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
@@ -74,9 +75,6 @@ function Upload() {
         setLoading(false);
     }
 
-    function startDateChange(date) {
-        setStartDate(date);
-    }
 
     function handleAcceptedFiles(files) {
         files.map(file =>
@@ -102,7 +100,6 @@ function Upload() {
 
     function reset() {
         setName('');
-        setStartDate(new Date());
         setErrorsFile([]);
         setDisplayedErrors([]);
         setSelectedFiles([]);
@@ -169,7 +166,7 @@ function Upload() {
                                                 htmlFor="projectname"
                                                 className="col-form-label col-lg-2"
                                             >
-                                                Nome (Optinal)
+                                                Nome (Opcional)
                                             </Label>
                                             <Col lg="10">
                                                 <Input
@@ -178,7 +175,7 @@ function Upload() {
                                                     type="text"
                                                     value={name}
                                                     className="form-control"
-                                                    placeholder="Enter Project Name..."
+                                                    placeholder="Nome do arquivo"
                                                     onChange={ e => {
                                                         if(e.target.value.length <= 20) setName(e.target.value);
                                                     }}
@@ -199,30 +196,11 @@ function Upload() {
                                                         value={description}
                                                         id="projectdesc"
                                                         rows="3"
-                                                        placeholder="Enter Project Description..."
+                                                        placeholder="Descrição do arquivo"
                                                         onChange={e => {
                                                             if(e.target.value.length < 100) setDescription(e.target.value);
                                                         }}
                                                     />
-                                                </Col>
-                                            </FormGroup>
-
-                                            <FormGroup className="mb-4" row>
-                                                <Label className="col-form-label col-lg-2">
-                                                    Data
-                                                </Label>
-                                                <Col lg="10">
-                                                    <Row>
-                                                        <Col className="flex justify-end">
-                                                            <DatePicker
-                                                                className="form-control"
-                                                                selected={startDate}
-                                                                onChange={startDateChange}
-                                                                dateFormat="MM/yyyy"
-                                                                showMonthYearPicker
-                                                            />
-                                                        </Col>
-                                                    </Row>
                                                 </Col>
                                             </FormGroup>
                                         </Form>

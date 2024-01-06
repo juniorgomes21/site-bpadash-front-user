@@ -38,10 +38,7 @@ function InRace({ dateBpa }) {
 
     async function inRace() {
         try {
-            const obj = {
-              "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/race", obj);
+            const response = await api.post("/bpa/inconsistency/race", { "dateBPA": dateBpa });
             setRaces(response.data);
             setErrorsRaces(response.data.slice(0, 5));
             setHaveErrors("inRace", response.data.length > 0);
@@ -51,18 +48,24 @@ function InRace({ dateBpa }) {
         setLoadingErrorsFun("inRace", false);
     }
 
-    async function update() {
+    async function update(upAll) {
         setLoading(true);
         try {
-            const obj = {
-                "race": race.raceInvalid
+            if(upAll) {
+                const ids = [];
+                races.forEach( race => {
+                    ids.push(race.id);
+                });
+                await api.post(`/bpai/update/${0}`, { "race": race.raceInvalid, "ids": ids, "key": "race" });
+
+            } else {
+                await api.post(`/bpai/update/${race.id}`, { "race": race.raceInvalid, "key": "race" });
             }
-            await api.post(`/bpai/update/${race.id}`, obj);
+
             await inRace();
             handleClose();
             openSnackBarFun(false, "Raça alterada");
         } catch (e) {
-            console.log(e.response);
             setMsgError("Ops, algo deu errado");
             setError(true);
         }
@@ -76,7 +79,7 @@ function InRace({ dateBpa }) {
             setError(true);
             setMsgError("Valores válidos para raça 01, 02, 03, 04, 05");
         } else {
-            update();
+            update(false);
         }
     }
     
@@ -239,7 +242,7 @@ function InRace({ dateBpa }) {
                 />
                 <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
                     <p className="text-center">
-                        ATENÇÃO, a raça dos paciêntes será atualizada de acordo com procedimentos antigos.
+                        ATENÇÃO, as raças dos paciêntes seram atualizadas de acordo com os registros dos mesmos em outros arquivos BPA.
                     </p>
                 </div>
                 </DialogContent>

@@ -4,16 +4,16 @@ import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
 import api from "../../services/api";
-import TablePer from "./TablePer";
+import TableBpac from "./TableBpac";
 import SnackbarContext from "../../contexts/managerService";
+import TableBpai from "./TableBpai";
+import Button from "@mui/material/Button";
+
 
 const bpacValidationx = {
-  ident: true,
   cnes: true,
   cmp: true,
   cbo: false,
-  flh: true,
-  seq: true,
   pa: false,
   idade: true,
   qt: true,
@@ -21,14 +21,11 @@ const bpacValidationx = {
 }
 
 const bpaiValidationx = {
-  ident: true,
   cnes: true,
   cmp: true,
   cnsmed: true,
   cbo: true,
   dtaten: true,
-  flh: true,
-  seq: true,
   pa: true,
   cnspac: true,
   sexo: true,
@@ -92,19 +89,11 @@ function Validation(props) {
     }
   }
 
-  async function apiSetValidationsBPAC() {
-    try {
-      await api.post("/user/set/validations/bpac", bpacValidation);
-      openSnackBarFun(false, "Validações salvas");
-    } catch(e) {
-      console.log("error", e.response );
-      openSnackBarFun();
-    }
-  }
 
-  async function apiSetValidationsBPAI() {
+  async function apiSetValidations() {
     try {
-      await api.post("/user/set/validations/bpai", bpaiValidation);
+      api.post("/user/set/validations/bpai", bpaiValidation);
+      api.post("/user/set/validations/bpac", bpacValidation);
       openSnackBarFun(false, "Validações salvas");
     } catch(e) {
       console.log("error", e.response );
@@ -121,19 +110,26 @@ function Validation(props) {
           {/* <TableBpai /> */}
           <div>
             <div >
-                <p className="text-sm">Clique no campo que você quer validar ou invalidar.</p>
-                <p className="text-base">Os campos em verde passaram pela validação:</p>
+              <p className="text-sm">Clique no campo que você quer validar ou invalidar.</p>
+              <p className="text-base">Os campos em verde passaram pela validação:</p>
             </div>
-            <TablePer
+            <TableBpac
               bpa={bpacValidation}
-              api={apiSetValidationsBPAC}
               setBpa={setBpacValidation}
             />
-            <TablePer
+            <TableBpai
               bpa={bpaiValidation}
-              api={apiSetValidationsBPAI}
               setBpa={setBpaiValidation}
             />
+            <div className="flex justify-end w-full mt-10">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={apiSetValidations}
+              >
+                Salvar alterações
+              </Button>
+            </div>
           </div>
         </Container>
       </div>

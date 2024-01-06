@@ -31,8 +31,8 @@ function PaginationPer({ page, size, setPage, setSize, totalElements, totalPage 
                         <MenuItem value={10}>10</MenuItem>
                         <MenuItem value={20}>20</MenuItem>
                         <MenuItem value={50}>50</MenuItem>
-                        <MenuItem value={100}>100</MenuItem>
-                        <MenuItem value={200}>200</MenuItem>
+                        {/* <MenuItem value={100}>100</MenuItem>
+                        <MenuItem value={200}>200</MenuItem> */}
                     </Select>
                     </FormControl>
                 </div>

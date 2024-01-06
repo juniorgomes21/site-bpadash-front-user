@@ -51,6 +51,9 @@ export function unformatDate(date: string) {
 }
 
 export function formatarCEP(cep: string) {
+    if(cep.trim().length == 0 ) {
+        return "(Em Branco)"
+    }
     // Remove qualquer caractere não numérico
     const cepApenasNumeros = cep.replace(/\D/g, '');
   

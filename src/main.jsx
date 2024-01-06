@@ -8,20 +8,20 @@ import { Provider } from "react-redux"
 import store  from "./store";
 import "./indextail.css";
 import { StackBarProvider } from "./contexts/managerService";
-import { DatePickerProvider } from "./contexts/DatePicker";
+import { DateGlobalBpaProvider } from "./contexts/DateGlobalBpa";
 import { AuthProvider } from "./contexts/Auth";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.Fragment>
     <Provider store={store}>
       <BrowserRouter>
-        <DatePickerProvider>
+        <DateGlobalBpaProvider>
           <StackBarProvider>
             <AuthProvider>
               <App />
             </AuthProvider>
           </StackBarProvider>
-        </DatePickerProvider>
+        </DateGlobalBpaProvider>
       </BrowserRouter>
     </Provider>
   </React.Fragment>

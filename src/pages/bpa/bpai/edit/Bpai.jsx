@@ -36,9 +36,9 @@ import SnackBarContext from "../../../../contexts/managerService";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
 import Alert from '@mui/material/Alert';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
+import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 
 const names = [
-    'ident',
     'cnes',
     'cmp',
     'cnsmed',
@@ -84,12 +84,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function Bpai(props) {
 
-    document.title="BPA-I";
+    document.title="Editar BPA-I";
 
+    const { month, year } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [bpaiList, setBpaiList] = useState([]);
     const [filterActive, setFilterActive] = useState("");
-    const [identifier, setIdentifier] = useState("");
     const [bpai, setBpai] = useState({
 		ident: '',
 		cnes: '',
@@ -139,10 +139,7 @@ function Bpai(props) {
     const [loading, setLoading] = useState(false);
     const [loadingTable, setLoadingTable] = useState(true);
     const [totalPage, setTotalPage] = useState(0);
-    const [editActive, setEditActive] = useState(true);
     const [totalElements, setTotalElements] = useState(0);
-    const [month, setMonth] = useState(localStorage.getItem("@Month"));
-    const [year, setYear] = useState(localStorage.getItem("@Year"));
     const [errorMessages, setErrorMessages] = useState([]);
     
     useEffect(() => {
@@ -150,9 +147,9 @@ function Bpai(props) {
     }, [month, year, page, size])
 
     async function apiGetBPAI() {
+        setLoadingTable(true);
         try {
             const response = await api.get(`/bpai/get/${month}/${year}?page=${page > 0 ? page - 1 : page}&size=${size}`);
-            setIdentifier(response.data.content[0].identifier);
             setBpaiList(response.data.content);
             setTotalPage(response.data.totalPages);
             setTotalElements(response.data.totalElements);
@@ -211,7 +208,7 @@ function Bpai(props) {
     
     function handleClose() {
         setOpenEdit(false);
-    };
+    }
 
     function handleClickSelect(item) {
         setBpaiNamesList(prevList => {
@@ -230,12 +227,12 @@ function Bpai(props) {
           if (a[fieldToFilter] > b[fieldToFilter]) return 1;
           return 0;
         });
-    };
+    }
 
     function filterDefault() {
         bpaiList.sort((a, b) => { return a.id + b.id});
         setFilterActive("");
-    };
+    }
 
     function handleClick(id) {
         setSelected(prevSelected => {
@@ -273,7 +270,7 @@ function Bpai(props) {
         <>
             <div className="page-content">
                 <Container fluid>
-                    <Breadcrumbs title={props.t("BPA-I")} breadcrumbItem={props.t("BPA-I")} />
+                    <Breadcrumbs title={props.t("EDITAR BPAI")} breadcrumbItem={props.t("EDITAR BPAI")} />
                     {
                         bpaiList.length == 0 ?
                             <div className="flex justify-center">
@@ -285,7 +282,7 @@ function Bpai(props) {
                                     <div>
                                         <LoadingButton
                                             color="error"
-                                            disabled={!editActive && !(selected.length > 0)}
+                                            disabled={ !(selected.length > 0)}
                                             variant="contained"
                                             onClick={() => setOpenDelete(true)}
                                         >
@@ -299,41 +296,28 @@ function Bpai(props) {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex justify-end w-full mt-5 -mb-1">
-                                    <div
-                                        onClick={() => setEditActive(!editActive)}
-                                        className="bg-default p-2 rounded-t-lg cursor-pointer relative"
-                                    >
-                                        <div className="rotate-0 hover:-rotate-90 transform-none">
-                                            <CachedIcon color="primary" sx={{ fontSize: 40 }}/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <TableContainer component={Paper} className="mb-2">
+                                <TableContainer component={Paper} className="my-5">
                                     <Table sx={{ minWidth: 1200 }} size="small" aria-label="a dense table">
                                         <TableHead className="bg-default">
                                             <TableRow>
                                                 <TableCell
                                                     align="center"
                                                     padding="normal"
-                                                    className={`sticky left-0 ${ editActive ? "bg-transparent" : "bg-white"}` }
+                                                    className="p-2 sticky left-0 bg-default"
                                                 >
-                                                    {
-                                                        !editActive &&
-                                                            <Checkbox
-                                                                checked={selected.length == size}
-                                                                className="text-default"
-                                                                onClick={handleSelectAllClick}
-                                                            />
-                                                    } 
+                                                <Checkbox
+                                                    checked={selected.length == size}
+                                                    className="text-white"
+                                                    onClick={handleSelectAllClick}
+                                                />
                                                 </TableCell>
-                                                {names.map((name, index) => {
+                                                { names.map((name, index) => {
                                                     return bpaiNamesList.includes(name) && 
                                                             <TableCell
                                                                 key={index}
                                                                 align="center"
                                                                 padding="normal"
-                                                                className="p-4 bg-default"
+                                                                className="bg-default"
                                                             >   
                                                                 <div className="flex justify-center">
                                                                     <p className="mr-1 uppercase font-bold text-white">
@@ -362,31 +346,21 @@ function Bpai(props) {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {bpaiList.map((item) => (
+                                            { bpaiList.map((item) => (
                                                 <TableRow
                                                     key={item.id}
                                                     onClick={() => handleClick(item.id)}
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     className={`cursor-pointer ${selected.includes(item.id) ? "bg-green-200" : ""}`}
                                                 >
-                                                    <TableCell align="center" className="sticky left-0 bg-white">
-                                                        {
-                                                            editActive ?
-                                                                <IconButton onClick={ e => {
-                                                                        handleOpenEdit(item.id);
-                                                                        e.stopPropagation();
-                                                                    }}
-                                                                >
-                                                                    <EditIcon className="text-default"/>
-                                                                </IconButton>
-                                                            :
-                                                                <IconButton onClick={ () => {
-                                                                        setOpenDelete(true);
-                                                                    }}
-                                                                >
-                                                                    <DeleteIcon className="text-red-500"/>
-                                                                </IconButton>
-                                                        }
+                                                    <TableCell align="center" className="sticky left-0 bg-default">
+                                                        <IconButton onClick={ e => {
+                                                                handleOpenEdit(item.id);
+                                                                e.stopPropagation();
+                                                            }}
+                                                        >
+                                                            <EditIcon className="text-white"/>
+                                                        </IconButton>
                                                     </TableCell>
                                                     {
                                                         names.map((name, index) => {
@@ -466,7 +440,7 @@ function Bpai(props) {
                         color="error"
                         onClick={handleClose}
                     >
-                    fechar
+                        fechar
                     </Button>
                     <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
                     </Typography>

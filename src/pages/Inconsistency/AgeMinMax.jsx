@@ -62,7 +62,7 @@ function AgeMinMax({ dateBpa }) {
                 await api.post(`/bpai/update/${0}`, { "ids": ids, "key": "ageMaxMin" });
 
             } else {
-                await api.post(`/bpai/update/${ageMaxMin.id}`, { "age": ageMaxMin.age });
+                await api.post(`/bpai/update/${ageMaxMin.id}`, { "age": ageMaxMin.age, "key": "ageMaxMin" });
             }
             await inAgeMaxMin();
             handleClose();

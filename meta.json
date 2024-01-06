@@ -15,8 +15,9 @@
 
 =================================== Incosistencia =========================================
 
-() simplificar a exibição de muitos dados de erro e colocar a quantidade de errors encontradas.
-() remover a possibilidade de escolha de arquivos em toda a aplicação.
+(x) simplificar a exibição de muitos dados de erro e colocar a quantidade de errors encontradas.
+(x) remover a possibilidade de escolha de arquivos em toda a aplicação.
+
 
 =================================== TRATAMENTO =========================================
 
@@ -36,12 +37,22 @@ Substituição em BPA-C e BPA-I
 // isso aqui é na hora do dowload
 () [Organizar folhas e sequencias em BPA-C e BPA-I] flh 001 seq 01 a 99 após isso flh 002, assim por diante.
 
-obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tarefa	
+obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tarefa
+
+
+=================================== A FAZERES ===============================================
+
+() Validar de os arquivos são do tipo BPA, BPAC e BPAI
 
 =================================== CORREÇÕES ===============================================
 
-() pegar a data do BPA pelo titulo do documento no Upload do arquivo.
-() Arrumar "key" em BPAC e validar as entradas do primeiro e ultimo
+(x) pegar a data do BPA pelo titulo do documento no Upload do arquivo.
+(x) Arrumar "key" em BPAC e validar as entradas do primeiro e ultimo.
+(x) Corrigir "Configuração dos Arquivos" em inconsistencia.
+(x) Mudar a escolha do arquivo BPA em inconsistencia para arquivo geral.
+() Não deixar nenhum input da aplicação mandar texto em branco, incosistencia.
+(x) Ao adicionar um BPAI ou BPAC flh e seq não estão sendo organizados como deveria.
+
 =================================== A POS CONCLUSÂO =========================================
 
 () Verificar todas as informações salvas se precisão ser criptrografadas -- medicos e usuários

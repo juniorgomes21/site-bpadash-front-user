@@ -33,6 +33,7 @@ import CachedIcon from '@mui/icons-material/Cached';
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SnackBarContext from "../../contexts/managerService";
 import { CircularProgress } from "@mui/material";
+import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
 
 const files = [
   {
@@ -58,32 +59,16 @@ const files = [
 ]
 
 function Inconsistency(props) {
-  //meta title
+
   document.title="Inconsistências";
-
-  const monthL = localStorage.getItem("@Month");
-  const yearL = localStorage.getItem("@Year");
-  const dateCurrenty = yearL + "-" + ( monthL < 10 ? "0" + monthL : monthL) + "-01"
-
-  const { dates } = useContext(AuthContext);
+  
+  const { month, year } = useContext(DateGlobalBpaContext);
   const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
-  const [month, setMonth] = useState(monthL);
-  const [year, setYear] = useState(yearL);
-  const [open, setOpen] = useState(false);
-  const [show, setShow] = useState(false);
-  const [dateBpa, setDateBpa] = useState(dateCurrenty);
+  const [dateBpa, setDateBpa] = useState(year + "-" + ( month < 10 ? "0" + month : month) + "-01");
 
-
-  function handleClickOpen() {
-    setOpen(true);
-  };
-
-  function handleClose() {
-    setOpen(false);
-  };
-
-  function handleListItemClick(date) {
-    if(!((date[1] + "-" + date[0] + "-01") === dateBpa)) {
+  useEffect(() => {
+    const date = year + "-" + ( month < 10 ? "0" + month : month) + "-01";
+    if(!(date === dateBpa)) {
       setErrorsfiles({
         "inFpo": true,
         "ageDate": true,
@@ -108,12 +93,9 @@ function Inconsistency(props) {
         "inProcedure": true,
         "inOccupation": true
       });
-      setYear(date[1]);
-      setMonth(date[0]);
-      setDateBpa(date[1] + "-" + (date[0] < 10 ? "0" + date[0] : date[0]) + "-01");
-      setOpen(false);
+      setDateBpa(date);
     }
-  };
+  }, [month, year])
 
 
   return (
@@ -122,16 +104,6 @@ function Inconsistency(props) {
         <Container fluid>
           {/* Render Breadcrumb */}
           <Breadcrumbs title={props.t("Inconsistências")} breadcrumbItem={props.t("Inconsistências BPA")} />
-          <div className="flex justify-center w-full my-14">
-            <div className="flex items-center cursor-pointer" onClick={handleClickOpen}>
-              <div className="flex flex-col items-center w-9">
-                <DescriptionIcon />
-                <p className="font-bold">BPA</p>
-              </div>
-              <p className="mx-3 w-40">{formatMonth(month)} de {year}</p>
-              <KeyboardArrowDownIcon />
-            </div>
-          </div>
           <div>
             {
               haveLoading() ?
@@ -164,7 +136,7 @@ function Inconsistency(props) {
           <InDateService
             dateBpa={dateBpa}
           />
-          <InRace // alta implementar automação
+          <InRace
             dateBpa={dateBpa}
           />
           <InProfessionals
@@ -175,25 +147,8 @@ function Inconsistency(props) {
           />
           <InOccupation // precisa de PA
             dateBpa={dateBpa}
-          /> {/* VERIFICAR */}
+          />
         </Container>
-        <Dialog onClose={handleClose} open={open}>
-          <DialogTitle>Selecione o BPA</DialogTitle>
-          <List sx={{ pt: 0 }}>
-            {dates.map((date, index) => (
-              <ListItem disableGutters key={index}>
-                <ListItemButton onClick={() => handleListItemClick(date)}>
-                  <ListItemAvatar>
-                    <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                      <DescriptionIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={formatMonth(date[0]) + " de " + date[1]} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Dialog>
       </div>
     </>
   );

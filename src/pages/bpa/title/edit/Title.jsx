@@ -36,100 +36,85 @@ import SnackBarContext from "../../../../contexts/managerService";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
 import Alert from '@mui/material/Alert';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
+import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
+import Tooltip from '@mui/material/Tooltip';
+
 
 const names = [
-    'ident',
-    'cnes',
-    'cmp',
-    'cnsmed',
-    'cbo',
-    'dtaten',
+    'hdr',
+    'mvm',
+    'lin',
     'flh',
-    'seq',
-    'pa',
-    'cnspac',
-    'sexo',
-    'ibge',
-    'cid',
-    'idade',
-    'qt',
-    'caten',
-    'naut',
-    'org',
-    'nmpac',
-    'dtnasc',
-    'raca',
-    'etnia',
-    'nac',
-    'srv',
-    'clf',
-    'equipeSeq',
-    'equipeArea',
-    'cnpj',
-    'cepPcnte',
-    'logradPcnte',
-    'endPcnte',
-    'complPcnte',
-    'numPcnte',
-    'bairroPcnte',
-    'ddtelPcnte',
-    'emailPcnte',
-    'ine',
+    'smtVrf',
+    'rsp',
+    'sgl',
+    'cgccpf',
+    'dst',
+    'dstIn',
+    'versao',
     'fim'
 ];
 
 const headCells = [
     {
-      id: 'iden',
-      label: 'iden',
-    },
-    {
       id: 'hdr',
       label: 'hdr',
+      name: 'Indicador de início do cabeçalho'
     },
     {
       id: 'mvm',
       label: 'mvm',
+      name: 'Ano e mês de Processamento da produção'
     },
     {
       id: 'lin',
       label: 'lin',
+      name: 'Número de linhas do BPA gravadas'
     },
     {
       id: 'flh',
       label: 'flh',
+      name: 'Quantidades de folhas de BPA gravadas'
     },
     {
       id: 'smtVrf',
       label: 'smtVrf',
+      name: 'Campo de control'
     },
     {
       id: 'rsp',
       label: 'rsp',
+      name: 'Nome do órgão de origem responsável pela informação'
     },
     {
       id: 'sgl',
       label: 'sgl',
+      name: 'Sigla do órgão de origem responsável pela digitação'
     },
     {
       id: 'cgccpf',
       label: 'cgccpf',
+      name: 'CGC/CPF do prestador ou do órgão público responsável pela informação, conforme cadastro na Receita Federal'
     },
     {
       id: 'dst',
       label: 'dst',
+      name: 'Nome do órgão de saúde destino do arquivo'
     },
     {
       id: 'dstIn',
       label: 'dstIn',
+      name: 'Indicador do órgão destino'
     },
     {
       id: 'versao',
       label: 'versao',
+      name: 'Versão do sistema, informação livre, pode conter qualquer letra e número'
     },
     {
       id: 'fim',
       label: 'fim',
+      name: 'Correspondente aos caracteres CR - CHR(13) + LF - CHR(10), do padrão ASCII (.TXT), indicando fim do cabeçalho'
     },
 ];
 
@@ -139,67 +124,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function Title(props) {
 
-    document.title="Título";
+    document.title="Editar Título";
 
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const [bpaiList, setBpaiList] = useState([]);
+    const { month, year } = useContext(DateGlobalBpaContext);
     const [titleBpa, setTitleBpa] = useState({});
-    const [identifier, setIdentifier] = useState("");
-    const [bpai, setBpai] = useState({
-		ident: '',
-		cnes: '',
-		cmp: '',
-		cnsmed: '',
-		cbo: '',
-		dtaten: '',
-		flh: '',
-		seq: '',
-		pa: '',
-		cnspac: '',
-		sexo: '',
-		ibge: '',
-		cid: '',
-		idade: '',
-		q: '',
-		caten: '',
-		naut: '',
-		org: '',
-		nmpac: '',
-		dtnasc: '',
-		raca: '',
-		etnia: '',
-		nac: '',
-		srv: '',
-		clf: '',
-		equipeSeq: '',
-		equipeArea: '',
-		cnpj: '',
-		cepPcnte: '',
-		logradPcnte: '',
-		endPcnte: '',
-		complPcnte: '',
-		numPcnte: '',
-		bairroPcnte: '',
-		ddtelPcnte: '',
-		emailPcnte: '',
-		ine: '',
-		fim: ''
-    });
-    const [bpaiNamesList, setBpaiNamesList] = useState(names.copyWithin());
-    const [selected, setSelected] = useState([]);
     const [openEdit, setOpenEdit] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [editActive, setEditActive] = useState(true);
-    const [month, setMonth] = useState(localStorage.getItem("@Month"));
-    const [year, setYear] = useState(localStorage.getItem("@Year"));
     const [errorMessages, setErrorMessages] = useState([]);
     
     useEffect(() => {
         apiGetTitle();
-    }, []);
+    }, [month, year]);
 
     async function apiGetTitle() {
+        setLoading(true);
         try {
           const response = await api.get(`/title/get/${month}/${year}`);
           setTitleBpa(response.data);
@@ -209,19 +148,22 @@ function Title(props) {
         setLoading(false);
     }
 
+    async function apiEditTitle() {
+        setLoading(true);
+        try {
+          const response = await api.post(`/title/edit/${titleBpa.id}`, titleBpa);
+          setTitleBpa(response.data);
+          handleClose();
+          openSnackBarFun(false, "Título editado");
+        } catch(e) {
+          setErrorMessages(e.response.data);
+        }
+        setLoading(false);
+      }
+
     function handleChangeInput(e) {
         const { name, value } = e.target;
-        setBpai({...bpai, [name]: value});
-    }
-
-    function handleClickSelect(item) {
-        setBpaiNamesList(prevList => {
-            if (prevList.includes(item)) {
-                return prevList.filter( name => name !== item);
-            } else {
-                return [...prevList, item];
-            }
-        });
+        setTitleBpa({...titleBpa, [name]: value});
     }
 
     function hasOnlyWhitEspace(str) {
@@ -232,12 +174,19 @@ function Title(props) {
         return str;
     }
 
+    function handleOpenEdit() {
+        setOpenEdit(true);
+    }
+    
+    function handleClose() {
+        setOpenEdit(false);
+    }
 
     return (
         <>
             <div className="page-content">
                 <Container fluid>
-                    <Breadcrumbs title={props.t("BPA-I")} breadcrumbItem={props.t("BPA-I")} />
+                    <Breadcrumbs title={props.t("Título BPA")} breadcrumbItem={props.t("Título BPA")} />
                     {
                         titleBpa == {} ?
                             <div className="flex justify-center">
@@ -245,72 +194,61 @@ function Title(props) {
                             </div>
                         :
                             <>
-                                <div className="flex flex-wrap items-end justify-end max-sm:flex-col">
-                                    <div>
-                                        <LoadingButton
-                                            color="error"
-                                            disabled={!editActive && !(selected.length > 0)}
-                                            variant="contained"
-                                            onClick={() => setOpenDelete(true)}
-                                        >
-                                            Apagar selecionados
-                                        </LoadingButton>
-                                    </div>
-                                    <div className="mx-3">
-                                        <SelectColl
-                                            names={bpaiNamesList}
-                                            handleClick={handleClickSelect}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex justify-end w-full mt-5 -mb-1">
-                                    <div
-                                        onClick={() => setEditActive(!editActive)}
-                                        className="bg-default p-2 rounded-t-lg cursor-pointer relative"
-                                    >
-                                        <div className="rotate-0 hover:-rotate-90 transform-none">
-                                            <CachedIcon color="primary" sx={{ fontSize: 40 }}/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 1200 }} aria-label="simple table">
+                                <TableContainer component={Paper} className="mt-5">
+                                    <Table sx={{ minWidth: 1200 }} size="small" aria-label="a dense table">
                                         <TableHead>
                                             <TableRow>
+                                                <TableCell
+                                                    align="center"
+                                                    padding="normal"
+                                                    className="p-2 sticky left-0 bg-default"
+                                                >
+                                                
+                                                </TableCell>
                                                 {
                                                     headCells.map((head, index) => (
-                                                        <TableCell key={index} align='center' className="p-4">
-                                                            <p className="uppercase font-bold text-[#2a3042]">
-                                                                {head.label}
-                                                            </p>
+                                                        <TableCell key={index} align='center' className="p-4 bg-default">
+                                                            <Tooltip title={head.name} placement="top">
+                                                                <p className="uppercase font-bold text-white cursor-pointer">
+                                                                    {head.label}
+                                                                </p>
+                                                            </Tooltip>
                                                         </TableCell>
                                                     ))
                                                 }
                                             </TableRow>
                                         </TableHead>
                                             {
-                                                !(identifier == '') && !loading &&
+                                                !loading &&
                                                     <TableBody>
                                                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.iden)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
-                                                        <TableCell align="center">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
+                                                            <TableCell align="center" className="sticky left-0 bg-default w-[4.5rem]">
+                                                                <IconButton onClick={ e => {
+                                                                        handleOpenEdit();
+                                                                        e.stopPropagation();
+                                                                    }}
+                                                                >
+                                                                    <EditIcon className="text-white"/>
+                                                                </IconButton>
+                                                            </TableCell>
+                                                            <TableCell align="center" className="truncate p-3">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
+                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
                                                         </TableRow>
                                                     </TableBody>
                                             }
                                     </Table>
                                     {
-                                        identifier == '' || loading &&
+                                        loading &&
                                             <div className='flex justify-center my-2'>
                                                 <img src={loadingSvg} alt="loading..." width={50}/>
                                             </div>
@@ -320,39 +258,6 @@ function Title(props) {
                     }
                 </Container>
             </div>
-            {/* <Dialog
-                open={openDelete}
-                onClose={() => setOpenDelete(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    Tem a certeza?
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Se apagar não voltará a ver o(s) conteudo(s)!
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        variant="outlined"
-                        onClick={
-                            () => setOpenDelete(false)
-                        }
-                    >
-                        Fechar
-                    </Button>
-                    <LoadingButton
-                        variant="contained"
-                        color="error"
-                        loading={loading}
-                        onClick={apiDeleteBPAI}
-                    >
-                        Apagar
-                    </LoadingButton>
-                </DialogActions>
-            </Dialog>
             <Dialog
                 fullScreen
                 open={openEdit}
@@ -376,7 +281,7 @@ function Title(props) {
                         autoFocus
                         loading={loading}
                         color="success"
-                        onClick={apiEditBPAI}
+                        onClick={apiEditTitle}
                     >
                         salvar
                     </LoadingButton>
@@ -398,7 +303,7 @@ function Title(props) {
                                             name={fieldName}
                                             label={fieldName}
                                             variant="outlined"
-                                            value={bpai[fieldName]}
+                                            value={titleBpa[fieldName]}
                                             helperText={message}
                                             onChange={ e => {
                                                 if (e.target.value.length <= 50) {
@@ -413,7 +318,7 @@ function Title(props) {
                         }
                     </div>
                 </div>
-            </Dialog> */}
+            </Dialog>
         </>
     );
 };

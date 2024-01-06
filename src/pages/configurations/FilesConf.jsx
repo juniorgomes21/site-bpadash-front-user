@@ -45,67 +45,7 @@ const files = [
     }
 ]
 
-const filesA = [
-  {
-    id: 1,
-    arq: "OCU",
-    auto: false,
-    dateCurrent:[
-      [[8], [2021]]
-    ],
-    years: [2021, 2022, 2023],
-    datesFull: [
-      [[8, 9], [2021]],
-      [[8], [2022]],
-      [[2, 7, 5, 3], [2023]]
-    ]
-  },
-  {
-    id: 2,
-    arq: "FPO",
-    auto: true,
-    years: [2021],
-    dateCurrent: [],
-    datesFull: [
-      [[2,1], [2021]]
-    ]
-  },
-  {
-    id: 3,
-    arq: "PROF",
-    auto: false,
-    years: [2023],
-    dateCurrent: [
-      [[11], [2023]]
-    ],
-    datesFull: [
-      [[12, 11], [2023]]
-    ]
-  },
-  {
-    id: 4,
-    arq: "CEP",
-    auto: true,
-    dateCurrent: [
-      [[1], [2023]]
-    ],
-    years: [2022, 2023],
-    datesFull: [
-      [[2], [2022]],
-      [[1,2,3,4,5], [2023]]
-    ]
-  },
-  {
-    id: 4,
-    arq: "PROC",
-    auto: true,
-    years: [],
-    dateCurrent: [],
-    datesFull: []
-  }
-]
-
-function InconsistencyConf(props) {
+function FilesConf(props) {
   //meta title
   document.title="Configuração dos Arquivos";
 
@@ -361,10 +301,10 @@ function InconsistencyConf(props) {
   );
 };
 
-InconsistencyConf.propTypes = {
+FilesConf.propTypes = {
   t: PropTypes.any,
   chartsData: PropTypes.any,
   onGetChartsData: PropTypes.func,
 };
 
-export default withTranslation()(InconsistencyConf);
+export default withTranslation()(FilesConf);

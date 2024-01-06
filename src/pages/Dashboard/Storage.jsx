@@ -15,8 +15,10 @@ const storagexy = {
 
 function Storage({ dataColors }) { 
   
-  const [storage, setStorage] = useState(storagexy);
-  const [series, setSeries] = useState([storage.storagePorcent]);
+  // const [storage, setStorage] = useState(storagexy);
+  // const [series, setSeries] = useState([storage.storagePorcent]);
+  const [storage, setStorage] = useState([{ storageTotal: "0,00 MB", storageUsed: "0,00 MB", storagePorcent: "0,00" }]);
+  const [level, setLevel] = useState([0]);
 
   useEffect(() => {
     getStorage();
@@ -27,7 +29,8 @@ function Storage({ dataColors }) {
     try {
       const response = await api.get("/user/storage");
       setStorage(response.data);
-      setSeries([response.data.storagePorcent]);
+      setLevel([parseInt(response.data.storagePorcent)]);
+
     } catch(e) {
       console.log("Erro ao buscar usuário.", e.response);
     }
@@ -41,7 +44,7 @@ function Storage({ dataColors }) {
         enabled: true,
       },
     },
-    colors: series[0] > 90 ? ["#f50707"] : ["#0f57f3"],
+    colors: level >= 90 ? ["#f50707"] : ["#0f57f3"],
     plotOptions: {
       radialBar: {
         startAngle: -90,
@@ -51,12 +54,10 @@ function Storage({ dataColors }) {
           strokeWidth: "97%",
           margin: 5, // margin is in pixels
         },
-
         hollow: {
           size: "60%",
 
         },
-
         dataLabels: {
           name: {
             show: false,
@@ -88,7 +89,7 @@ function Storage({ dataColors }) {
             <div>
               <ReactApexChart
                 options={options}
-                series={series}
+                series={level}
                 type="radialBar"
                 height={150}
                 className="apex-charts"

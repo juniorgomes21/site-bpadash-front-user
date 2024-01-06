@@ -25,7 +25,7 @@ function InCep({ dateBpa }) {
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
     const [startIndex, setStartIndex] = useState(5);
-    const [errors, setErrors] = useState({ "haveBlank": false, "haveInvalid": false });
+
 
     useEffect(() => {
         inCep();
@@ -37,24 +37,6 @@ function InCep({ dateBpa }) {
         try {
             const response = await api.post("/bpa/inconsistency/cep", { "dateBPA": dateBpa });
             setCeps(response.data);
-            let haveBlank = false;
-            let haveInvalid = false;
-            for (let i = 0; i < response.data.length; i++) {
-                const msg = response.data[i].msg;
-            
-                if (msg.includes("BLANK")) {
-                    haveBlank = true;
-                }
-            
-                if (msg.includes("INVALID")) {
-                    haveInvalid = true;
-                }
-            
-                if (haveBlank && haveInvalid) {
-                    break;
-                }
-            }
-            setErrors({ ...errors, haveBlank, haveInvalid });            
             setErrorsDates(response.data.slice(0, 5));
             setHaveErrors("inCep", response.data.length > 0);
 
@@ -74,16 +56,11 @@ function InCep({ dateBpa }) {
                     ids.push(cep.id);
                 });
 
-                if(errors.haveInvalid) {
-                    await api.post(`/bpai/update/${0}`, { "key": "cep", "ids": ids });
-                } else {
-                    await api.post(`/bpai/update/${0}`, { "key": "cepBlank", "ids": ids });
-                }
+                await api.post(`/bpai/update/${0}`, { "key": "cep", "ids": ids });
                 
             } else {
                 await api.post(`/bpai/update/${cep.id}`, { "cep": cep.cepInvalid });
             }
-            setErrors({ "haveBlank": false, "haveInvalid": false });
             await inCep();
             handleClose();
             openSnackBarFun(false, ( upAll ? "Todos CEPs atualizados" : "CEP salvo"));
@@ -148,30 +125,15 @@ function InCep({ dateBpa }) {
                         <div className="text-center font-bold text-sm mb-3">
                             <p>{ceps.length} erros</p>
                         </div>
-                        {
-                            errors.haveInvalid &&
-                                <div className="flex justify-center w-full">
-                                    <Button
-                                        variant="contained"
-                                        color="success"
-                                        onClick={() => handleClickOpen(0, true)}
-                                    >
-                                        Atualizar todos
-                                    </Button>
-                                </div>
-                        }
-                        {
-                            (!errors.haveInvalid && errors.haveBlank) &&
-                                <div className="flex justify-center w-full">
-                                    <Button
-                                        variant="contained"
-                                        color="success"
-                                        onClick={() => handleClickOpen(0, true)}
-                                    >
-                                        Atualizar CEPs em branco
-                                    </Button>
-                                </div>
-                        }
+                        <div className="flex justify-center w-full">
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleClickOpen(0, true)}
+                            >
+                                Atualizar todos
+                            </Button>
+                        </div>
                         <div className="flex flex-col items-center w-full">
                             {
                                 errorsDates.map((item, index) => (
@@ -232,7 +194,7 @@ function InCep({ dateBpa }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            if(!isNaN(Number(e.target.value)) && e.target.value.length <= 8) setCep({...cep, ["cepInvalid"]: e.target.value});
+                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 8) setCep({...cep, ["cepInvalid"]: e.target.value});
                         }}
                     />
                 </div>
@@ -266,16 +228,9 @@ function InCep({ dateBpa }) {
                     msg={`Todos os ${ceps.length} erros serão atualizados`}
                 />
                 <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
-                    {
-                        errors.haveInvalid ?
-                            <p className="text-center">
-                                ATENÇÃO, os CEPs seram atualizados pelo CEP mais próximo com exceção de CEPs em branco.
-                            </p>
-                        :
-                            <p className="text-center">
-                                ATENÇÃO, os CEPs seram atualizados pelo CEP da sua unidade.
-                            </p>
-                    }
+                    <p className="text-center">
+                        ATENÇÃO, os CEPs seram atualizados pelo CEP mais próximo.
+                    </p>
                 </div>
                 </DialogContent>
                 <DialogActions>

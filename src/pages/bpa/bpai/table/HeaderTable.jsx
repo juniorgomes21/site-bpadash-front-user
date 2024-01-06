@@ -32,7 +32,7 @@ function HeaderTable({ name, table, identifier }) {
           >
             {name}
           </Typography>
-          <Link to={`/file/${table}}`}>
+          <Link to={`/file/edit/${table}`}>
             <IconButton>
               <EditIcon color="primary"/>
             </IconButton>

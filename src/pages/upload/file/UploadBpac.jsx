@@ -292,7 +292,6 @@ function UploadBpac(props) {
                                         selectedFiles.length > 0 && !loading &&
                                             <Button
                                                 variant="contained"
-                                                loading={loading}
                                                 onClick={() => {
                                                     setSelectedFiles([]);
                                                 }}
