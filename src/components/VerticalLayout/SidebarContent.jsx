@@ -26,6 +26,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import { formatMonth } from "../../Validation&Formatation/formatation";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SettingsIcon from '@mui/icons-material/Settings';
+import Alert from '@mui/material/Alert';
+
 
 function SidebarContent(props) {
 
@@ -33,6 +35,7 @@ function SidebarContent(props) {
   registerLocale('pt-BR', pt);
   setDefaultLocale('pt-BR');
 
+  const user = JSON.parse(localStorage.getItem("@User"));
   const { dates } = useContext(AuthContext);
   const { month, year, startDateChange } = useContext(DateGlobalBpaContext);
   const [open, setOpen] = useState(false);
@@ -132,12 +135,52 @@ function SidebarContent(props) {
       <SimpleBar className="h-100" ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title">{props.t("Data Geral")} </li>
-              <div className="ml-6 cursor-pointer" onClick={handleClickOpen}>
+            <li className="menu-title mt-2">{props.t("Data Geral")} </li>
+              <div className="logo logo-light ml-6 cursor-pointer" onClick={handleClickOpen}>
                 <CalendarMonthIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t(`${formatMonth(month)} de ${year}`)}</span>
+
+                <span className="logo-lg">
+                  {props.t(`${formatMonth(month)} de ${year}`)}
+                </span>
               </div>
             <li className="menu-title">{props.t("Menu")} </li>
+
+            {
+              !user.changePass &&
+                <div>
+                  <Alert variant="filled" severity="warning">
+                    Altere sua senha!
+                  </Alert>
+                </div>
+            }
+
+            <li>
+              <Link to="/#" className="has-arrow">
+                <i className="bx bxs-file-doc"></i>
+                <span>{props.t("Meus Arquivos")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/file/bpa">{props.t("BPA")}</Link>
+                </li>
+                <li>
+                  <Link to="/file/edit/title">{props.t("TÍTULO")}</Link>
+                </li>
+                <li>
+                  <Link to="/file/edit/bpai">{props.t("BPA-I")}</Link>
+                </li>
+                <li>
+                  <Link to="/file/edit/bpac">{props.t("BPA-C")}</Link>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <Link to="/timeline/bpa" className="">
+                <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }}/>
+                <span>{props.t("Linha do Tempo BPA")}</span>
+              </Link>
+            </li>
 
             <li>
               <Link to="/#" className="has-arrow">
@@ -148,7 +191,7 @@ function SidebarContent(props) {
                 <li>
                   <Link to="/storage/memory">{props.t("Memória de Armazenamento")}</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/dashboard">{props.t("Produção por Meta")}</Link>
                 </li>
                 <li>
@@ -192,42 +235,14 @@ function SidebarContent(props) {
                 </li>
                 <li>
                   <Link to="/blog">{props.t("Distribuição por Procedimento (BPA-C)")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/timeline/bpa" className="">
-                <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Linha do Tempo BPA")}</span>
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bxs-file-doc"></i>
-                <span>{props.t("Meus Arquivos")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/file/bpa">{props.t("BPA")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/title">{props.t("TÍTULO")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/bpai">{props.t("BPA-I")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/bpac">{props.t("BPA-C")}</Link>
-                </li>
+                </li> */}
               </ul>
             </li>
 
             <li>
               <Link to="/#" className="has-arrow">
                 <PageviewIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                {props.t("Consulta SIGTAP")}
+                <span>{props.t("Consulta SIGTAP")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
@@ -304,6 +319,15 @@ function SidebarContent(props) {
               <ul className="sub-menu" aria-expanded="false">
                 <li>
                   <Link to="/configurations/files">{props.t("Arquivos de Validações")}</Link>
+                </li>
+                <li>
+                  <Link to="/configurations/register">{props.t("Cadastro")}</Link>
+                </li>
+                <li>
+                  <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
+                </li>
+                <li>
+                  <Link to="/logout">{props.t("Sair")}</Link>
                 </li>
               </ul>
             </li>

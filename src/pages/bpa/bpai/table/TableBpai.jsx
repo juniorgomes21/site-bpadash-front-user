@@ -122,9 +122,6 @@ export default function TableBpai({ identifier }) {
                       tabIndex={-1}
                       key={index}
                     >
-                      <TableCell align="center">
-                        {hasOnlyWhitEspace(row.ident)}
-                      </TableCell>
                       {
                         names.map((name, index) => (
                           <TableCell key={index} align="center" className="truncate">

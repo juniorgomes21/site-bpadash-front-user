@@ -5,11 +5,12 @@ import { connect } from "react-redux"
 import { authProtectedRoutes,publicRoutes } from "./routes"
 import Authmiddleware from "./routes/route"
 import VerticalLayout from "./components/VerticalLayout/"
+import NonAuthLayout from "./components/NonAuthLayout"
 import "./assets/scss/theme.scss"
 
 
-
 function App() {
+
 
   return (
     <>
@@ -21,7 +22,7 @@ function App() {
               key={idx}
               path={route.path}
               isAuthProtected={false}
-              layout={VerticalLayout}
+              layout={NonAuthLayout}
               component={route.component}
             />
           ))}

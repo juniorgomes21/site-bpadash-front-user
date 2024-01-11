@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/api";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import EditIcon from '@mui/icons-material/Edit';
-import { formatarCEP } from "../../Validation&Formatation/formatation";
+import { maskCEP } from "../../Validation&Formatation/formatation";
 import SnackBarContext from "../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -187,7 +187,7 @@ function InCep({ dateBpa }) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div>
                                                 <p>
-                                                    CEP INVÁLIDO: {formatarCEP(item.cepInvalid)}
+                                                    CEP INVÁLIDO: {maskCEP(item.cepInvalid)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, false)}>

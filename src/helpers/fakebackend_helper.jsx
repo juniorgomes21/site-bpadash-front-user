@@ -9,6 +9,7 @@ const getLoggedInUser = () => {
   return null
 }
 
+
 //is user is logged in
 const isUserAuthenticated = () => {
   return getLoggedInUser() !== null

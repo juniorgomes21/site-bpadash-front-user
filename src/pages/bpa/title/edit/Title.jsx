@@ -38,6 +38,7 @@ import Alert from '@mui/material/Alert';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
 import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 import Tooltip from '@mui/material/Tooltip';
+import AlertCustom from "../../../../GlobalComponents/AlertCustom";
 
 
 const names = [
@@ -188,9 +189,12 @@ function Title(props) {
                 <Container fluid>
                     <Breadcrumbs title={props.t("Título BPA")} breadcrumbItem={props.t("Título BPA")} />
                     {
-                        titleBpa == {} ?
+                        Object.keys(titleBpa).length == 0 ?
                             <div className="flex justify-center">
-                                <Alert severity="warning" className="">Nenhum BPA-I encontrado no período {formatMonth(month)}/{year}!</Alert>
+                                <AlertCustom
+                                    msg={`Nenhum BPA-I encontrado no período ${formatMonth(month)} de ${year}`}
+                                    type="info"
+                                />
                             </div>
                         :
                             <>

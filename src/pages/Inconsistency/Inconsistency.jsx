@@ -63,6 +63,7 @@ function Inconsistency(props) {
   document.title="Inconsistências";
   
   const { month, year } = useContext(DateGlobalBpaContext);
+  const dates = JSON.parse(localStorage.getItem("@Dates"));
   const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
   const [dateBpa, setDateBpa] = useState(year + "-" + ( month < 10 ? "0" + month : month) + "-01");
 
@@ -104,10 +105,19 @@ function Inconsistency(props) {
         <Container fluid>
           {/* Render Breadcrumb */}
           <Breadcrumbs title={props.t("Inconsistências")} breadcrumbItem={props.t("Inconsistências BPA")} />
+          {
+            dates.length == 0 &&
+              <div>
+                <AlertCustom
+                  msg="Você não possui nenhum arquivo BPA"
+                  type="info"
+                />
+              </div>
+          }
           <div>
             {
               haveLoading() ?
-                <div className="flex w-full justify-center">
+                <div className="flex w-full justify-center mt-4">
                   <CircularProgress size={20} />
                 </div>
               :

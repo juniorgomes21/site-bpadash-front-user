@@ -77,7 +77,6 @@ export default function TableBpac({ identifier }) {
                               tabIndex={-1}
                               key={index}
                             >
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.ident)}</TableCell>
                               <TableCell align="center">{hasOnlyWhitEspace(bpac.cnes)}</TableCell>
                               <TableCell align="center">{hasOnlyWhitEspace(bpac.cmp)}</TableCell>
                               <TableCell align="center">{hasOnlyWhitEspace(bpac.cbo)}</TableCell>

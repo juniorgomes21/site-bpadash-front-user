@@ -1,14 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import api from "../../services/api";
 import SnackBarContext from "../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import { LoadingButton } from "@mui/lab";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import { Card, CardBody, CardTitle, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import SearchIcon from '@mui/icons-material/Search';
 import "react-datepicker/dist/react-datepicker.css";
 import { formatNameMonth, maskCPF } from "../../Validation&Formatation/formatation";
@@ -62,96 +58,6 @@ const field = [
     }
 ]
 
-const fieldConfig = {
-    'profId': {
-        label: 'ID',
-        maxLength: 50,
-        type: 'text',
-        validation: /^[0-9]+$/,
-        errorMessage: 'Deve conter exatamente 9 dígitos numéricos.',
-        mask: 'decimal'
-    },
-    'name': {
-        label: 'Nome',
-        maxLength: 50,
-        type: 'text',
-        validation: /^[0-9]+$/,
-        errorMessage: 'Deve conter exatamente 9 dígitos numéricos.',
-        mask: 'decimal'
-    },
-    'cpf': {
-        label: 'CPF',
-        maxLength: 14,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Descrição inválida.',
-        mask: 'default'
-    },
-    'codCns': {
-        label: 'CNSMED',
-        maxLength: 15,
-        type: 'number',
-        validation: /^[0-9]+$/,
-        errorMessage: 'Deve conter exatamente 9 dígitos numéricos.',
-        mask: 'int'
-    },
-    'codCbo': {
-        label: 'CBO',
-        maxLength: 6,
-        type: 'number',
-        validation: /.*/,
-        errorMessage: 'Descrição inválida.',
-        mask: 'decimal'
-    },
-    'logradouro': {
-        label: 'LOGRADOURO',
-        maxLength: 60,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Logradouro inválido.',
-        mask: 'decimal'
-    },
-    'number': {
-        label: 'NÚMERO',
-        maxLength: 10,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Número não pode ter caracteres especiais.',
-        mask: 'decimal'
-    },
-    'complement': {
-        label: 'COMPLEMENTO',
-        maxLength: 50,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Complemento inválido.',
-        mask: 'decimal'
-    },
-    'bairrodist': {
-        label: 'BAIRRO',
-        maxLength: 30,
-        type: 'text',
-        validation: /^[0-9]+$/,
-        errorMessage: 'Bairro inválido',
-        mask: 'decimal'
-    },
-    'codCep': {
-        label: 'CEP',
-        maxLength: 8,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Descrição inválida.',
-        mask: 'default'
-    },
-    'telephone': {
-        label: 'TELEFONE',
-        maxLength: 11,
-        type: 'text',
-        validation: /.*/,
-        errorMessage: 'Descrição inválida.',
-        mask: 'default'
-    }
-}
 
 function ProfessionalEdit() {
 
@@ -160,9 +66,7 @@ function ProfessionalEdit() {
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [professional, setProfessional] = useState({});
     const [loading, setLoading] = useState(false);
-    const [loadingSave, setLoadingSave] = useState(false);
     const [idProfessional, setIdProfessional] = useState('');
-    const [errorMessages, setErrorMessages] = useState([]);
 
 
     async function apiGetProfessional() {
@@ -176,21 +80,6 @@ function ProfessionalEdit() {
         setLoading(false);
     }
 
-    async function apiSaveProfessional() {
-        setLoadingSave(true);
-        try {
-            await api.post(`/prof/update`, professional);
-            openSnackBarFun(false, "Profissional atualizado!");
-        } catch (e) {
-            console.log(e.response);
-        }
-        setLoadingSave(false);
-    }
-
-    function handleChangeInput(e) {
-        const { name, value } = e.target;
-        setProfessional({...professional, [name]: value});
-    }
 
 
     return (
@@ -234,20 +123,39 @@ function ProfessionalEdit() {
                             <>
                                 <div className="flex justify-center">
                                     <div className="w-full my-8 border-[1px] border-default rounded-md p-2">
-                                        {
-                                            field.map((fieldName, index) => (
-                                                <div className="mt-3" key={index}>
-                                                    <div className="text-sm font-bold">
-                                                        <p>{fieldName.name}:</p>
-                                                    </div>
-                                                    <div className="ml-6 mt-1">
-                                                        <p>
-                                                            {professional[fieldName.key]}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
+                                        <Row>
+                                            <Col lg="12">
+                                                <Card>
+                                                    <CardBody>
+                                                        {/* <CardTitle className="mb-4">Informações</CardTitle> */}
+                                                        <Form>
+                                                            {
+                                                                field.map((fieldName, index) => (
+                                                                    <FormGroup key={index} className="" row>
+                                                                        <Label
+                                                                            htmlFor="projectname"
+                                                                            className="col-form-label col-lg-2"
+                                                                        >
+                                                                            {fieldName.name}
+                                                                        </Label>
+                                                                        <Col lg="10">
+                                                                            <Input
+                                                                                id="projectname"
+                                                                                name="projectname"
+                                                                                type="text"
+                                                                                disabled
+                                                                                value={professional[fieldName.key]}
+                                                                                className="form-control"
+                                                                            />
+                                                                        </Col>
+                                                                    </FormGroup>
+                                                                ))
+                                                            }
+                                                        </Form>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>
+                                        </Row>
                                     </div>
                                 </div>
                             </>

@@ -15,8 +15,6 @@ const storagexy = {
 
 function Storage({ dataColors }) { 
   
-  // const [storage, setStorage] = useState(storagexy);
-  // const [series, setSeries] = useState([storage.storagePorcent]);
   const [storage, setStorage] = useState([{ storageTotal: "0,00 MB", storageUsed: "0,00 MB", storagePorcent: "0,00" }]);
   const [level, setLevel] = useState([0]);
 

@@ -5,7 +5,6 @@ import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 
 const names = [
-  'ident',
   'cnes',
   'cmp',
   'cbo',

@@ -7,18 +7,19 @@ import Storage from "./Storage";
 
 function StorageMemory(props) {
   //meta title
-  document.title="StorageMemory";
+  document.title="Memória de Armazenamento";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          {/* Render Breadcrumb */}
-          <Breadcrumbs
-            title={props.t("StorageMemory")}
-            breadcrumbItem={props.t("StorageMemory")}
-          />
-          <Storage dataColors='["--bs-primary"]' />
+          <Breadcrumbs title={props.t("Meu Armazenamento")} breadcrumbItem={props.t("Meu Armazenamento")} />
+          <p>
+            Acompanhe seu armazenamento usado
+          </p>
+          <div className="flex justify-center mt-10 w-full">
+            <Storage dataColors='["--bs-primary"]' />
+          </div>
         </Container>
       </div>
 

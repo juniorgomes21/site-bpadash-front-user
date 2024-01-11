@@ -1,19 +1,15 @@
-import PropTypes from "prop-types"
-import React, { useEffect } from "react"
-import { connect } from "react-redux"
-import { withRouter } from "react-router-dom"
+import PropTypes from "prop-types";
+import React, { useContext, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+import AuthContext from "../../contexts/Auth";
 
-import { logoutUser } from "../../store/actions"
+function Logout(props) {
 
-//redux
-import { useDispatch } from "react-redux"
-
-const Logout = props => {
-  const dispatch = useDispatch()
+  const { handleLogout } = useContext(AuthContext);
 
   useEffect(() => {
-    dispatch(logoutUser(props.history))
-  }, [dispatch])
+    handleLogout();
+  }, [])
 
   return <></>
 }
@@ -22,4 +18,4 @@ Logout.propTypes = {
   history: PropTypes.object,
 }
 
-export default withRouter(Logout)
+export default withRouter(Logout);

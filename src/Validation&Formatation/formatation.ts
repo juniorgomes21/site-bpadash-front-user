@@ -50,7 +50,7 @@ export function unformatDate(date: string) {
     return date.split("-")[2] + date.split("-")[1] + date.split("-")[0]
 }
 
-export function formatarCEP(cep: string) {
+export function maskCEP(cep: string) {
     if(cep.trim().length == 0 ) {
         return "(Em Branco)"
     }

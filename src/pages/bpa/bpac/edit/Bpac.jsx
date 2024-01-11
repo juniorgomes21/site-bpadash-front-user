@@ -38,13 +38,12 @@ import TextField from '@mui/material/TextField';
 import Slide from '@mui/material/Slide';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
 import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
+import AlertCustom from "../../../../GlobalComponents/AlertCustom";
 
 const names = [
   'cnes',
   'cmp',
   'cbo',
-  'flh',
-  'seq',
   'pa',
   'idade',
   'qt',
@@ -218,7 +217,10 @@ function Bpac(props) {
           {
             bpacList.length == 0 ?
               <div className="flex justify-center">
-                <Alert severity="warning" className="">Nenhum BPA-C encontrado no período {formatMonth(month)}/{year}!</Alert>
+                <AlertCustom
+                    msg={`Nenhum BPA-C encontrado no período ${formatMonth(month)} de ${year}!`}
+                    type="info"
+                />
               </div>
             :
               <>

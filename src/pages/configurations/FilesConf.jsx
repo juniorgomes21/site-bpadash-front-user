@@ -55,6 +55,7 @@ function FilesConf(props) {
   const [year, setYear] = useState('');
   const [datesMonths, setDatesMonths] = useState([]);
   const [datesYears, setDatesYears] = useState([]);
+  const [nameFile, setNameFile] = useState("Ocupação");
 
   useEffect(() => {
     getFiles();
@@ -121,9 +122,10 @@ function FilesConf(props) {
         setYear('');
       }
 
+      setNameFile(item.arqName);
       setIndexState(index);
     }
-  };
+  }
 
 
   function handleChangeMonth(event) {
@@ -192,17 +194,6 @@ function FilesConf(props) {
                                       <p>{file.name}</p>
                                       
                                   </div>
-                                  {
-                                      fileConfigs[index].datesFull.length == 0 &&
-                                          <Link
-                                              to=""
-                                              className="bg-transparent"
-                                          >
-                                              <div className="text-sm mt-2 bg-transparent">
-                                                  <p>Fazer upload {">"}</p>
-                                              </div>
-                                          </Link>
-                                  }
                               </div>
                           ))
                       }
@@ -211,7 +202,7 @@ function FilesConf(props) {
                   <div className="w-4/5 border-[1px] border-default rounded-md">
                       <div className="flex justify-center w-full my-8">
                         <p className="text-base">
-                          Selecione a forma com que o sistema irá obter a data do arquivo
+                          Selecione a forma com que o sistema irá obter a data do arquivo ({nameFile})
                         </p>
                       </div>
                       <div className="flex justify-around w-full my-3">

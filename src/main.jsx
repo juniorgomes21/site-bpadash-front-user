@@ -27,4 +27,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.Fragment>
 );
 
-serviceWorker.unregister()
+serviceWorker.unregister();

@@ -6,15 +6,7 @@ import { Link } from "react-router-dom"
 import EditIcon from '@mui/icons-material/Edit';
 
 
-function HeaderTable({ name, table, identifier }) {
-
-    // const identifierAsyn = localStorage.getItem("@identifierBPAI");
-
-    // useEffect(() => {
-    //   if(identifierAsyn == undefined || identifierAsyn == null) {
-    //     setIdentifierBPAIAsyncStorage(identifier);
-    //   }
-    // }, []);
+function HeaderTable({ name, table }) {
 
     return (
       <Toolbar

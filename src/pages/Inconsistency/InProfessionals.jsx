@@ -137,7 +137,7 @@ function InProfessionals({ dateBpa }) {
                                                     <div className="mx-1 mb-1">
                                                         {
                                                             item.count > 10 &&
-                                                                <Tooltip title="Contagem muito alta, recomendamos que atualize o CNSMED no arquivo BPAI">
+                                                                <Tooltip title="Contagem muito alta, podeser que o CNSMED tenha sido atualizado">
                                                                     <ReportProblemOutlinedIcon sx={{ fontSize: 17, color: "red" }}/>
                                                                 </Tooltip>
                                                         }
