@@ -12,7 +12,7 @@ import logo from "../../assets/images/logo-dark.png"
 const PagesMaintenance = () => {
 
     //meta title
-    document.title = "Maintenance | apcodes - Vite React Admin & Dashboard Template";
+    document.title = "Maintenance | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

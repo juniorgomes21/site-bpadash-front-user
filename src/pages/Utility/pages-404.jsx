@@ -7,7 +7,7 @@ import error from "../../assets/images/error-img.png"
 
 const Pages404 = () => {
     //meta title
-    document.title = "404 Error Page | apcodes - Vite React Admin & Dashboard Template";
+    document.title = "404 Error Page | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

@@ -138,8 +138,8 @@ function Login(props) {
             </Card>
             <div className="mt-5 text-center">
               <p>
-                © {new Date().getFullYear()} apcodes. Criado com amor{" "}
-                <i className="mdi mdi-heart text-danger" /> por apcodes.
+                © {new Date().getFullYear()} Agência Ontech. Criado com amor{" "}
+                <i className="mdi mdi-heart text-danger" /> por Agência Ontech.
               </p>
             </div>
           </Col>

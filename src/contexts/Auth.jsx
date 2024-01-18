@@ -23,7 +23,9 @@ export function AuthProvider({ children }) {
         if (response) {
             setDates(datesL);
         } else {
-            handleLogout();
+            if(localStorage.getItem("@TokenAuthentication")) {
+                handleLogout();
+            }
         }
     }
 
@@ -55,6 +57,7 @@ export function AuthProvider({ children }) {
     }
 
     function handleLogout() {
+        console.log("chamou");
         localStorage.removeItem("@TokenAuthentication");
         if(!window.location.href.includes("login")) window.location.href = "/login";
     }

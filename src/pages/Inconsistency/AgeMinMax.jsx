@@ -19,7 +19,7 @@ import Tooltip from "@mui/material/Tooltip";
 function AgeMinMax({ dateBpa }) {
 
     const dateNow = new Date();
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [ageMaxMin, setAgeMaxMin] = useState({});
     const [ageMaxMins, setAgeMaxMins] = useState([]);
     const [errorsDates, setErrorsDates] = useState([]);
@@ -30,9 +30,11 @@ function AgeMinMax({ dateBpa }) {
     const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
-        inAgeMaxMin();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.inFpo) {
+            inAgeMaxMin();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inFpo, dateBpa]);
 
 
     async function inAgeMaxMin() {

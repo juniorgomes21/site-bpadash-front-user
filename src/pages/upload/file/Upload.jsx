@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import Dropzone from "react-dropzone";
 import { Card, CardBody, CardTitle, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
-import LoadingButton from '@mui/lab/LoadingButton';
 import DescriptionIcon from '@mui/icons-material/Description';
-import DatePicker from "react-datepicker";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import Storage from "../../Dashboard/Storage";
 import api from "../../../services/api";
@@ -12,7 +9,6 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SnackBarContext from "../../../contexts/managerService";
 import DivErrors from "../DivErrors";
-import { formatDate } from "../../../Validation&Formatation/formatation";
 import DivLoadingSvg from "../DivLoadingSvg";
 import "react-datepicker/dist/react-datepicker.css";
 import AuthContext from "../../../contexts/Auth";
@@ -90,11 +86,7 @@ function Upload() {
 
     function loadMoreErrors() {
         const nextErrors = errorsFile.slice(startIndex, startIndex + 5);
-    
-        // Adicionar os próximos erros à lista de erros exibidos
         setDisplayedErrors((prevErrors) => [...prevErrors, ...nextErrors]);
-    
-        // Atualizar o índice para o próximo conjunto de erros
         setStartIndex(startIndex + 5);
     }
 

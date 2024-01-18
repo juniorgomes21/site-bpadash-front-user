@@ -21,14 +21,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import DateGlobalBpaContext from '../../../contexts/DateGlobalBpa';
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import AuthContext from '../../../contexts/Auth';
+import DateGlobalBpaContext from '../../../contexts/DateGlobalBpa';
+import { Link } from "react-router-dom";
 
 const headCells = [
-    {
-      id: 'iden',
-      label: 'iden',
-    },
     {
       id: 'hdr',
       label: 'hdr',
@@ -83,9 +81,11 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
 
   const { getDates } = useContext(AuthContext);
   const { openSnackBarFun } = useContext(SnackBarContext);
+  const { getFormatedDate } = useContext(DateGlobalBpaContext);
   const [titleBpa, setTitleBpa] = useState({});
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [countRules, setCountrules] = useState(0);
+  const [open, setOpen] = useState({ "edit": false, "rules": false, "delete": false });
 
   useEffect(() => {
     apiGetTitle();
@@ -95,6 +95,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     try {
       const response = await api.get(`/title/get/${identifier}`);
       setTitleBpa(response.data);
+      setCountrules(response.data.countRules);
     } catch(e) {
       console.log("Erro: ", e);
     }
@@ -102,15 +103,29 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
   }
 
   async function apiDeleteBPA() {
+    setLoadingBpa(true);
     try {
-      setLoadingBpa(true);
       await api.post(`/bpa/delete/${identifier}`);
       getDates();
       setBpa({});
-      setLoadingBpa(false);
       openSnackBarFun(false, "BPA apagado com sucesso!");
     } catch(e) {
       console.log(e.response);
+      openSnackBarFun();
+    }
+    setLoadingBpa(false);
+  }
+
+  async function apiExecuteRules() {
+    try {
+      const countB = await api.post("/treatment/deleteperpa/execute/0", { "dateBpa": getFormatedDate() });
+      const countA = await api.post("/treatment/replacement/pa/execute/0", { "dateBpa": getFormatedDate() });
+      const countC = await api.post("/treatment/replacement/pa/cbo/execute/0", { "dateBpa": getFormatedDate() });
+      openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data} linhas alteradas`);
+
+    } catch(e) {
+      console.log(e);
+      openSnackBarFun();
     }
   }
 
@@ -120,6 +135,22 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     }
   
     return str;
+  }
+
+  function handleClickOpen(key) {
+    if(key === "rules") {
+      if(countRules == 0) {
+        openSnackBarFun(true, "Crie novas regras para executar essa ação!")
+      } else {
+        setOpen({...open, [key]: true});
+      }
+    } else {
+      setOpen({...open, [key]: true});
+    }
+  }
+
+  function handleClickClose() {
+    setOpen({ "edit": false, "rules": false, "delete": false });
   }
 
   return (
@@ -137,15 +168,22 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
                 id="tableTitle"
                 component="div"
             >
-                TÍTULO BPA
+                CABEÇALHO
             </Typography>
             <>
-                <Tooltip title="Editar">
+                <Link to="/file/edit/title" className="has-arrow">
+                  <Tooltip title="Editar" >
+                      <IconButton>
+                          <EditIcon color="primary"/>
+                      </IconButton>
+                  </Tooltip>
+                </Link>
+                <Tooltip title="Executar regras" onClick={() => handleClickOpen("rules")}>
                     <IconButton>
-                        <EditIcon color="primary"/>
+                      <DomainVerificationIcon className='text-green-400'/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Apagar" onClick={() => setOpen(true)}>
+                <Tooltip title="Apagar" onClick={() => handleClickOpen("delete")}>
                     <IconButton>
                         <DeleteIcon color="error"/>
                     </IconButton>
@@ -171,7 +209,6 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
                       !(identifier == '') && !loading &&
                       <TableBody>
                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.iden)}</TableCell>
                           <TableCell align="center">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
                           <TableCell align="center">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
                           <TableCell align="center">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
@@ -196,8 +233,41 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
             }
         </TableContainer>
         <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
+          open={open.rules}
+          onClose={() => handleClickOpen("rules")}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+              Executar {countRules} regras?
+          </DialogTitle>
+          <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                  Essa ação executará todas as regras registradas na sua conta nesse BPA.
+              </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              onClick={handleClickClose}
+            >
+              FECHAR
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                apiExecuteRules();
+                handleClickClose();
+              }}
+            >
+              EXECUTAR
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={open.delete}
+          onClose={() => handleClickOpen("delete")}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -212,9 +282,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
           <DialogActions>
             <Button
               variant="contained"
-              onClick={() => 
-                setOpen(false)
-              }
+              onClick={handleClickClose}
             >
               FECHAR
             </Button>
@@ -223,7 +291,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
               color="error"
               onClick={() => {
                 apiDeleteBPA();
-                setOpen(false);
+                handleClickClose();
               }}
             >
               APAGAR

@@ -27,8 +27,9 @@ function TreatmentPa(props) {
   
   document.title="Tratamento BPA";
 
+  const url = "/treatment/replacement/pa";
   const { openSnackBarFun } = useContext(SnackBarContext);
-  const { month, year } = useContext(DatePickerContext);
+  const { getFormatedDate } = useContext(DatePickerContext);
   const [rulePA, setRulePA] = useState({});
   const [loading, setLoading] = useState(true);
   const [msgError, setMsgError] = useState("");
@@ -46,7 +47,7 @@ function TreatmentPa(props) {
 
   async function apiGetRulesPA() {
     try {
-      const response = await api.get("/treatment/get/pa");
+      const response = await api.get( url +"/get");
       setRulePA(response.data);
     } catch (e) {
       console.log(e);
@@ -69,7 +70,7 @@ function TreatmentPa(props) {
           "executeBpai": !rule.executeBpai
         }
       }
-      await api.post(`/treatment/update/execute/file/${rule.id}`, obj);
+      await api.post( url + `/update/execute/file/${rule.id}`, obj);
       await apiGetRulesPA();
     } catch (e) {
       console.log(e);
@@ -82,7 +83,7 @@ function TreatmentPa(props) {
         "paCurrent": paransPa.paCurrent,
         "newPa": paransPa.newPa
       }
-      await api.post("/treatment/create/pa", obj);
+      await api.post( url + "/create", obj);
       await apiGetRulesPA();
       handleClose();
       openSnackBarFun(false, "Regra PA salva");
@@ -112,7 +113,7 @@ function TreatmentPa(props) {
         "paCurrent": paransPa.paCurrent,
         "newPa": paransPa.newPa
       }
-      await api.post(`/treatment/edit/pa/${ruleObj.id}`, obj);
+      await api.post( url + `/edit/${ruleObj.id}`, obj);
       await apiGetRulesPA();
       handleClose();
       openSnackBarFun(false, "Regra PA salva");
@@ -138,7 +139,7 @@ function TreatmentPa(props) {
   async function apiDeleteRule() {
     setLoadingAction(true);
     try {
-      await api.post(`/treatment/delete/pa/${ruleObj.id}`);
+      await api.post( url + `/delete/${ruleObj.id}`);
       await apiGetRulesPA();
       handleClose();
       openSnackBarFun(false, "Regra apagada");
@@ -153,10 +154,7 @@ function TreatmentPa(props) {
     setLoadingAction(true);
     handleClose();
     try {
-      const obj = {
-        "dateBpa": year + "-" + month + "-" + "01"
-      };
-      const response = await api.post(`/treatment/play/pa/${ruleObj.id}`, obj);
+      const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormatedDate() });
       handleClose();
       openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
     } catch (e) {
@@ -170,20 +168,12 @@ function TreatmentPa(props) {
     setLoading(true);
     handleClose();
     try {
-      let count = 0;
-      const obj = {
-        "dateBpa": year + "-" + month + "-" + "01"
-      };
-
-      for(let i = 0; i < rulePA.ruleTreatmentPaList.length; i++) {
-        const rule = rulePA.ruleTreatmentPaList[i];
-        const response = await api.post(`/treatment/play/pa/${rule.id}`, obj);
-        count = count + response.data;
-      }
-
-      openSnackBarFun(false, `Todas regras executadas, ${count} linhas alteradas`);
+      const response = await api.post( url + "/execute/0", { "dateBpa": getFormatedDate() });
+      openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
+      
     } catch (e) {
       console.log(e);
+      openSnackBarFun();
     }
     setLoading(false);
   }

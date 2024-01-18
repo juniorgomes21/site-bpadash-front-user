@@ -11,7 +11,7 @@ import CardPricing from "./card-pricing"
 const PagesPricing = () => {
 
   //meta title
-  document.title = "Pricing | apcodes - Vite React Admin & Dashboard Template";
+  document.title = "Pricing | Agência Ontech - Vite React Admin & Dashboard Template";
 
   const pricings = [
     {

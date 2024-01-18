@@ -20,7 +20,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 function InFpo({ dateBpa }) {
 
-    const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [fpo, setFpo] = useState({});
     const [error, setError] = useState(false);
@@ -34,6 +34,7 @@ function InFpo({ dateBpa }) {
     const [occurrencePa, setOccurrencePa] = useState(0);
     const [updateAll, setUpdateAll] = useState('false');
 
+    
     useEffect(() => {
         inFpo();
         setStartIndexBpac(5);
@@ -43,10 +44,7 @@ function InFpo({ dateBpa }) {
 
     async function inFpo() {
         try {
-            const obj = {
-              "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/fpo", obj);
+            const response = await api.post("/bpa/inconsistency/fpo", { "dateBPA": dateBpa });
             setFpoList(response.data);
             setErrorsPaBpacDTOS(response.data["errorsPaBpacDTOS"].slice(0, 5));
             setErrorsPaBpaiDTOS(response.data["errorsPaBpaiDTOS"].slice(0, 5));

@@ -22,7 +22,7 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InProfessionals({ dateBpa }) {
 
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [professional, setProfessional] = useState({});
     const [professionals, setProfessionals] = useState([]);
     const [open, setOpen] = useState(false);
@@ -34,9 +34,11 @@ function InProfessionals({ dateBpa }) {
     const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
-        inProfessionals();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.inRace) {
+            inProfessionals();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inRace, dateBpa]);
 
     async function inProfessionals() {
         try {
@@ -51,6 +53,7 @@ function InProfessionals({ dateBpa }) {
             console.log("error", e.response);
         }
         setLoadingErrorsFun("inProfessionals", false);
+
     }
 
     async function update() {

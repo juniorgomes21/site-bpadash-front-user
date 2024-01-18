@@ -33,7 +33,7 @@ const theme = {
     }
   }
 }
-TuiChart.registerTheme("apcodesTheme", theme)
+TuiChart.registerTheme("Agência OntechTheme", theme)
 
 const TreeMapChartToast = props => {
   const data = {

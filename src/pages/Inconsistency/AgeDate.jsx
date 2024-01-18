@@ -20,7 +20,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 function AgeDate({ dateBpa }) {
 
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [person, setPerson] = useState({});
     const [ageDate, setAgeDate] = useState([]);
     const [errorsDates, setErrorsDates] = useState([]);
@@ -33,16 +33,15 @@ function AgeDate({ dateBpa }) {
 
 
     useEffect(() => {
-        inAgeDate();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.ageMinMax) {
+            inAgeDate();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.ageMinMax, dateBpa]);
 
     async function inAgeDate() {
         try {
-            const obj = {
-                "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/date/age", obj);
+            const response = await api.post("/bpa/inconsistency/date/age", { "dateBPA": dateBpa });
             setAgeDate(response.data);
             setErrorsDates(response.data.slice(0, 5));
             setHaveErrors("ageDate", response.data.length > 0);

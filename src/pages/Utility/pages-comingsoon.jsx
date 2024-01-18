@@ -35,7 +35,7 @@ const PagesComingsoon = () => {
   }
 
     //meta title
-    document.title = "Coming Soon | apcodes - Vite React Admin & Dashboard Template";
+    document.title = "Coming Soon | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
@@ -64,7 +64,7 @@ const PagesComingsoon = () => {
                     </div>
                   </Col>
                 </Row>
-                <h4 className="mt-5">Let&apos;s get started with apcodes</h4>
+                <h4 className="mt-5">Let&apos;s get started with Agência Ontech</h4>
                 <p className="text-muted">
                   It will be as simple as Occidental in fact it will be
                   Occidental.

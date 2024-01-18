@@ -12,11 +12,11 @@ const SnackBarContext = createContext(StackBarProvider);
 export function StackBarProvider({ children }) {
     const [msg, setMsg] = useState("");
     const [loadingErrorsFiles, setLoadingErrorsfiles] = useState({
-        "inFpo": true,
-        "ageDate": true,
-        "ageMinMax": true,
-        "inCep": true,
-        "inQtService":true,
+        "inFpo": true, // ok
+        "ageMinMax": true, // ok
+        "ageDate": true, // ok
+        "inCep": true, // ok
+        "inQtService":true,//ok
         "inDateService": true,
         "inRace": true,
         "inProfessionals": true,
@@ -44,15 +44,15 @@ export function StackBarProvider({ children }) {
         setMsg(msg);
         setError(error);
         setState({ openSnackBar: true, vertical: 'top', horizontal: 'center' });
-    };
+    }
 
     function closeSnackBarFun() {
         setState({ ...state, openSnackBar: false });
-    };
+    }
     
     function reloadErrorsFun() {
         setReloadErrors(!reloadErrors);
-    };
+    }
 
     function setHaveErrors(key, value) {
         setErrorsfiles( errorsOld => ({ ...errorsOld,  [key]: value }));
@@ -71,7 +71,7 @@ export function StackBarProvider({ children }) {
     }
 
     return (
-        <SnackBarContext.Provider value={{ openSnackBarFun, closeSnackBarFun, reloadErrors, haveLoading, setLoadingErrorsFun, reloadErrorsFun, setErrorsfiles, setLoadingErrorsfiles, errorsFile, setHaveErrors, haveErrors }}>
+        <SnackBarContext.Provider value={{ openSnackBarFun, closeSnackBarFun, reloadErrors, haveLoading, setLoadingErrorsFun, reloadErrorsFun, setErrorsfiles,loadingErrorsFiles,setLoadingErrorsfiles, errorsFile, setHaveErrors, haveErrors }}>
             {children}
             <Snackbar
                 open={openSnackBar}

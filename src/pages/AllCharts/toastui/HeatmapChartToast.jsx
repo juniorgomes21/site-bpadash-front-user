@@ -13,7 +13,7 @@ const theme = {
     }
   }
 }
-TuiChart.registerTheme("apcodesTheme", theme)
+TuiChart.registerTheme("Agência OntechTheme", theme)
 
 const HeatmapChartToast = props => {
   const data = {
@@ -61,7 +61,7 @@ const HeatmapChartToast = props => {
       width: props.chartWidth,
       height: 450,
     },
-    theme: "apcodesTheme",
+    theme: "Agência OntechTheme",
     yAxis: {
       title: "City",
     },

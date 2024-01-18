@@ -8,7 +8,14 @@ import TableBpac from "./TableBpac";
 import SnackbarContext from "../../contexts/managerService";
 import TableBpai from "./TableBpai";
 import Button from "@mui/material/Button";
+import TableTitle from "./TableTitle";
 
+const titleBpax = {
+    lin: true,
+    flh: true,
+    smtVrf: true,
+    cgccpf: true
+}
 
 const bpacValidationx = {
   cnes: true,
@@ -57,46 +64,38 @@ const bpaiValidationx = {
   ine: true
 }
 
-const initialUser = {
-  name: "",
-  email: "",
-  cell: "",
-  valid: "",
-  bpacValidation: bpacValidationx,
-  bpaiValidation: bpaiValidationx
-}
-
-
 function Validation(props) {
 
   document.title="Validações";
 
   const { openSnackBarFun } = useContext(SnackbarContext);
-  const [bpacValidation, setBpacValidation] = useState(initialUser.bpacValidation);
-  const [bpaiValidation, setBpaiValidation] = useState(initialUser.bpaiValidation);
+  const [titleBpa, setTitleBpa] = useState(titleBpax);
+  const [bpacValidation, setBpacValidation] = useState(bpacValidationx);
+  const [bpaiValidation, setBpaiValidation] = useState(bpaiValidationx);
 
   useEffect(() => {
-    apiGetUser();
+    apiGetValidations();
   }, [])
 
-  async function apiGetUser() {
+  async function apiGetValidations() {
     try {
-      const response = await api.get("/user");
+      const response = await api.get("/user/get/validations");
+      setTitleBpa(response.data.titleValidation);
       setBpacValidation(response.data.bpacValidation);
       setBpaiValidation(response.data.bpaiValidation);
     } catch(e) {
-      console.log("error", e.response );
+      // log
     }
   }
 
 
   async function apiSetValidations() {
     try {
-      api.post("/user/set/validations/bpai", bpaiValidation);
+      api.post("/user/set/validations/title", titleBpa);
       api.post("/user/set/validations/bpac", bpacValidation);
+      api.post("/user/set/validations/bpai", bpaiValidation);
       openSnackBarFun(false, "Validações salvas");
     } catch(e) {
-      console.log("error", e.response );
       openSnackBarFun();
     }
   }
@@ -113,13 +112,17 @@ function Validation(props) {
               <p className="text-sm">Clique no campo que você quer validar ou invalidar.</p>
               <p className="text-base">Os campos em verde passaram pela validação:</p>
             </div>
+            <TableTitle
+              obj={titleBpa}
+              setObj={setTitleBpa}
+            />
             <TableBpac
-              bpa={bpacValidation}
-              setBpa={setBpacValidation}
+              obj={bpacValidation}
+              setObj={setBpacValidation}
             />
             <TableBpai
-              bpa={bpaiValidation}
-              setBpa={setBpaiValidation}
+              obj={bpaiValidation}
+              setObj={setBpaiValidation}
             />
             <div className="flex justify-end w-full mt-10">
               <Button

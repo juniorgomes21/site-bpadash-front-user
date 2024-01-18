@@ -154,7 +154,7 @@ const bpaiValidation = [
 ]
 
 
-function TableBpai({ bpa, setBpa, api }) {
+function TableBpai({ obj, setObj }) {
 
     return (
         <div className='mt-10'>
@@ -201,13 +201,13 @@ function TableBpai({ bpa, setBpa, api }) {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             {
-                                Object.keys(bpa).map((name, index) => (
+                                Object.keys(obj).map((name, index) => (
                                 <TableCell key={index} align="center" className="truncate">
                                     <Switch
-                                        checked={bpa[name]}
+                                        checked={obj[name]}
                                         color="success"
                                         onClick={() => {
-                                            setBpa(prevBpacValidation => ({...prevBpacValidation, [name]: !bpa[name]}))
+                                            setObj(prevBpacValidation => ({...prevBpacValidation, [name]: !obj[name]}))
                                         }}
                                     />
                                 </TableCell>

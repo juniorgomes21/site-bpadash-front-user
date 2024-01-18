@@ -24,7 +24,7 @@ function HeaderTable() {
         >
           BPA-C
         </Typography>
-        <Link to={`/file/edit/bpac`} className="has-arrow">
+        <Link to="/file/edit/bpac" className="has-arrow">
           <IconButton>
             <EditIcon color="primary"/>
           </IconButton>

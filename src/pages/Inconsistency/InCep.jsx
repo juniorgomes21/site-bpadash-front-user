@@ -16,7 +16,7 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InCep({ dateBpa }) {
 
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
     const [cep, setCep] = useState({});
     const [ceps, setCeps] = useState([]);
@@ -28,9 +28,11 @@ function InCep({ dateBpa }) {
     const [errors, setErrors] = useState({ "haveBlank": false, "haveInvalid": false });
 
     useEffect(() => {
-        inCep();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.ageDate) {
+            inCep();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.ageDate, dateBpa]);
 
 
     async function inCep() {
@@ -57,7 +59,6 @@ function InCep({ dateBpa }) {
             setErrors({ ...errors, haveBlank, haveInvalid });            
             setErrorsDates(response.data.slice(0, 5));
             setHaveErrors("inCep", response.data.length > 0);
-
         } catch (e) {
             console.log("error", e.response);
         }

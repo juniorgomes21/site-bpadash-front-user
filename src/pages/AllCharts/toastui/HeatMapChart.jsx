@@ -48,7 +48,7 @@ const theme = {
     borderColor: "#F4511E"
   }
 }
-TuiChart.registerTheme("apcodesTheme", theme)
+TuiChart.registerTheme("Agência OntechTheme", theme)
 
 const ProfileMenu = props => {
   const data = {

@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import { Card, CardBody } from "reactstrap";
 import ReactApexChart from "react-apexcharts";
-import getChartColorsArray from "../../components/Common/ChartsDynamicColor";
-import { CircularProgress } from "@mui/material";
 import api from "../../services/api";
 
-
-const storagexy = {
-  storageTotal: "0 GB",
-  storagePorcent: 0
-}
 
 function Storage({ dataColors }) { 
   

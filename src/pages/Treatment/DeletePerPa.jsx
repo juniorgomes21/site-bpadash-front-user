@@ -22,15 +22,16 @@ import { CircularProgress } from "@mui/material";
 import DatePickerContext from "../../contexts/DateGlobalBpa";
 import Radio from '@mui/material/Radio';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { formatMonth } from "../../Validation&Formatation/formatation";
 
 function DeletePerPa(props) {
 
     //meta title
-    document.title="APAGAR PA";
+    document.title="Apagar por PA";
 
-
+    const url = "/treatment/deleteperpa";
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const { month, year } = useContext(DatePickerContext);
+    const { month, year, getFormatedDate } = useContext(DatePickerContext);
     const [rulePaDelete, setRulePaDelete] = useState({});
     const [loading, setLoading] = useState(true);
     const [msgError, setMsgError] = useState("");
@@ -48,7 +49,7 @@ function DeletePerPa(props) {
 
     async function apiGetRulesDeletePA() {
         try {
-            const response = await api.get("/treatment/get/pa/delete");
+            const response = await api.get( url +"/get");
             setRulePaDelete(response.data);
         } catch (e) {
             console.log(e);
@@ -58,10 +59,7 @@ function DeletePerPa(props) {
 
     async function apiCreateRulePaDelete() {
         try {
-          const obj = {
-            "pa": paransPaDelete.pa
-          }
-          await api.post("/treatment/create/pa/delete", obj);
+          await api.post( url + "/create", { "pa": paransPaDelete.pa });
           await apiGetRulesDeletePA();
           handleClose();
           openSnackBarFun(false, "Regra PA salva");          
@@ -83,10 +81,7 @@ function DeletePerPa(props) {
 
     async function apiEditRulePa() {
         try {
-          const obj = {
-            "pa": paransPaDelete.pa
-          }
-          await api.post(`/treatment/edit/pa/delete/${ruleObj.id}`, obj);
+          await api.post( url +`/edit/${ruleObj.id}`, { "pa": paransPaDelete.pa });
           await apiGetRulesDeletePA();
           handleClose();
           openSnackBarFun(false, "Regra PA salva");
@@ -121,7 +116,7 @@ function DeletePerPa(props) {
                     "executeBpai": !rule.executeBpai
                 }
             }
-            await api.post(`/treatment/update/execute/pa/file/${rule.id}`, obj);
+            await api.post( url + `/update/execute/file/${rule.id}`, obj);
             await apiGetRulesDeletePA();
         } catch (e) {
             console.log(e);
@@ -132,10 +127,7 @@ function DeletePerPa(props) {
         setLoadingAction(true);
         handleClose();
         try {
-          const obj = {
-            "dateBpa": year + "-" + month + "-" + "01"
-          };
-          const response = await api.post(`/treatment/play/pa/delete/${ruleObj.id}`, obj);
+          const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormatedDate() });
           handleClose();
           openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
@@ -149,20 +141,10 @@ function DeletePerPa(props) {
         setLoading(true);
         handleClose();
         try {
-          let count = 0;
-          const obj = {
-            "dateBpa": year + "-" + month + "-" + "01"
-          };
-    
-          for(let i = 0; i < rulePaDelete.ruleTreatmentPaDeleteList.length; i++) {
-            const rule = rulePaDelete.ruleTreatmentPaDeleteList[i];
-            const response = await api.post(`/treatment/play/pa/${rule.id}`, obj);
-            count = count + response.data;
-          }
-    
-          openSnackBarFun(false, `Todas regras executadas, ${count} linhas alteradas`);
+            const response = await api.post( url + "/execute/0", { "dateBpa": getFormatedDate() });
+            openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
         } catch (e) {
-          console.log(e);
+            openSnackBarFun();
         }
         setLoading(false);
     }
@@ -170,7 +152,7 @@ function DeletePerPa(props) {
     async function apiDeleteRule() {
         setLoadingAction(true);
         try {
-            await api.post(`/treatment/pa/delete/${ruleObj.id}`);
+            await api.post( url + `/delete/${ruleObj.id}`);
             await apiGetRulesDeletePA();
             handleClose();
             openSnackBarFun(false, "Regra apagada");
@@ -384,7 +366,7 @@ function DeletePerPa(props) {
                         helperText={errorsPa.pa && "O campo deve ter 10 dígitos"}
                     />
                 </DialogContent>
-                <DialogActions className="w-96">
+                <DialogActions className="flex justify-end w-full">
                     <Button
                         variant="contained"
                         color="error"
@@ -403,7 +385,7 @@ function DeletePerPa(props) {
             </Dialog>
             <Dialog open={open["delete"] || open["play"]} onClose={() => handleClose()}>
                 <DialogTitle>
-                    {open.delete ? "Deseja realmente apagar essa regras?" : "Deseja realmente executar essa regras?"}</DialogTitle>
+                    {open.delete ? "Deseja realmente apagar essa regras?" : `A regra será executada no arquivo de (${formatMonth(month)} de ${year}). Executar?`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText className="mb-3">
                     </DialogContentText>
@@ -427,7 +409,7 @@ function DeletePerPa(props) {
             </Dialog>
             <Dialog open={open["playAll"]} onClose={() => handleClose()}>
                 <DialogTitle>
-                Deseja realmente executar todas as regras?
+                    As regras seram executadas no arquivo de ({formatMonth(month)} de {year}). Executar regras?
                 </DialogTitle>
                 <DialogContent>
                 <DialogContentText className="mb-3">

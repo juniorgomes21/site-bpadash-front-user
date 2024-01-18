@@ -14,7 +14,7 @@ import PolarChart from "../AllCharts/chartjs/polarchart"
 
 const ChartjsChart = () => {
   //meta title
-  document.title = "Chartjs Charts | apcodes - React Admin & Dashboard Template"
+  document.title = "Chartjs Charts | Agência Ontech - React Admin & Dashboard Template"
 
   return (
     <React.Fragment>

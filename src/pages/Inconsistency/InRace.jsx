@@ -19,22 +19,22 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InRace({ dateBpa }) {
 
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
-    const [age, setAge] = useState('');
+    const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
     const [race, setRace] = useState({});
     const [races, setRaces] = useState([]);
     const [errorsRaces, setErrorsRaces] = useState([]);
     const [error, setError] = useState(false);
-    const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
     const [startIndex, setStartIndex] = useState(5);
 
 
     useEffect(() => {
-        inRace();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.inDateService) {
+            inRace();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inDateService, dateBpa]);
 
     async function inRace() {
         try {
@@ -66,8 +66,8 @@ function InRace({ dateBpa }) {
             handleClose();
             openSnackBarFun(false, "Raça alterada");
         } catch (e) {
-            setMsgError("Ops, algo deu errado");
             setError(true);
+            openSnackBarFun();
         }
         setLoading(false);
     }
@@ -77,7 +77,6 @@ function InRace({ dateBpa }) {
 
         if(!racesValids.includes(race.raceInvalid)) {
             setError(true);
-            setMsgError("Valores válidos para raça 01, 02, 03, 04, 05");
         } else {
             update(false);
         }
@@ -96,13 +95,11 @@ function InRace({ dateBpa }) {
         if(!loading) {
             setOpen({ "single": false, "all": false });
             setError(false);
-            setMsgError('');
         }
     }
 
     function handleChange(event) {
         const raceSelect = event.target.value;
-        setAge(raceSelect);
         setRace({ ...race, ["raceInvalid"]: raceSelect});
     }
 

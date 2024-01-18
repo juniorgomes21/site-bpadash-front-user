@@ -62,10 +62,12 @@ function Inconsistency(props) {
 
   document.title="Inconsistências";
   
-  const { month, year } = useContext(DateGlobalBpaContext);
   const dates = JSON.parse(localStorage.getItem("@Dates"));
+  const { month, year } = useContext(DateGlobalBpaContext);
   const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
+  const [show, setShow] = useState(false);
   const [dateBpa, setDateBpa] = useState(year + "-" + ( month < 10 ? "0" + month : month) + "-01");
+
 
   useEffect(() => {
     const date = year + "-" + ( month < 10 ? "0" + month : month) + "-01";
@@ -116,48 +118,69 @@ function Inconsistency(props) {
           }
           <div>
             {
-              haveLoading() ?
-                <div className="flex w-full justify-center mt-4">
-                  <CircularProgress size={20} />
+              !show ?
+                <div className="flex justify-center w-full">
+                  <div className="flex flex-col items-center">
+                    <p className="text-base">Aqui você pode ver todas as inconsistências do arquivo atual.</p>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      className="mt-3"
+                      onClick={() => setShow(true)}
+                    >
+                      EXECUTAR
+                    </Button>
+                  </div>
                 </div>
               :
-                !haveErrors() &&
-                  <AlertCustom
-                    msg="Nenhum erro encontrado no arquivo selecionado"
-                    type="info"
+                <>
+                  <div>
+                    {
+                      haveLoading() ?
+                        <div className="flex w-full justify-center mt-4">
+                          <CircularProgress size={20} />
+                        </div>
+                      :
+                        !haveErrors() &&
+                          <AlertCustom
+                            msg="Nenhum erro encontrado no arquivo selecionado"
+                            type="info"
+                          />
+                    }
+                  </div>
+                  <InFpo // precisa de PA
+                    dateBpa={dateBpa}
                   />
+                  <AgeMinMax
+                    dateBpa={dateBpa}
+                  /> 
+                  <AgeDate
+                    dateBpa={dateBpa}
+                  />
+                  <InCep
+                    dateBpa={dateBpa}
+                  />
+                  <InQtService // precisa de PA
+                    dateBpa={dateBpa}
+                  />
+                  <InDateService
+                    dateBpa={dateBpa}
+                  />
+                  <InRace
+                    dateBpa={dateBpa}
+                  />
+                  <InProfessionals
+                    dateBpa={dateBpa}
+                  />
+                  <InProcedure // precisa de PA
+                    dateBpa={dateBpa}
+                  />
+                  <InOccupation // precisa de PA
+                    dateBpa={dateBpa}
+                  />
+                </>
             }
           </div>
-          <InFpo // precisa de PA
-            dateBpa={dateBpa}
-          />
-          <AgeMinMax
-            dateBpa={dateBpa}
-          /> {/* dividir por mes */}
-          <AgeDate
-            dateBpa={dateBpa}
-          />
-          <InCep
-            dateBpa={dateBpa}
-          />
-          <InQtService // precisa de PA
-            dateBpa={dateBpa}
-          />
-          <InDateService
-            dateBpa={dateBpa}
-          />
-          <InRace
-            dateBpa={dateBpa}
-          />
-          <InProfessionals
-            dateBpa={dateBpa}
-          />
-          <InProcedure // precisa de PA
-            dateBpa={dateBpa}
-          />
-          <InOccupation // precisa de PA
-            dateBpa={dateBpa}
-          />
         </Container>
       </div>
     </>

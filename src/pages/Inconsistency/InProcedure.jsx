@@ -12,7 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 function InProcedure({ dateBpa }) {
 
-    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [procedures, setProcedures] = useState({"errorsPaBpac": [], "errorsSexBpai": []});
@@ -20,9 +20,11 @@ function InProcedure({ dateBpa }) {
     const [startIndex, setStartIndex] = useState(5);
 
     useEffect(() => {
-        inProcedure();
-        setStartIndex(5);
-    }, [dateBpa, reloadErrors]);
+        if(!loadingErrorsFiles.inProfessionals) {
+            inProcedure();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inProfessionals, dateBpa, reloadErrors]);
 
 
     async function inProcedure() {

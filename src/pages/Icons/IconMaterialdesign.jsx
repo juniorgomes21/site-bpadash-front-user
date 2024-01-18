@@ -431,7 +431,7 @@ const IconMaterialdesign = () => {
   })
 
    //meta title
-   document.title = "Material Design | apcodes - Vite React Admin & Dashboard Template";
+   document.title = "Material Design | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

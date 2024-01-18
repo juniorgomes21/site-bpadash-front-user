@@ -18,7 +18,7 @@ import "../../../node_modules/chartist/dist/chartist.css"
 import "../../assets/scss/chartist.scss";
 const ChartistChart = () => {
   //meta title
-  document.title = "Chartist Charts | apcodes - React Admin & Dashboard Template";
+  document.title = "Chartist Charts | Agência Ontech - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <div className="page-content">

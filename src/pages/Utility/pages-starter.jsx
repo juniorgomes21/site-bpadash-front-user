@@ -7,7 +7,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 const PagesStarter = () => {
 
     //meta title
-    document.title="Stater Page | apcodes - Vite React Admin & Dashboard Template";
+    document.title="Stater Page | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>

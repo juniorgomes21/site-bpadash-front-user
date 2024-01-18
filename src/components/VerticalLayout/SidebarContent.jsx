@@ -7,7 +7,7 @@ import { withTranslation } from "react-i18next";
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { blue } from '@mui/material/colors';
+import { blue, green } from '@mui/material/colors';
 import pt from 'date-fns/locale/pt-BR';
 import { registerLocale, setDefaultLocale } from 'react-datepicker';
 import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
@@ -27,7 +27,7 @@ import { formatMonth } from "../../Validation&Formatation/formatation";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SettingsIcon from '@mui/icons-material/Settings';
 import Alert from '@mui/material/Alert';
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function SidebarContent(props) {
 
@@ -37,7 +37,7 @@ function SidebarContent(props) {
 
   const user = JSON.parse(localStorage.getItem("@User"));
   const { dates } = useContext(AuthContext);
-  const { month, year, startDateChange } = useContext(DateGlobalBpaContext);
+  const { month, year, startDateChange, getFormatedDate } = useContext(DateGlobalBpaContext);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -130,6 +130,11 @@ function SidebarContent(props) {
     handleClose();
   }
 
+  function testDate(date) {
+    const datex = (date[1] + "-" + ( date[0] < 10 ? "0" + date[0] : date[0]) + "-" + "01");
+    return datex === getFormatedDate();
+  }
+
   return (
     <>
       <SimpleBar className="h-100" ref={ref}>
@@ -164,7 +169,7 @@ function SidebarContent(props) {
                   <Link to="/file/bpa">{props.t("BPA")}</Link>
                 </li>
                 <li>
-                  <Link to="/file/edit/title">{props.t("TÍTULO")}</Link>
+                  <Link to="/file/edit/title">{props.t("CABEÇALHO")}</Link>
                 </li>
                 <li>
                   <Link to="/file/edit/bpai">{props.t("BPA-I")}</Link>
@@ -335,30 +340,31 @@ function SidebarContent(props) {
         </div>
       </SimpleBar>
       <Dialog onClose={handleClose} open={open}>
-          <DialogTitle>Selecione o BPA</DialogTitle>
+          <DialogTitle className="w-80">Selecione a data do BPA</DialogTitle>
           <List sx={{ pt: 0 }}>
-            
-            {
-              dates.length == 0 ?
-                <div className="m-4">
-                  <AlertCustom
-                    type="info"
-                    msg="Você não possui nenhum arquivo BPA"
-                  />
-                </div>
-              :
-                dates.map((date, index) => (
-                  <ListItem disableGutters key={index}>
-                    <ListItemButton onClick={() => handleListItemClick(date)}>
-                      <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                          <DescriptionIcon />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText primary={formatMonth(date[0]) + " de " + date[1]} />
-                    </ListItemButton>
-                  </ListItem>
-            ))}
+            <div className="m-3">
+              {
+                dates.length == 0 ?
+                  <div className="m-4">
+                    <AlertCustom
+                      type="info"
+                      msg="Você não possui nenhum arquivo BPA"
+                    />
+                  </div>
+                :
+                  dates.map((date, index) => (
+                    <ListItem disableGutters key={index} className={`border-[1px] ${testDate(date) ? "border-green-500" : "border-default"} my-2 rounded-md hover:bg-green-100`}>
+                      <ListItemButton onClick={() => handleListItemClick(date)}>
+                        <ListItemAvatar>
+                          <Avatar sx={{ bgcolor: testDate(date) ? green[100] : blue[100], color: blue[600] }}>
+                            { testDate(date) ? <CheckCircleIcon color="success"/> : <DescriptionIcon />}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={formatMonth(date[0]) + " de " + date[1]} />
+                      </ListItemButton>
+                    </ListItem>
+              ))}
+            </div>
           </List>
         </Dialog>
     </>

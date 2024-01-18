@@ -18,7 +18,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 function InQtService({ dateBpa }) {
 
-    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun} = useContext(SnackBarContext);
+    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles} = useContext(SnackBarContext);
     const [service, setService] = useState({});
     const [qtService, setQtService] = useState([]);
     const [errorsQtService, setErrorsQtService] = useState([]);
@@ -30,9 +30,11 @@ function InQtService({ dateBpa }) {
 
 
     useEffect(() => {
-        inQtService();
-        setStartIndex(5);
-    }, [dateBpa, reloadErrors]);
+        if(!loadingErrorsFiles.inCep) {
+            inQtService();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inCep, dateBpa, reloadErrors]);
 
     async function inQtService() {
         try {

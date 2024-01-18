@@ -21,7 +21,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 const PagesFaqs = () => {
 
   //meta title
-  document.title = "FAQs | apcodes - Vite React Admin & Dashboard Template";
+  document.title = "FAQs | Agência Ontech - Vite React Admin & Dashboard Template";
   
   const [activeTab, setactiveTab] = useState("1");
 

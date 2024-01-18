@@ -1,8 +1,5 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-
-
-// // Authentication related pages
 import Login from "../pages/Authentication/Login";
 import Logout from "../pages/Authentication/Logout";
 import Bpa from "../pages/bpa/bpa/Bpa";
@@ -29,6 +26,7 @@ import DeletePerPa from "../pages/Treatment/DeletePerPa";
 import PublicPlace from "../pages/Treatment/PublicPlace";
 import Profile from "../pages/Configurations/Profile";
 import ChangePass from "../pages/Configurations/ChagenPass";
+import Mayra from "../pages/May/Mayra";
 
 
 const authProtectedRoutes = [
@@ -38,13 +36,10 @@ const authProtectedRoutes = [
   { path: "/file/edit/bpac", component: Bpac },
   { path: "/file/consult/professionals", component: ProfessionalEdit },
   { path: "/storage/memory", component: StorageMemory },
-  { path: "/upload/fpo", component: Fpo },
-  { path: "/upload/fpo/line", component: LineFpo },
   { path: "/upload/bpa", component: Upload },
   { path: "/upload/bpai", component: UploadBpai },
   { path: "/upload/bpac", component: UploadBpac },
   { path: "/upload/professionals", component: UploadProfessional },
-  { path: "/upload/professionals/line", component: ProfessionalLine },
   { path: "/download/bpa", component: Download },
   { path: "/validation/file", component: Validation },
   { path: "/timeline/bpa", component: Timeline },
@@ -58,12 +53,14 @@ const authProtectedRoutes = [
   { path: "/treatment/public/place", component: PublicPlace },
   { path: "/logout", component: Logout },
   
-  { path: "/", exact: true, component: () => <Redirect to="/storage/memory" /> },
+
+  { path: "/", exact: true, component: () => <Redirect to="/file/bpa" /> },
 ];
 
 const publicRoutes = [
   
   { path: "/login", component: Login },
+  { path: "/mayra/clarisse", component: Mayra },
 ];
 
 export { authProtectedRoutes, publicRoutes };

@@ -44,7 +44,7 @@ const theme = {
     colors: ["#556ee6", "#34c38f"]
   }
 }
-TuiChart.registerTheme("apcodesTheme", theme)
+TuiChart.registerTheme("Agência OntechTheme", theme)
 
 const BoxPlotChartToast = props => {
   const data = {

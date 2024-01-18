@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from "react"
 import { Switch, BrowserRouter as Router } from "react-router-dom"
 import { connect } from "react-redux"
-import { authProtectedRoutes,publicRoutes } from "./routes"
+import { authProtectedRoutes, publicRoutes } from "./routes"
 import Authmiddleware from "./routes/route"
 import VerticalLayout from "./components/VerticalLayout/"
 import NonAuthLayout from "./components/NonAuthLayout"

@@ -12,39 +12,27 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Tooltip from '@mui/material/Tooltip';
 
 
-const bpacValidation = [
+const titleBpaValidation = [
     {
-        key: 'cnes',
-        name: 'Código CNES'
+        key: 'lin',
+        name: 'lin',
     },
     {
-        key: 'cmp',
-        name: 'Competência'
+        key: 'flh',
+        name: 'flh',
     },
     {
-        key: 'cbo',
-        name: 'Código CBO'
+        key: 'smtVrf',
+        name: 'smtVrf',
     },
     {
-        key: 'pa',
-        name: 'Procedimento Ambulatorial (PA)'
-    },
-    {
-        key: 'idade',
-        name: 'Idade'
-    },
-    {
-        key: 'qt',
-        name: 'Quantidade de procedimentos'
-    },
-    {
-        key: 'org',
-        name: 'Origem das informações'
+        key: 'cgccpf',
+        name: 'cgccpf',
     }
 ]
 
 
-function TableBpac({ obj, setObj }) {
+function TableTitle({ obj, setObj }) {
 
     return (
         <div className='mt-10'>
@@ -61,7 +49,7 @@ function TableBpac({ obj, setObj }) {
                     id="tableTitle"
                     component="div"
                 >
-                    BPA-C
+                    CABEÇALHO
                 </Typography>
             </Toolbar>
             <TableContainer component={Paper}>
@@ -69,16 +57,16 @@ function TableBpac({ obj, setObj }) {
                     <TableHead>
                         <TableRow>
                             {
-                                bpacValidation.map((bpac, index) => (
+                                titleBpaValidation.map((title, index) => (
                                     <TableCell
                                         key={index}
                                         align={'center'}
                                         padding={'normal'}
                                         className="p-4"
                                     >
-                                        <Tooltip title={bpac.name} placement="top">
+                                        <Tooltip title={title.name} placement="top">
                                             <p className="uppercase font-bold text-default">
-                                                {bpac.key}
+                                                {title.key}
                                             </p>
                                         </Tooltip>
                                     </TableCell>
@@ -92,15 +80,15 @@ function TableBpac({ obj, setObj }) {
                         >
                             {
                                 Object.keys(obj).map((name, index) => (
-                                <TableCell key={index} align="center" className="truncate">
-                                    <Switch
-                                        checked={obj[name]}
-                                        color="success"
-                                        onClick={() => {
-                                            setObj(prevBpacValidation => ({...prevBpacValidation, [name]: !obj[name]}))
-                                        }}
-                                    />
-                                </TableCell>
+                                    <TableCell key={index} align="center" className="truncate">
+                                        <Switch
+                                            checked={obj[name]}
+                                            color="success"
+                                            onClick={() => {
+                                                setObj(prevtitleValidation => ({ ...prevtitleValidation, [name]: !obj[name] }))
+                                            }}
+                                        />
+                                    </TableCell>
                                 ))
                             }
                         </TableRow>
@@ -111,4 +99,4 @@ function TableBpac({ obj, setObj }) {
     )
 }
 
-export default TableBpac;
+export default TableTitle;

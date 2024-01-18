@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import SouthIcon from '@mui/icons-material/South';
 import AlertCustom from "../../GlobalComponents/AlertCustom";
-
+import { Link } from "react-router-dom";
 
 function DivErrors({ errorsFile, startIndex, displayedErrors, loadMoreErrors}) {
 
@@ -10,8 +10,18 @@ function DivErrors({ errorsFile, startIndex, displayedErrors, loadMoreErrors}) {
             <div className="mt-4">
                 <AlertCustom
                     type="error"
-                    msg={`${errorsFile.length} erros encontrados no arquivo `}
+                    msg={`${errorsFile.length} erros encontrados no arquivo`}
                 />
+                <div className="flex justify-center w-full my-3 text-sm">
+                    <p>
+                        Você pode suspender as validações na hora do upload
+                    </p>
+                    <Link to="/validation/file">
+                        <p className="ml-1 text-blue-600">
+                            aqui.
+                        </p>
+                    </Link>
+                </div>
                 <ul className="mt-3">
                     {displayedErrors.map((error, index) => (
                     <li key={index} className="mt-3 border-[1px] border-default rounded-lg p-2">

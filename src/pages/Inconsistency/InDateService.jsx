@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 
 function InDateService({ dateBpa }) {
 
-    const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorsDates, setErrorsDates] = useState([]);
@@ -18,9 +18,11 @@ function InDateService({ dateBpa }) {
 
 
     useEffect(() => {
-        inDataService();
-        setStartIndex(5);
-    }, [dateBpa]);
+        if(!loadingErrorsFiles.inQtService) {
+            inDataService();
+            setStartIndex(5);
+        }
+    }, [loadingErrorsFiles.inQtService, dateBpa]);
 
     async function inDataService() {
         try {

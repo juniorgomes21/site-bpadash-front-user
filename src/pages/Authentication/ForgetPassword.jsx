@@ -20,7 +20,7 @@ import logo from "../../assets/images/logo.svg";
 
 const ForgetPasswordPage = props => {
   //meta title
-  document.title="Forget Password | apcodes - Vite React Admin & Dashboard Template";
+  document.title="Forget Password | Agência Ontech - Vite React Admin & Dashboard Template";
   const dispatch = useDispatch();
 
   const validation = useFormik({
@@ -60,7 +60,7 @@ const ForgetPasswordPage = props => {
                     <Col xs={7}>
                       <div className="text-primary p-4">
                         <h5 className="text-primary">Welcome Back !</h5>
-                        <p>Sign in to continue to apcodes.</p>
+                        <p>Sign in to continue to Agência Ontech.</p>
                       </div>
                     </Col>
                     <Col className="col-5 align-self-end">
@@ -143,8 +143,8 @@ const ForgetPasswordPage = props => {
                   </Link>{" "}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} apcodes. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by apcodes
+                  © {new Date().getFullYear()} Agência Ontech. Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger" /> by Agência Ontech
                 </p>
               </div>
             </Col>

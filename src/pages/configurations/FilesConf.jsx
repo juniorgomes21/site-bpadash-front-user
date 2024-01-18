@@ -20,7 +20,7 @@ import api from "../../services/api";
 const files = [
     {
       name: 'Ocupação',
-      acronym: 'OCU',
+      acronym: 'CBO',
       show: true
     },
     {

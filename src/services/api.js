@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:8080/api' : 'https://bpadash.com:9090/api';
+
 const api = axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: baseURL,
     data: {},
     headers: {}
 });

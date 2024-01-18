@@ -1,6 +1,7 @@
-import React from "react"
+import React, { useEffect } from "react"
 import PropTypes from "prop-types"
 import { Route, Redirect } from "react-router-dom"
+import { use } from "i18next"
 
 function Authmiddleware ({ component: Component, layout: Layout, isAuthProtected, ...rest}) {
 
@@ -8,7 +9,7 @@ function Authmiddleware ({ component: Component, layout: Layout, isAuthProtected
     <Route
       {...rest}
       render={ props => {
-        if ( isAuthProtected && !localStorage.getItem("@TokenAuthentication")) {
+        if (isAuthProtected && !localStorage.getItem("@TokenAuthentication")) {
           return (
             <Redirect
               to={{ pathname: "/login", state: { from: props.location } }}

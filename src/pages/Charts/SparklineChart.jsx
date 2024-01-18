@@ -15,7 +15,7 @@ import {
 const SparklineChart = () => {
 
    //meta title
-   document.title = "Sparkline Charts | apcodes - React Admin & Dashboard Template"
+   document.title = "Sparkline Charts | Agência Ontech - React Admin & Dashboard Template"
 
   return (
     <React.Fragment>

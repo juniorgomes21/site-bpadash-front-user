@@ -18,7 +18,7 @@ import Radio from '@mui/material/Radio';
 
 function InOccupation({ dateBpa }) {
 
-    const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
+    const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
     const [msgError, setMsgError] = useState('');
@@ -33,18 +33,17 @@ function InOccupation({ dateBpa }) {
 
 
     useEffect(() => {
-        inOccupation();
-        setStartIndexBpac(5);
-        setStartIndexBpai(5);
-    }, [dateBpa, reloadErrors]);
+        if(!loadingErrorsFiles.inProcedure) {
+            inOccupation();
+            setStartIndexBpac(5);
+            setStartIndexBpai(5);
+        }
+    }, [loadingErrorsFiles.inProcedure, dateBpa, reloadErrors]);
 
 
     async function inOccupation() {
         try {
-            const obj = {
-              "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/occupation", obj);
+            const response = await api.post("/bpa/inconsistency/occupation", { "dateBPA": dateBpa });
             setOccupations(response.data);
             setErrorsOccupationBpacDTOS(response.data["errorsOccupationBpacDTOS"].slice(0, 5));
             setErrorsOccupationBpaiDTOS(response.data["errorsOccupationBpaiDTOS"].slice(0, 5));
@@ -66,7 +65,7 @@ function InOccupation({ dateBpa }) {
                 cboOld = occupations["errorsOccupationBpaiDTOS"].find(item => item.id === occupation.id).cbo
             }
             await api.post(`/${arqName}/update/${occupation.id}`, { "cbo": (occupation.cbo + "-" + (updateAll ? '1' : '0') + "-" + cboOld), "dateBpa": dateBpa, "key": "cbo" });
-            await inOccupation();
+            // await inOccupation();
             handleClose();
             openSnackBarFun(false, "CBO salvo");
             setUpdateAll(false);

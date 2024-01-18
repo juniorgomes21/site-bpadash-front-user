@@ -86,7 +86,7 @@ const Dashboard = props => {
   }, [dispatch]);
 
   //meta title
-  document.title="Dashboard | apcodes - Vite React Admin & Dashboard Template";
+  document.title="Dashboard | Agência Ontech - Vite React Admin & Dashboard Template";
 
   return (
     <React.Fragment>
