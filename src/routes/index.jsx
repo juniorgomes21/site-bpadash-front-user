@@ -27,6 +27,7 @@ import PublicPlace from "../pages/Treatment/PublicPlace";
 import Profile from "../pages/Configurations/Profile";
 import ChangePass from "../pages/Configurations/ChagenPass";
 import Mayra from "../pages/May/Mayra";
+import ReplacementBpac from "../pages/Treatment/ReplacementBpac";
 
 
 const authProtectedRoutes = [
@@ -51,6 +52,7 @@ const authProtectedRoutes = [
   { path: "/treatment/pa/cbo", component: TreatmentPaCbo },
   { path: "/treatment/pa/delete", component: DeletePerPa },
   { path: "/treatment/public/place", component: PublicPlace },
+  { path: "/treatment/replacement/bpa", component: ReplacementBpac },
   { path: "/logout", component: Logout },
   
 

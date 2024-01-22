@@ -71,6 +71,29 @@ export function formatDate(date: Date) {
     return year + "-" + (month < 10 ? "0" + month : month) + "-01";
 }
 
+export function formatField(field: string) {
+    switch(field) {
+        case "cnes":
+            return "CNES";
+        case "cmp":
+            return "CMP";
+        case "cbo":
+            return "CBO";
+        case "pa":
+            return "PA";
+        case "idade":
+            return "IDADE";
+        case "qt":
+            return "QUANTIDADE";
+        case "org":
+            return "ORG";
+        case "fim":
+            return "FIM";
+        default:
+            return field.toUpperCase();
+    }
+}
+
 export function formatDateString(date: string, showDay: boolean) {
     
     let day = date.substring(8, 10);

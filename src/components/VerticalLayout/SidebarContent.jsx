@@ -292,6 +292,9 @@ function SidebarContent(props) {
                 <li>
                   <Link to="/treatment/pa/delete">{props.t("Apagar por PA")}</Link>
                 </li>
+                <li>
+                  <Link to="/treatment/replacement/bpa">{props.t("Substituir valor BPA")}</Link>
+                </li>
               </ul>
             </li>
 
