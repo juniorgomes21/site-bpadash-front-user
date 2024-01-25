@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/api";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import EditIcon from '@mui/icons-material/Edit';
-import { formatCode3, formatDateString } from "../../Validation&Formatation/formatation";
+import { maskPointThree, formatDateString } from "../../Validation&Formatation/formatation";
 import { Link } from "react-router-dom";
 import SnackBarContext from "../../contexts/managerService";
 import TextField from '@mui/material/TextField';
@@ -20,7 +20,7 @@ import Radio from '@mui/material/Radio';
 import SouthIcon from '@mui/icons-material/South';
 
 
-function InProfessionals({ dateBpa }) {
+function InProfessionals({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [professional, setProfessional] = useState({});
@@ -37,23 +37,20 @@ function InProfessionals({ dateBpa }) {
         if(!loadingErrorsFiles.inRace) {
             inProfessionals();
             setStartIndex(5);
+            setErrorsProfessionals([]);
         }
-    }, [loadingErrorsFiles.inRace, dateBpa]);
+    }, [loadingErrorsFiles.inRace, dateBpa, refresh]);
 
     async function inProfessionals() {
         try {
-            const obj = {
-              "dateBPA": dateBpa,
-            }
-            const response = await api.post("/bpa/inconsistency/professionals", obj);
+            const response = await api.post("/bpa/inconsistency/professionals", { "dateBPA": dateBpa });
             setProfessionals(response.data);
             setErrorsProfessionals(response.data.slice(0, 5));
             setHaveErrors("inProfessionals", response.data.length > 0);
         } catch (e) {
-            console.log("error", e.response);
+            setHaveErrors("inProfessionals", false);
         }
         setLoadingErrorsFun("inProfessionals", false);
-
     }
 
     async function update() {
@@ -154,7 +151,7 @@ function InProfessionals({ dateBpa }) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div className="">
                                                 <p>
-                                                    CNSMED INVÁLIDO: {formatCode3(item.cnsmed)}
+                                                    CNSMED INVÁLIDO: {maskPointThree(item.cnsmed)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen(item.id)}>

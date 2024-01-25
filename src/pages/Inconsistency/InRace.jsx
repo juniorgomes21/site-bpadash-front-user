@@ -17,7 +17,7 @@ import Select from '@mui/material/Select';
 import SouthIcon from '@mui/icons-material/South';
 
 
-function InRace({ dateBpa }) {
+function InRace({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
@@ -33,8 +33,9 @@ function InRace({ dateBpa }) {
         if(!loadingErrorsFiles.inDateService) {
             inRace();
             setStartIndex(5);
+            setErrorsRaces([]);
         }
-    }, [loadingErrorsFiles.inDateService, dateBpa]);
+    }, [loadingErrorsFiles.inDateService, dateBpa, refresh]);
 
     async function inRace() {
         try {

@@ -167,7 +167,7 @@ function Profile(props) {
                                             htmlFor="projectname"
                                             className="col-form-label col-lg-2"
                                         >
-                                            CELULAR
+                                            UF
                                         </Label>
                                         <Col lg="10">
                                             <Input
@@ -178,9 +178,6 @@ function Profile(props) {
                                                 value={user.address.uf}
                                                 className="form-control"
                                                 placeholder="Nome do arquivo"
-                                                // onChange={ e => {
-                                                //     if(!isNaN(Number(e.target.value)) && e.target.value.length <= 14) setUser({ ...user, ["cell"]: e.target.value });
-                                                // }}
                                             />
                                         </Col>
                                     </FormGroup>

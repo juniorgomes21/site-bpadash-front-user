@@ -16,7 +16,7 @@ import { formatDateStringFull } from "../../Validation&Formatation/formatation";
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 import Tooltip from "@mui/material/Tooltip";
 
-function AgeMinMax({ dateBpa }) {
+function AgeMinMax({ dateBpa, refresh }) {
 
     const dateNow = new Date();
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
@@ -33,8 +33,9 @@ function AgeMinMax({ dateBpa }) {
         if(!loadingErrorsFiles.inFpo) {
             inAgeMaxMin();
             setStartIndex(5);
+            setErrorsDates([]);
         }
-    }, [loadingErrorsFiles.inFpo, dateBpa]);
+    }, [loadingErrorsFiles.inFpo, dateBpa, refresh]);
 
 
     async function inAgeMaxMin() {

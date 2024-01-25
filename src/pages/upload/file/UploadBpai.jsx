@@ -68,7 +68,7 @@ function UploadBpai(props) {
                     reset();
                     openSnackBarFun(false, "BPA-I salvo!");
                 } catch(e) {
-                    switch (e.response.data[0].errorType) {
+                    switch (e.response.data[0] && e.response.data[0].errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
@@ -129,7 +129,7 @@ function UploadBpai(props) {
           'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
         return monthNames[monthNumber - 1];
-    };
+    }
 
     function reset() {
         setErrorMonth(false);
@@ -157,7 +157,7 @@ function UploadBpai(props) {
     
         // Atualizar o índice para o próximo conjunto de erros
         setStartIndex(startIndex + 5);
-    };
+    }
 
     return (
         <>

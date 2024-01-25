@@ -56,10 +56,10 @@ function InCep({ dateBpa }) {
                     ids.push(cep.id);
                 });
 
-                await api.post(`/bpai/update/${0}`, { "key": "cep", "ids": ids });
+                await api.post(`/bpai/update/0`, { "key": "cepBlank", "ids": ids });
                 
             } else {
-                await api.post(`/bpai/update/${cep.id}`, { "cep": cep.cepInvalid });
+                await api.post(`/bpai/update/${cep.id}`, { "key": "cepBlank", "cep": cep.cepInvalid });
             }
             await inCep();
             handleClose();

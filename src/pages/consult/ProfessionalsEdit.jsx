@@ -7,9 +7,22 @@ import { LoadingButton } from "@mui/lab";
 import { Card, CardBody, CardTitle, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import SearchIcon from '@mui/icons-material/Search';
 import "react-datepicker/dist/react-datepicker.css";
-import { formatNameMonth, maskCPF } from "../../Validation&Formatation/formatation";
+import { maskCEP, maskCPF, maskCell, maskPointThree } from "../../Validation&Formatation/formatation";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import { CircularProgress } from "@mui/material";
 
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const field = [
     {
@@ -26,35 +39,43 @@ const field = [
     },
     {
         key: 'codCns',
-        name: 'Código CNS'
+        name: 'Código CNS',
+        length: 15
     },
     {
         key: 'codCbo',
-        name: 'Código CBO'
+        name: 'Código CBO',
+        length: 6
     },
     {
         key: 'logradouro',
-        name: 'Logradouro'
+        name: 'Logradouro',
+        length: 30
     },
     {
         key: 'number',
-        name: 'Número'
+        name: 'Número',
+        length: 6
     },
     {
         key: 'complement',
-        name: 'Complemento'
+        name: 'Complemento',
+        length: 30
     },
     {
         key: 'bairrodist',
-        name: 'Bairro'
+        name: 'Bairro',
+        length: 30
     },
     {
         key: 'codCep',
-        name: 'CEP'
+        name: 'CEP',
+        length: 8
     },
     {
         key: 'telephone',
-        name: 'Telefone'
+        name: 'Telefone',
+        length: 11
     }
 ]
 
@@ -64,8 +85,10 @@ function ProfessionalEdit() {
     document.title="Consultar Profissional";
     
     const { openSnackBarFun } = useContext(SnackBarContext);
+    const [open, setOpen] = useState(false);
     const [professional, setProfessional] = useState({});
     const [loading, setLoading] = useState(false);
+    const [loadingEdit, setLoadingEdit] = useState(false);
     const [idProfessional, setIdProfessional] = useState('');
 
 
@@ -75,12 +98,47 @@ function ProfessionalEdit() {
             const response = await api.get(`/prof/get/${idProfessional}`);
             setProfessional(response.data);
         } catch (e) {
-            openSnackBarFun(true, "Nenhum profissional encontrado com essa ID na data informada!")
+            const response = e.response.data;
+            if(response && response === "NOT EXIST DATE PROFESSIONALS") {
+                openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
+            } else {
+                openSnackBarFun(true, "Nenhum profissional encontrado!");
+            }
         }
         setLoading(false);
     }
 
+    async function apiEdit() {
+        setLoadingEdit(true);
+        try {
+            await api.post(`/prof/edit/${professional.id}`, professional);
+            handleClose();
+            openSnackBarFun(false, "Profissional atualizado");
+        } catch(e) {
+            openSnackBarFun();
+        }
+        setLoadingEdit(false);
+    }
 
+    function auxMask(field, value) {
+        switch(field) {
+            case 'cpf': return maskCPF(value);
+            case 'codCns': return maskPointThree(value);
+            case 'profId': return maskPointThree(value);
+            case 'codCep': return maskCEP(value);
+            case 'telephone': return maskCell(value);
+            default: return value;
+        }
+    }
+
+    function handleClickOpen(id) {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
+    
 
     return (
         <>
@@ -89,7 +147,7 @@ function ProfessionalEdit() {
                     {/* Render Breadcrumbs */}
                     <Breadcrumbs title="Profissional" breadcrumbItem="Consultar profissional" />
                     <AlertCustom
-                        msg="A consulta do profissional é feita no arquivo configurado em (Arquivos de validações)"
+                        msg="Consulte e edite os profissionais. A consulta do profissional é feita no arquivo configurado em (Arquivos de validações)"
                         type="info"
                     />
                     <div className="flex justify-center items-end w-full mt-5">
@@ -101,14 +159,14 @@ function ProfessionalEdit() {
                             size="small"
                             onChange={ e => {
                                 const inputValue = e.target.value;
-                                if (!isNaN(Number(e.target.value)) && inputValue.length <= 50) setIdProfessional(inputValue);
+                                if (!isNaN(Number(e.target.value)) && inputValue.length <= 16) setIdProfessional(inputValue);
                             }}
                             className="w-1/2 mt-4 mr-3"
                         />
                         <LoadingButton
                             loading={loading}
                             variant="contained"
-                            disabled={idProfessional === '' || idProfessional.length < 5}
+                            disabled={idProfessional === '' || idProfessional.length < 16}
                             endIcon={<SearchIcon />}
                             sx={{
                                 ml: 3, mb: 0.3
@@ -144,7 +202,7 @@ function ProfessionalEdit() {
                                                                                 name="projectname"
                                                                                 type="text"
                                                                                 disabled
-                                                                                value={professional[fieldName.key]}
+                                                                                value={auxMask(fieldName.key, professional[fieldName.key])}
                                                                                 className="form-control"
                                                                             />
                                                                         </Col>
@@ -156,12 +214,101 @@ function ProfessionalEdit() {
                                                 </Card>
                                             </Col>
                                         </Row>
+                                        <div className="flex justify-end w-full">
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => handleClickOpen()}
+                                            >
+                                                Editar
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </>
                     }
                 </Container>
             </div>
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={handleClose}
+                TransitionComponent={Transition}
+            >
+                <AppBar className="!relative !bg-default">
+                    <Toolbar>
+                        {
+                            loadingEdit ?
+                                <div className="flex justify-end w-full">
+                                    <CircularProgress size={28} color="warning"/>
+                                </div>
+                            :
+                                <>
+                                    <Button
+                                        autoFocus
+                                        variant="contained"
+                                        color="error"
+                                        onClick={handleClose}
+                                    >
+                                        fechar
+                                    </Button>
+                                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        autoFocus
+                                        color="success"
+                                        onClick={apiEdit}
+                                    >
+                                        salvar
+                                    </Button>
+                                </>
+                        }
+                    </Toolbar>
+                </AppBar>
+                <div className="flex justify-center">
+                    <div className="w-full p-2">
+                        <Row>
+                            <Col lg="12">
+                                <Card>
+                                    <CardBody>
+                                        {/* <CardTitle className="mb-4">Informações</CardTitle> */}
+                                        <Form>
+                                            {
+                                                field.map((fieldName, index) => {
+                                                    const show = (["profId", "name", "cpf"].includes(fieldName.key));
+                                                    
+                                                    return !show && (
+                                                                <FormGroup key={index} className="" row>
+                                                                    <Label
+                                                                        htmlFor="projectname"
+                                                                        className="col-form-label col-lg-2"
+                                                                    >
+                                                                        {fieldName.name}
+                                                                    </Label>
+                                                                    <Col lg="10">
+                                                                        <Input
+                                                                            id="projectname"
+                                                                            name="projectname"
+                                                                            type="text"
+                                                                            value={professional[fieldName.key]}
+                                                                            className="form-control"
+                                                                            onChange={ e => {
+                                                                                if( e.target.value.length <= fieldName.length ) setProfessional( prof => ({ ...prof, [fieldName.key]: e.target.value }))
+                                                                            }}
+                                                                        />
+                                                                    </Col>
+                                                                </FormGroup>
+                                                            )
+                                                })
+                                            }
+                                        </Form>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                </div>
+            </Dialog>
         </>
     );
 };

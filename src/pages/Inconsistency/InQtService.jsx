@@ -16,7 +16,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Tooltip from "@mui/material/Tooltip";
 
 
-function InQtService({ dateBpa }) {
+function InQtService({ dateBpa, refresh }) {
 
     const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles} = useContext(SnackBarContext);
     const [service, setService] = useState({});
@@ -33,8 +33,9 @@ function InQtService({ dateBpa }) {
         if(!loadingErrorsFiles.inCep) {
             inQtService();
             setStartIndex(5);
+            setErrorsQtService([]);
         }
-    }, [loadingErrorsFiles.inCep, dateBpa, reloadErrors]);
+    }, [loadingErrorsFiles.inCep, dateBpa, refresh, reloadErrors]);
 
     async function inQtService() {
         try {
@@ -61,7 +62,7 @@ function InQtService({ dateBpa }) {
                 await api.post(`/bpai/update/${0}`, { "key": "qtService", "ids": ids });
 
             } else {
-                await api.post(`/bpai/update/${service.id}`, { "qtService": [service.qt, service.qtMax] });
+                await api.post(`/bpai/update/${service.id}`, { "key": "qtService", "qtService": [service.qt, service.qtMax]});
             }
             await inQtService();
             handleClose();

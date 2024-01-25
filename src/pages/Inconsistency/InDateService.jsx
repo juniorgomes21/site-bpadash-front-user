@@ -8,7 +8,7 @@ import SouthIcon from '@mui/icons-material/South';
 import Button from '@mui/material/Button';
 
 
-function InDateService({ dateBpa }) {
+function InDateService({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [services, setServices] = useState([]);
@@ -21,8 +21,9 @@ function InDateService({ dateBpa }) {
         if(!loadingErrorsFiles.inQtService) {
             inDataService();
             setStartIndex(5);
+            setErrorsDates([]);
         }
-    }, [loadingErrorsFiles.inQtService, dateBpa]);
+    }, [loadingErrorsFiles.inQtService, dateBpa, refresh]);
 
     async function inDataService() {
         try {

@@ -13,9 +13,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { formatMonth } from "../../Validation&Formatation/formatation";
-import { months } from "moment";
-import { LoadingButton } from "@mui/lab";
 import api from "../../services/api";
+import { Button } from "@mui/material";
 
 const files = [
     {
@@ -29,7 +28,7 @@ const files = [
       show: true
     },
     {
-      name: 'Profissional',
+      name: 'Profissionais',
       acronym: 'PROF',
       show: false
     },
@@ -46,7 +45,7 @@ const files = [
 ]
 
 function FilesConf(props) {
-  //meta title
+
   document.title="Configuração dos Arquivos";
 
   const [fileConfigs, setFileConfigs] = useState([]);
@@ -56,6 +55,7 @@ function FilesConf(props) {
   const [datesMonths, setDatesMonths] = useState([]);
   const [datesYears, setDatesYears] = useState([]);
   const [nameFile, setNameFile] = useState("Ocupação");
+
 
   useEffect(() => {
     getFiles();
@@ -84,7 +84,6 @@ function FilesConf(props) {
     }
   }
 
-
   function handleChange(event) {
 
     setDatesYears(fileConfigs[indexState].years);
@@ -102,31 +101,27 @@ function FilesConf(props) {
 
       return newList;
     });
-  };
-
-
-  function changeFile(index) {
-    if(fileConfigs[index].datesFull.length != 0) {
-      const item = fileConfigs[index];
-
-      setDatesYears(item.years);
-
-      if(item.dateCurrent.length > 0) {
-        setMonth(item.dateCurrent[0][0]);
-        setYear(item.dateCurrent[0][1]);
-        
-        const newArray = item.datesFull.find(itemx => itemx[1][0] == item.dateCurrent[0][1]);
-        setDatesMonths(newArray[0]);
-      } else {
-        setMonth('');
-        setYear('');
-      }
-
-      setNameFile(item.arqName);
-      setIndexState(index);
-    }
   }
 
+  function changeFile(index) {
+    const item = fileConfigs[index];
+
+    setDatesYears(item.years);
+
+    if(item.dateCurrent.length > 0) {
+      setMonth(item.dateCurrent[0][0]);
+      setYear(item.dateCurrent[0][1]);
+      
+      const newArray = item.datesFull.find(itemx => itemx[1][0] == item.dateCurrent[0][1]);
+      setDatesMonths(newArray[0]);
+    } else {
+      setMonth('');
+      setYear('');
+    }
+
+    setNameFile(item.arqName);
+    setIndexState(index);
+  }
 
   function handleChangeMonth(event) {
 
@@ -163,6 +158,7 @@ function FilesConf(props) {
     setYear(event.target.value);
   }
 
+
   return (
     <>
       <div className="page-content">
@@ -184,15 +180,14 @@ function FilesConf(props) {
                               <div
                                 key={index}
                                 onClick={() => changeFile(index)}
-                                className={`flex flex-col items-center cursor-pointer rounded-lg  ${indexState == index ? "shadow-xl shadow-green-400 border-[0.5px] border-green-300 -mt-4" : ""} p-3`}
+                                className={`flex flex-col items-center cursor-pointer rounded-lg  ${indexState == index ? `shadow-xl border-[0.5px] -mt-4 ${ fileConfigs[index].datesFull.length == 0 ? "shadow-red-400 border-red-300" : "shadow-green-400 border-green-300"}` : ""} p-3`}
                               >
-                                  <div key={index} className={`flex flex-col items-center border-2 bg-white ${ fileConfigs[index].datesFull.length != 0 ? "border-green-500" : "border-red-500"} ${indexState == index ? "-mt-8 mb-2" : "hover:-mt-4 hover:mb-4"} p-3 w-28 rounded-md`}>
+                                  <div key={index} className={`flex flex-col items-center border-2 bg-white ${ fileConfigs[index].datesFull.length > 0 ? "border-green-500" : "border-red-500"} ${indexState == index ? "-mt-8 mb-2" : "hover:-mt-4 hover:mb-4"} p-3 w-28 rounded-md`}>
                                       <div className="flex flex-col items-center my-1">
                                           <DescriptionIcon sx={{ fontSize: 30, color: fileConfigs[index].datesFull.length != 0 ? "green" : "red" }}/>
                                           <p>{file.acronym}</p>
                                       </div>
                                       <p>{file.name}</p>
-                                      
                                   </div>
                               </div>
                           ))
@@ -200,87 +195,109 @@ function FilesConf(props) {
                 </div>
                 <div className="flex justify-center w-full mt-8">
                   <div className="w-4/5 border-[1px] border-default rounded-md">
-                      <div className="flex justify-center w-full my-8">
-                        <p className="text-base">
-                          Selecione a forma com que o sistema irá obter a data do arquivo ({nameFile})
-                        </p>
-                      </div>
-                      <div className="flex justify-around w-full my-3">
-                          <div className="flex items-center">
-                            <Radio
-                              checked={fileConfigs[indexState].auto == false}
-                              onClick={handleChange}
-                              name="radio-buttons"
-                            />
-                            <p className="mr-2">Manual</p>
-                            <Tooltip title="Você seleciona a data do arquivo">
-                              <HelpOutlineIcon sx={{ fontSize: 20 }}/>
-                            </Tooltip>
+                    {
+                      datesYears.length == 0 ?
+                        <>
+                          <div className="flex justify-center w-full my-8">
+                            <p className="text-base">
+                              Você ainda não tem nenhum arquivo ({nameFile}). Por favor faça o upload.
+                            </p>
                           </div>
-                          <div className="flex items-center">
-                            <Radio
-                              checked={fileConfigs[indexState].auto == true}
-                              onClick={handleChange}
-                              name="radio-buttons"
-                            />
-                            <p className="mr-2">Automática</p>
-                            <Tooltip title="O sistema pegará o arquivo mais recente">
-                              <HelpOutlineIcon sx={{ fontSize: 20 }}/>
-                            </Tooltip>
+                          <div className="flex justify-center w-full my-8">
+                            <Link to={nameFile === "FPO" ? "/upload/fpo" : "/upload/professionals"}>
+                              <Button
+                                variant="contained"
+                              >
+                                Fazer upload {">"}
+                              </Button>
+                            </Link>
                           </div>
-                      </div>
-                      {
-                        !fileConfigs[indexState].auto &&
-                          <div className="flex justify-center my-10">
-                            <div className="mr-10">
-                                <div className="mb-2">
-                                    <p className="text-base">Selecione o mês desejado</p>
-                                </div>
-                                <FormControl
-                                  fullWidth
-                                >
-                                  <InputLabel id="demo-simple-select-label">{'Mês'}</InputLabel>
-                                  <Select
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      disabled={year === ''}
-                                      value={month}
-                                      label={'Mês'}
-                                      onChange={handleChangeMonth}
-                                      >
-                                      {datesMonths.map((item, index) => (
-                                          <MenuItem key={index} value={item}>
-                                              {formatMonth(item)}
-                                          </MenuItem>
-                                      ))}
-                                  </Select>
-                                </FormControl>
+                        </>
+                      :
+                      <>
+                        <div className="flex justify-center w-full my-8">
+                          <p className="text-base">
+                            Selecione a forma com que o sistema irá obter a data do arquivo ({nameFile})
+                          </p>
+                        </div>
+                        <div className="flex justify-around w-full my-3">
+                            <div className="flex items-center">
+                              <Radio
+                                checked={fileConfigs[indexState].auto == false}
+                                onClick={handleChange}
+                                name="radio-buttons"
+                              />
+                              <p className="mr-2">Manual</p>
+                              <Tooltip title="Você seleciona a data do arquivo">
+                                <HelpOutlineIcon sx={{ fontSize: 20 }}/>
+                              </Tooltip>
                             </div>
-                            <div>
-                                <div className="mb-2">
-                                <p className="text-base">Selecione o ano desejado</p>
-                                </div>
-                                <FormControl
-                                  fullWidth
-                                >
-                                  <InputLabel id="demo-simple-select-label">{'Ano'}</InputLabel>
-                                  <Select
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      value={year}
-                                      label={'Ano'}
-                                      onChange={handleChangeYear}
+                            <div className="flex items-center">
+                              <Radio
+                                checked={fileConfigs[indexState].auto == true}
+                                onClick={handleChange}
+                                name="radio-buttons"
+                              />
+                              <p className="mr-2">Automática</p>
+                              <Tooltip title="O sistema pegará o arquivo mais recente">
+                                <HelpOutlineIcon sx={{ fontSize: 20 }}/>
+                              </Tooltip>
+                            </div>
+                        </div>
+                        {
+                          !fileConfigs[indexState].auto &&
+                            <div className="flex justify-center my-10">
+                              <div className="mr-10">
+                                  <div className="mb-2">
+                                      <p className="text-base">Selecione o mês desejado</p>
+                                  </div>
+                                  <FormControl
+                                    fullWidth
                                   >
-                                  {datesYears.map((item, index) => (
-                                      <MenuItem key={index} value={item}>
-                                          {item}
-                                      </MenuItem>
-                                  ))}
-                                  </Select>
-                                </FormControl>
+                                    <InputLabel id="demo-simple-select-label">{'Mês'}</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        disabled={year === ''}
+                                        value={month}
+                                        label={'Mês'}
+                                        onChange={handleChangeMonth}
+                                        >
+                                        {datesMonths.map((item, index) => (
+                                            <MenuItem key={index} value={item}>
+                                                {formatMonth(item)}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                  </FormControl>
+                              </div>
+                              <div>
+                                  <div className="mb-2">
+                                    <p className="text-base">Selecione o ano desejado</p>
+                                  </div>
+                                  <FormControl
+                                    fullWidth
+                                  >
+                                    <InputLabel id="demo-simple-select-label">{'Ano'}</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={year}
+                                        label={'Ano'}
+                                        onChange={handleChangeYear}
+                                    >
+                                    {datesYears.map((item, index) => (
+                                        <MenuItem key={index} value={item}>
+                                            {item}
+                                        </MenuItem>
+                                    ))}
+                                    </Select>
+                                  </FormControl>
+                              </div>
                             </div>
-                          </div>
-                      }
+                        }
+                      </>
+                    }
                   </div>
                 </div>
               </>

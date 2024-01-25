@@ -23,20 +23,32 @@ import DatePickerContext from "../../contexts/DateGlobalBpa";
 import Radio from '@mui/material/Radio';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { formatField } from "../../Validation&Formatation/formatation";
+import { formatField, formatNameMonth } from "../../Validation&Formatation/formatation";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { orange } from "@mui/material/colors";
 
+
+const fieldsList = [
+    "cnes",
+    "cbo",
+    "pa",
+    "idade",
+    "qt",
+    "org"
+]
 
 function ReplacementBpac(props) {
     
     document.title = "Substituir valor BPA-C";
     
     const url = "/treatment/replacement/custom";
+    const { month, year } = useContext(DatePickerContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormatedDate } = useContext(DatePickerContext);
     const [rules, setRules] = useState({});
@@ -182,7 +194,6 @@ function ReplacementBpac(props) {
         }
     ]);
     const [ruleObj, setRuleObj] = useState({ "id": 0, "index": -1 });
-    const [paransPa, setParansPa] = useState({ "paCurrent": "", "newPa": "" });
     const [errors, setErrors] = useState({ "valuefield": false, "valueCriterionOne": false, "valueCriterionTwo": false, "valueCriterionThree": false });
     const [errorsNewRule, setErrorsNewRule] = useState({ "valuefield": false, "valueCriterionOne": false, "valueCriterionTwo": false, "valueCriterionThree": false });
     const [open, setOpen] = useState({ "delete": false, "edit": false, "play": false, "create": false, "playAll": false });
@@ -219,6 +230,8 @@ function ReplacementBpac(props) {
             }
             await api.post( url + `/update/execute/file/${rule.id}`, obj);
             await apiGetRules();
+            openSnackBarFun(false, "A regra será executada no arquivo " + (obj.executeBpac ? "BPA-C" : "BPA-I"));
+
         } catch (e) {
             console.log(e);
         }
@@ -407,7 +420,6 @@ function ReplacementBpac(props) {
     }
 
     function handleClose() {
-        setParansPa({ "paCurrent": "", "newPa": "" });
         setErrors({ ...errors, ["error"]: false });
         setOpen({ "delete": false, "edit": false, "play": false, "create": false, "playAll": false });
     }
@@ -636,6 +648,16 @@ function ReplacementBpac(props) {
         }
     }
 
+    function haveFieldBpai(rule) {
+        const { field, criterionOne, criterionTwo, criterionThree } = rule;
+
+        const fieldB = fieldsList.includes(field);
+        const criterionOneB = fieldsList.includes(criterionOne);
+        const criterionTwoB = criterionTwo === "" || fieldsList.includes(criterionTwo);
+        const criterionThreeB = criterionThree === "" || fieldsList.includes(criterionThree);
+    
+        return !(fieldB && criterionOneB && criterionTwoB && criterionThreeB);
+    }
 
     return (
         <>
@@ -648,10 +670,10 @@ function ReplacementBpac(props) {
                     />
                     <AlertCust
                         type="warning"
-                        msg="AS REGRAS SERAM EXECUTADAS NO ARQUIVO BPA SELECIONADO"
+                        msg={`As regras seram aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
                     />
                     <p className="flex justify-center mt-8 text-center text-sm">
-                        Adicione regras de substituição de campo. Nessa regra você escolhe um campo BPA-C que vai ser substituído e você pode adicionar até 3
+                        Adicione regras de substituição de campo. Aqui você escolhe um campo no arquivo BPA que vai ser substituído e você pode adicionar até 3
                         critérios para que essa regra sejá aplicada. Ao executar a regra todos os campos escolhido por você que atenda os critérios informados seram substituidos
                         pelo novo valor do campo informado.
                     </p>
@@ -1073,55 +1095,69 @@ function ReplacementBpac(props) {
                                                                                     <CircularProgress size={20} />
                                                                                 </div>
                                                                                 :
-                                                                                <>
-                                                                                    <Tooltip title="Excluir">
-                                                                                        <LoadingButton
-                                                                                            color="error"
-                                                                                            variant="contained"
-                                                                                            size="small"
-                                                                                            onClick={() => handleDeleteRule("delete", rule.id, false, index)}
-                                                                                        >
-                                                                                            <DeleteForeverIcon />
-                                                                                        </LoadingButton>
-                                                                                    </Tooltip>
-                                                                                    <div className="mx-2">
-                                                                                        <Tooltip title="Salvar alterações">
+                                                                                <div className="flex justify-between w-full">
+                                                                                    <div>
+                                                                                        {
+                                                                                            (rule.executeBpac && haveFieldBpai(rule)) && 
+                                                                                                <Tooltip placement="top" title="Essa regra não será executada no arquivo BPAC, por favor remover os campos BPAI">
+                                                                                                    <div className="ml-2 transition transform hover:scale-125">
+                                                                                                        <div className="flex justify-center items-center rounded-full p-2">
+                                                                                                            <WarningAmberIcon className="text-red-500" sx={{ fontSize: 35 }}/>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </Tooltip>
+                                                                                        }
+                                                                                    </div>
+                                                                                    <div className="flex items-center">
+                                                                                        <Tooltip placement="top" title="Excluir" className="hover:-mt-3">
                                                                                             <LoadingButton
+                                                                                                color="error"
                                                                                                 variant="contained"
                                                                                                 size="small"
-                                                                                                onClick={() => isValid(index, false)}
+                                                                                                onClick={() => handleDeleteRule("delete", rule.id, false, index)}
                                                                                             >
-                                                                                                <CheckIcon />
+                                                                                                <DeleteForeverIcon />
+                                                                                            </LoadingButton>
+                                                                                        </Tooltip>
+                                                                                        <div className="mx-2 hover:-mt-3">
+                                                                                            <Tooltip placement="top" title="Salvar alterações">
+                                                                                                <LoadingButton
+                                                                                                    variant="contained"
+                                                                                                    size="small"
+                                                                                                    onClick={() => isValid(index, false)}
+                                                                                                >
+                                                                                                    <CheckIcon />
+                                                                                                </LoadingButton>
+                                                                                            </Tooltip>
+                                                                                        </div>
+                                                                                        <div className="mr-2 hover:-mt-3">
+                                                                                            <Tooltip placement="top" title="Adicionar Critério">
+                                                                                                <span>
+                                                                                                    <Button
+                                                                                                        variant="contained"
+                                                                                                        size="small"
+                                                                                                        disabled={rule.criterionThree != ""}
+                                                                                                        color="warning"
+                                                                                                        onClick={() => handleAddCriterion(index, false)}
+                                                                                                    >
+                                                                                                        <AddIcon />
+                                                                                                    </Button>
+                                                                                                </span>
+                                                                                            </Tooltip>
+                                                                                        </div>
+                                                                                        <Tooltip placement="top" title="Executar" className="hover:-mt-3">
+                                                                                            <LoadingButton
+                                                                                                disabled={rule.executeBpac == false && rule.executeBpai == false}
+                                                                                                color="success"
+                                                                                                variant="contained"
+                                                                                                size="small"
+                                                                                                onClick={() => handleExecuteRule("play", rule.id, index)}
+                                                                                            >
+                                                                                                <PlayArrowIcon />
                                                                                             </LoadingButton>
                                                                                         </Tooltip>
                                                                                     </div>
-                                                                                    <div className="mr-2">
-                                                                                        <Tooltip title="Adicionar Critério">
-                                                                                            <span>
-                                                                                                <Button
-                                                                                                    variant="contained"
-                                                                                                    size="small"
-                                                                                                    disabled={rule.criterionThree != ""}
-                                                                                                    color="warning"
-                                                                                                    onClick={() => handleAddCriterion(index, false)}
-                                                                                                >
-                                                                                                    <AddIcon />
-                                                                                                </Button>
-                                                                                            </span>
-                                                                                        </Tooltip>
-                                                                                    </div>
-                                                                                    <Tooltip title="Executar">
-                                                                                        <LoadingButton
-                                                                                            disabled={rule.executeBpac == false && rule.executeBpai == false}
-                                                                                            color="success"
-                                                                                            variant="contained"
-                                                                                            size="small"
-                                                                                            onClick={() => handleExecuteRule("play", rule.id, index)}
-                                                                                        >
-                                                                                            <PlayArrowIcon />
-                                                                                        </LoadingButton>
-                                                                                    </Tooltip>
-                                                                                </>
+                                                                                </div>
                                                                         }
                                                                     </div>
                                                                     <div className="w-full">

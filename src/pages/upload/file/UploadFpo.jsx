@@ -15,7 +15,7 @@ import { formatDate } from "../../../Validation&Formatation/formatation";
 import DivLoadingSvg from "../DivLoadingSvg";
 import "react-datepicker/dist/react-datepicker.css";
 
-function Fpo() {
+function UploadFpo() {
 
     document.title="Novo Documento FPO";
     
@@ -42,18 +42,20 @@ function Fpo() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewFpo', JSON.stringify(paramNewFpo));
-                    console.log(paramNewFpo);
                     await api.post('/fpo/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    console.log(e.response.data);
-                    switch (e.response.data[0].errorType) {
+                    const response = e.response.data[0];
+                    switch (response && response.errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
                         case "EXIST DATE":
                             openSnackBarFun(true, "Já existe um arquivo com a data informada!");
+                            break;
+                        case "FILE INVALID":
+                            openSnackBarFun(true, "O arquivo não é um arquivo FPO!");
                             break;
                         default:
                             setErrorsFile(e.response.data);
@@ -293,4 +295,4 @@ function Fpo() {
     );
 };
 
-export default Fpo;
+export default UploadFpo;

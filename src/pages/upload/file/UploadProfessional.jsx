@@ -29,29 +29,32 @@ function UploadProfessional() {
     const [startIndex, setStartIndex] = useState(5);
     const [errorsFile, setErrorsFile] = useState([]);
 
-    async function apiCreateFPO() {
+    async function apiCreate() {
         setLoading(true);
         if (selectedFiles[0].size < 10485760) {
             if(selectedFiles.length > 0) {
                 try {
                     const paramNewProfessionals = {
-                        name: name === '' ? "Profissionais do mês " + (startDate.getMonth() + 1) : name,
+                        name: name === '' ? "Arquivo Profissionais" : name,
                         date: formatDate(startDate),
                         bytes: bytes
                     };
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewProfessionals', JSON.stringify(paramNewProfessionals));
-                    await api.post('/prof/create/file', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post('/prof/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
                     switch (e.response.data[0] && e.response.data[0].errorType) {
+                        case "EXIST DATE":
+                            openSnackBarFun(true, "Já existe um arquivo de profissionais na data informada!");
+                            break;
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
-                        case "EXIST DATE":
-                            openSnackBarFun(true, "Já existe um arquivo de profissionais na data informada!");
+                        case "FILE INVALID":
+                            openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
                         default:
                             openSnackBarFun();
@@ -74,7 +77,7 @@ function UploadProfessional() {
 
     function startDateChange(date) {
         setStartDate(date);
-    };
+    }
 
     function handleAcceptedFiles(files) {
         files.map(file =>
@@ -92,7 +95,7 @@ function UploadProfessional() {
         const nextErrors = errorsFile.slice(startIndex, startIndex + 5);
         setDisplayedErrors((prevErrors) => [...prevErrors, ...nextErrors]);
         setStartIndex(startIndex + 5);
-    };
+    }
 
     function reset() {
         setName('');
@@ -248,7 +251,6 @@ function UploadProfessional() {
                                     selectedFiles.length > 0 && !loading &&
                                         <Button
                                             variant="contained"
-                                            loading={loading}
                                             onClick={() => {
                                                 setSelectedFiles([]);
                                             }}
@@ -267,7 +269,7 @@ function UploadProfessional() {
                                     }
                                     loading={loading}
                                     onClick={() => {
-                                        apiCreateFPO()
+                                        apiCreate()
                                     }}
                                 >
                                     Subir arquivo

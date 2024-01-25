@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import LoadingButton from "@mui/lab/LoadingButton";
 import SouthIcon from '@mui/icons-material/South';
 
-function InCep({ dateBpa }) {
+function InCep({ dateBpa, refresh }) {
 
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
@@ -31,8 +31,9 @@ function InCep({ dateBpa }) {
         if(!loadingErrorsFiles.ageDate) {
             inCep();
             setStartIndex(5);
+            setErrorsDates([]);
         }
-    }, [loadingErrorsFiles.ageDate, dateBpa]);
+    }, [loadingErrorsFiles.ageDate, dateBpa, refresh]);
 
 
     async function inCep() {
@@ -76,13 +77,13 @@ function InCep({ dateBpa }) {
                 });
 
                 if(errors.haveInvalid) {
-                    await api.post(`/bpai/update/${0}`, { "key": "cep", "ids": ids });
+                    await api.post(`/bpai/update/0`, { "key": "cep", "ids": ids });
                 } else {
-                    await api.post(`/bpai/update/${0}`, { "key": "cepBlank", "ids": ids });
+                    await api.post(`/bpai/update/0`, { "key": "cepBlank", "ids": ids });
                 }
                 
             } else {
-                await api.post(`/bpai/update/${cep.id}`, { "cep": cep.cepInvalid });
+                await api.post(`/bpai/update/${cep.id}`, { "key": "cep", "cep": cep.cepInvalid });
             }
             setErrors({ "haveBlank": false, "haveInvalid": false });
             await inCep();

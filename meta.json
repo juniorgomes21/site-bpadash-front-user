@@ -42,7 +42,8 @@ obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tare
 
 =================================== A FAZERES ===============================================
 
-
+() colocar uma referencia para o usuário identificar qual pacote está usando em configurações
+() adicionar @Transectional em todos os métodos que utilizam armazenamento do usuário
 
 =================================== CORREÇÕES ===============================================
 
@@ -56,6 +57,8 @@ obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tare
 () validar o tipo de arquivo se é BPAI.
 () validar o tipo de arquivo se é BPAC.
 (x) Avisar o usuário que ele pode invalidar informações na hora do upload.
+(x) complementar com espaços em brancos os carteres faltantes em CEP na correções.
+
 =================================== A POS CONCLUSÂO =========================================
 
 () Verificar todas as informações salvas se precisão ser criptrografadas -- medicos e usuários

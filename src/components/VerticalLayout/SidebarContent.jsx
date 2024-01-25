@@ -181,10 +181,21 @@ function SidebarContent(props) {
             </li>
 
             <li>
-              <Link to="/timeline/bpa" className="">
+              <Link to="/#" className="has-arrow">
                 <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Linha do Tempo BPA")}</span>
+                <span>{props.t("Linha do Tempo")}</span>
               </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/timeline/bpa">{props.t("BPA")}</Link>
+                </li>
+                <li>
+                  <Link to="/timeline/fpo">{props.t("FPO")}</Link>
+                </li>
+                <li>
+                  <Link to="/timeline/professionals">{props.t("PROFISSIONAIS")}</Link>
+                </li>
+              </ul>
             </li>
 
             <li>
@@ -247,9 +258,15 @@ function SidebarContent(props) {
             <li>
               <Link to="/#" className="has-arrow">
                 <PageviewIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Consulta SIGTAP")}</span>
+                <span>{props.t("Consultas")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/file/consult/fpo">{props.t("FPO")}</Link>
+                </li>
+                <li>
+                  <Link to="/file/consult/customers">{props.t("Paciênte")}</Link>
+                </li>
                 <li>
                   <Link to="/file/consult/professionals">{props.t("Profissionais")}</Link>
                 </li>
@@ -266,10 +283,16 @@ function SidebarContent(props) {
                   <Link to="/upload/bpa">{props.t("BPA")}</Link>
                 </li>
                 <li>
+                  <Link to="/upload/fpo">{props.t("FPO")}</Link>
+                </li>
+                <li>
                   <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
                 </li>
                 <li>
                   <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
+                </li>
+                <li>
+                  <Link to="/upload/professionals">{props.t("PROFISSIONAIS")}</Link>
                 </li>
               </ul>
             </li>
@@ -285,9 +308,6 @@ function SidebarContent(props) {
                 </li>
                 <li>
                   <Link to="/treatment/pa/cbo">{props.t("PA & CBO")}</Link>
-                </li>
-                <li>
-                  <Link to="/treatment/public/place">{props.t("Logradouro")}</Link>
                 </li>
                 <li>
                   <Link to="/treatment/pa/delete">{props.t("Apagar por PA")}</Link>

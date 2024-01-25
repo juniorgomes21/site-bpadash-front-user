@@ -8,7 +8,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import api from "../../services/api";
 import { formatDateString } from "../../Validation&Formatation/formatation";
 import Tooltip from '@mui/material/Tooltip';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,19 +17,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import loadingSvg from "../../assets/images/svg/loading.svg";
 import SnackBarContext from "../../contexts/managerService";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
-import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
-import AuthContext from "../../contexts/Auth";
 
 
-function Timeline(props) {
+function TimeLineFpo(props) {
 
     document.title="Linha do Tempo";
 
     const screenSize = window.screen.width;
-    
-    const { month, year } = useContext(DateGlobalBpaContext);
+
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const { getDates } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [timeLine, setTimeLine] = useState([]);
     const [select, setSelect] = useState([]);
@@ -44,7 +39,7 @@ function Timeline(props) {
 
     async function apiGetTimeLine() {
         try {
-            const response = await api.get("/user/timeline");
+            const response = await api.get("/fpo/timeline");
             setTimeLine(response.data);
         } catch(e) {
         }
@@ -52,38 +47,25 @@ function Timeline(props) {
     }
 
     async function apiDelete() {
+        setLoading(true);
         try {
-            setLoading(true);
-            await api.post("/bpa/delete", select);
-            await getDates();
+            await api.post("/fpo/delete", select);
             openSnackBarFun(false, "Arquivos apagados!")
             setSelect([]);
             apiGetTimeLine();
         } catch(e) {
-            setLoading(false);
+            //
         }
+        setLoading(false);
     }
 
-
-    function selectBPA(identifier) {
-        if(select.includes(identifier)) {
-            const updatedSelect = select.filter(item => item !== identifier);
+    function selectBPA(id) {
+        if(select.includes(id)) {
+            const updatedSelect = select.filter(item => item !== id);
             setSelect(updatedSelect);
         } else {
-            setSelect([...select, identifier]);
+            setSelect([...select, id]);
         }
-    }
-
-
-    function isDate(item) {
-        const date = formatDateString(item.date);
-        const dateSelect = formatDateString(`${year}-${(month < 9 ? "0" + month : month)}-01`);
-
-        if(date === dateSelect) {
-            return true;
-        }
-
-        return false;
     }
 
     function handleClick() {
@@ -94,7 +76,7 @@ function Timeline(props) {
         <>
             <div className="page-content">
                 <Container fluid>
-                    <Breadcrumbs title={props.t("Linha do Tempo")} breadcrumbItem={props.t("Linha do Tempo")} />
+                    <Breadcrumbs title={props.t("Linha do Tempo")} breadcrumbItem={props.t("Linha do Tempo Profissionais")} />
                     {
                         loading ?
                             <div className="flex justify-center mt-20">
@@ -117,7 +99,7 @@ function Timeline(props) {
                                     timeLine.length == 0 ?
                                         <AlertCustom
                                             type="info"
-                                            msg="Você não possui nenhum arquivo BPA!"
+                                            msg="Você não possui nenhum arquivo FPO!"
                                         />
                                     :
                                         timeLine.map((item, index) => (
@@ -128,7 +110,7 @@ function Timeline(props) {
                                                 <div className="flex items-center w-10/12">
                                                     <div
                                                         onClick={ e => {
-                                                                selectBPA(item.identifier);
+                                                                selectBPA(item.id);
                                                                 e.stopPropagation();
                                                             }}
                                                     >
@@ -136,12 +118,6 @@ function Timeline(props) {
                                                             size="small"
                                                         />
                                                     </div>
-                                                    {
-                                                        isDate(item) &&
-                                                        <Tooltip title="BPA selecionado" placement="top">
-                                                            <BookmarkIcon color="success" sx={{ fontSize: 20, mr: 1 }}/>
-                                                        </Tooltip>
-                                                    }
                                                     <div className="w-44">
                                                         <p>{item.name}</p>
                                                     </div>
@@ -204,13 +180,13 @@ function Timeline(props) {
                 </DialogActions>
             </Dialog>
         </>
-    );
-};
+    )
+}
 
-Timeline.propTypes = {
+TimeLineFpo.propTypes = {
   t: PropTypes.any,
   chartsData: PropTypes.any,
   onGetChartsData: PropTypes.func,
 };
 
-export default withTranslation()(Timeline);
+export default withTranslation()(TimeLineFpo);

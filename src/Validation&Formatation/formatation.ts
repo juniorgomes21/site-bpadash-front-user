@@ -134,19 +134,11 @@ export function maskMoney(money: Number) {
     return moneyFormatted;
 }
 
-export function maskBitSorte(bitSorte: Number) {
+export function maskPointThree(value: string) {
 
-    let moneyFormatted = "B$ " + bitSorte;
+    value = value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 
-    return moneyFormatted;
-}
-
-
-export function formatCode3(players: string) {
-
-    players = players.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-
-    return players;
+    return value;
 }
 
 export function formatNameMonth(monthNumber: number) {

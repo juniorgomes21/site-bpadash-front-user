@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import api from "../../../../services/api";
 import HeaderTable from "./HeaderTable";
 import TitleTable from "./TitleTable";
+import { formatDate, formatDateString, formatDateStringFull } from "../../../../Validation&Formatation/formatation";
 
 const names = [
   'cnes',
@@ -125,7 +126,9 @@ export default function TableBpai({ identifier }) {
                       {
                         names.map((name, index) => (
                           <TableCell key={index} align="center" className="truncate">
-                            {hasOnlyWhitEspace(row[name])}
+                            {
+                              name === "dtnasc" ? ((/^\s*$/.test(row[name])) ? "Em branco" : formatDateStringFull(row[name])) : hasOnlyWhitEspace(row[name])
+                            }
                           </TableCell>
                         ))
                       }

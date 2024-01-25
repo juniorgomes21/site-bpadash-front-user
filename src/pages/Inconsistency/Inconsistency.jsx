@@ -34,6 +34,7 @@ import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SnackBarContext from "../../contexts/managerService";
 import { CircularProgress } from "@mui/material";
 import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
+import api from "../../services/api";
 
 const files = [
   {
@@ -63,129 +64,168 @@ function Inconsistency(props) {
   document.title="Inconsistências";
   
   const dates = JSON.parse(localStorage.getItem("@Dates"));
-  const { month, year } = useContext(DateGlobalBpaContext);
+  const { month, year, getFormatedDate } = useContext(DateGlobalBpaContext);
   const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
   const [show, setShow] = useState(false);
-  const [dateBpa, setDateBpa] = useState(year + "-" + ( month < 10 ? "0" + month : month) + "-01");
-
+  const [showAlert, setShowAlert] = useState(false);
+  const [dateBpa, setDateBpa] = useState(getFormatedDate());
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    const date = year + "-" + ( month < 10 ? "0" + month : month) + "-01";
-    if(!(date === dateBpa)) {
-      setErrorsfiles({
-        "inFpo": true,
-        "ageDate": true,
-        "ageMinMax": true,
-        "inCep": true,
-        "inQtService":true,
-        "inDateService": true,
-        "inRace": true,
-        "inProfessionals": true,
-        "inProcedure": true,
-        "inOccupation": true
-      });
-      setLoadingErrorsfiles({
-        "inFpo": true,
-        "ageDate": true,
-        "ageMinMax": true,
-        "inCep": true,
-        "inQtService":true,
-        "inDateService": true,
-        "inRace": true,
-        "inProfessionals": true,
-        "inProcedure": true,
-        "inOccupation": true
-      });
-      setDateBpa(date);
+    haveFiles();
+    setLoadingErrorsfiles({
+      "inFpo": true,
+      "ageDate": true,
+      "ageMinMax": true,
+      "inCep": true,
+      "inQtService":true,
+      "inDateService": true,
+      "inRace": true,
+      "inProfessionals": true,
+      "inProcedure": true,
+      "inOccupation": true
+    });
+    setErrorsfiles({
+      "inFpo": true,
+      "ageDate": true,
+      "ageMinMax": true,
+      "inCep": true,
+      "inQtService":true,
+      "inDateService": true,
+      "inRace": true,
+      "inProfessionals": true,
+      "inProcedure": true,
+      "inOccupation": true
+    });
+    setDateBpa(getFormatedDate());
+  }, [month, year, refresh])
+
+  
+  async function haveFiles() {
+    try {
+      const response = await api.get("/sigtap/have/files");
+      setShowAlert(!response.data);
+    } catch(e) {
+      //
     }
-  }, [month, year])
+  }
 
 
   return (
-    <>
-      <div className="page-content">
-        <Container fluid>
-          {/* Render Breadcrumb */}
-          <Breadcrumbs title={props.t("Inconsistências")} breadcrumbItem={props.t("Inconsistências BPA")} />
-          {
-            dates.length == 0 &&
-              <div>
+    <div className="page-content">
+      <Container fluid>
+        {/* Render Breadcrumb */}
+        <Breadcrumbs title={props.t("Inconsistências")} breadcrumbItem={props.t("Inconsistências BPA")} />
+        {
+            showAlert &&
+              <div className="mb-8">
                 <AlertCustom
-                  msg="Você não possui nenhum arquivo BPA"
-                  type="info"
+                  msg="Faça upload dos arquivos necessários para fazer todas as validações! (PROFISSIONAIS e FPO)"
+                  type="error"
                 />
               </div>
+        }
+        {
+          dates.length == 0 &&
+            <div>
+              <AlertCustom
+                msg="Você não possui nenhum arquivo BPA"
+                type="info"
+              />
+            </div>
+        }
+        <div>
+          {
+            dates.length > 0 && 
+              <>
+                {
+                  !show ?
+                    <div className="flex justify-center w-full">
+                      <div className="flex flex-col items-center">
+                        <p className="text-base">Aqui você pode ver todas as inconsistências do arquivo atual.</p>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          className="mt-3"
+                          onClick={() => setShow(true)}
+                        >
+                          EXECUTAR
+                        </Button>
+                      </div>
+                    </div>
+                  :
+                    <>
+                      <div>
+                        {
+                          haveLoading() ?
+                            <div className="flex w-full justify-center mt-4">
+                              <CircularProgress size={20} />
+                            </div>
+                          :
+                            !haveErrors() &&
+                              <AlertCustom
+                                msg="Nenhum erro encontrado no arquivo selecionado"
+                                type="info"
+                              />
+                        }
+                      </div>
+                      <InFpo // precisa de PA
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <AgeMinMax
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      /> 
+                      <AgeDate
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InCep
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InQtService // precisa de PA
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InDateService
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InRace
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InProfessionals
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InProcedure // precisa de PA
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <InOccupation // precisa de PA
+                        dateBpa={dateBpa}
+                        refresh={refresh}
+                      />
+                      <div className="fixed bottom-20 right-10">
+                        <Button
+                          variant="contained"
+                          onClick={() => setRefresh(!refresh)}
+                        >
+                          RECARREGAR
+                        </Button>
+                      </div>
+                    </>
+                }
+              </>
           }
-          <div>
-            {
-              !show ?
-                <div className="flex justify-center w-full">
-                  <div className="flex flex-col items-center">
-                    <p className="text-base">Aqui você pode ver todas as inconsistências do arquivo atual.</p>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      className="mt-3"
-                      onClick={() => setShow(true)}
-                    >
-                      EXECUTAR
-                    </Button>
-                  </div>
-                </div>
-              :
-                <>
-                  <div>
-                    {
-                      haveLoading() ?
-                        <div className="flex w-full justify-center mt-4">
-                          <CircularProgress size={20} />
-                        </div>
-                      :
-                        !haveErrors() &&
-                          <AlertCustom
-                            msg="Nenhum erro encontrado no arquivo selecionado"
-                            type="info"
-                          />
-                    }
-                  </div>
-                  <InFpo // precisa de PA
-                    dateBpa={dateBpa}
-                  />
-                  <AgeMinMax
-                    dateBpa={dateBpa}
-                  /> 
-                  <AgeDate
-                    dateBpa={dateBpa}
-                  />
-                  <InCep
-                    dateBpa={dateBpa}
-                  />
-                  <InQtService // precisa de PA
-                    dateBpa={dateBpa}
-                  />
-                  <InDateService
-                    dateBpa={dateBpa}
-                  />
-                  <InRace
-                    dateBpa={dateBpa}
-                  />
-                  <InProfessionals
-                    dateBpa={dateBpa}
-                  />
-                  <InProcedure // precisa de PA
-                    dateBpa={dateBpa}
-                  />
-                  <InOccupation // precisa de PA
-                    dateBpa={dateBpa}
-                  />
-                </>
-            }
-          </div>
-        </Container>
-      </div>
-    </>
-  );
-};
+        </div>
+      </Container>
+    </div>
+  )
+}
 
 Inconsistency.propTypes = {
   t: PropTypes.any,

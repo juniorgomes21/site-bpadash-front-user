@@ -25,6 +25,8 @@ import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import AuthContext from '../../../contexts/Auth';
 import DateGlobalBpaContext from '../../../contexts/DateGlobalBpa';
 import { Link } from "react-router-dom";
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import AddHomeIcon from '@mui/icons-material/AddHome';
 
 const headCells = [
     {
@@ -85,7 +87,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
   const [titleBpa, setTitleBpa] = useState({});
   const [loading, setLoading] = useState(true);
   const [countRules, setCountrules] = useState(0);
-  const [open, setOpen] = useState({ "edit": false, "rules": false, "delete": false });
+  const [open, setOpen] = useState({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
 
   useEffect(() => {
     apiGetTitle();
@@ -117,16 +119,43 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
   }
 
   async function apiExecuteRules() {
+    setLoadingBpa(true);
     try {
       const countB = await api.post("/treatment/deleteperpa/execute/0", { "dateBpa": getFormatedDate() });
       const countA = await api.post("/treatment/replacement/pa/execute/0", { "dateBpa": getFormatedDate() });
       const countC = await api.post("/treatment/replacement/pa/cbo/execute/0", { "dateBpa": getFormatedDate() });
-      openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data} linhas alteradas`);
+      const countD = await api.post("/treatment/replacement/custom/execute/0", { "dateBpa": getFormatedDate() });
+      openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data + countD.data} linhas alteradas`);
+      
+    } catch(e) {
+      openSnackBarFun();
+    }
+    setLoadingBpa(false);
+  }
+
+  async function apiExecuteRuleCepBlank() {
+    setLoadingBpa(true);
+    try {
+      const count = await api.post("/treatment/address/execute", { "dateBpa": getFormatedDate() });
+      openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
 
     } catch(e) {
       console.log(e);
       openSnackBarFun();
     }
+    setLoadingBpa(false);
+  }
+
+  async function apiExecuteRuleAddressIncomplete() {
+    setLoadingBpa(true);
+    try {
+      const count = await api.post("/treatment/address/execute/cep", { "dateBpa": getFormatedDate() });
+      openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
+    } catch(e) {
+      console.log(e);
+      openSnackBarFun();
+    }
+    setLoadingBpa(false);
   }
 
   function hasOnlyWhitEspace(str) {
@@ -150,7 +179,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
   }
 
   function handleClickClose() {
-    setOpen({ "edit": false, "rules": false, "delete": false });
+    setOpen({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
   }
 
   return (
@@ -171,23 +200,43 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
                 CABEÇALHO
             </Typography>
             <>
-                <Link to="/file/edit/title" className="has-arrow">
-                  <Tooltip title="Editar" >
+                <div className='hover:mb-4'>
+                  <Link to="/file/edit/title" className="has-arrow">
+                    <Tooltip title="Editar" placement='top'>
+                        <IconButton>
+                            <EditIcon color="primary"/>
+                        </IconButton>
+                    </Tooltip>
+                  </Link>
+                </div>
+                <div className='hover:mb-4'>
+                  <Tooltip title="Preencher endereço" placement='top' onClick={() => handleClickOpen("cep")}>
                       <IconButton>
-                          <EditIcon color="primary"/>
+                        <AddHomeIcon className='text-yellow-300'/>
                       </IconButton>
                   </Tooltip>
-                </Link>
-                <Tooltip title="Executar regras" onClick={() => handleClickOpen("rules")}>
+                </div>
+                <div className='hover:mb-4'>
+                <Tooltip title="Corrigir CEP" placement='top' onClick={() => handleClickOpen("cepBlank")}>
+                    <IconButton>
+                      <AddLocationAltIcon className='text-white'/>
+                    </IconButton>
+                </Tooltip>
+                </div>
+                <div className='hover:mb-4'>
+                <Tooltip title="Executar regras" placement='top' onClick={() => handleClickOpen("rules")}>
                     <IconButton>
                       <DomainVerificationIcon className='text-green-400'/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Apagar" onClick={() => handleClickOpen("delete")}>
+                </div>
+                <div className='hover:mb-4'>
+                <Tooltip title="Apagar" placement='top' onClick={() => handleClickOpen("delete")}>
                     <IconButton>
                         <DeleteIcon color="error"/>
                     </IconButton>
                 </Tooltip>
+                </div>
             </>
         </Toolbar>
         <TableContainer component={Paper}>
@@ -234,7 +283,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
         </TableContainer>
         <Dialog
           open={open.rules}
-          onClose={() => handleClickOpen("rules")}
+          onClose={() => handleClickClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -249,6 +298,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
           <DialogActions>
             <Button
               variant="contained"
+              color='error'
               onClick={handleClickClose}
             >
               FECHAR
@@ -266,8 +316,51 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
           </DialogActions>
         </Dialog>
         <Dialog
+          open={open.cep || open.cepBlank}
+          onClose={() => handleClickClose()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+              Tem a certeza?
+          </DialogTitle>
+          <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {
+                  open.cep ?
+                    "EM MANUTENÇÃO" //"Essa ação substituirá os campos em branco no endereço do paciênte em BPA-I"
+                  :
+                    "Essa ação substituirá o endereço completo em BPA-I onde o CEP do paciênte for branco"
+                }
+              </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color='error'
+              onClick={handleClickClose}
+            >
+              FECHAR
+            </Button>
+            <Button
+              variant="contained"
+              color='success'
+              onClick={() => {
+                if(open.cep) {
+                  // apiExecuteRuleAddressIncomplete();
+                } else {
+                  apiExecuteRuleCepBlank();
+                }
+                handleClickClose();
+              }}
+            >
+              EXECUTAR
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
           open={open.delete}
-          onClose={() => handleClickOpen("delete")}
+          onClose={() => handleClickClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >

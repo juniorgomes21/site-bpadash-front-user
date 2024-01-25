@@ -10,7 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-function InProcedure({ dateBpa }) {
+function InProcedure({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(false);
@@ -23,8 +23,9 @@ function InProcedure({ dateBpa }) {
         if(!loadingErrorsFiles.inProfessionals) {
             inProcedure();
             setStartIndex(5);
+            setErrorsProcedures([]);
         }
-    }, [loadingErrorsFiles.inProfessionals, dateBpa, reloadErrors]);
+    }, [loadingErrorsFiles.inProfessionals, dateBpa, refresh, reloadErrors]);
 
 
     async function inProcedure() {

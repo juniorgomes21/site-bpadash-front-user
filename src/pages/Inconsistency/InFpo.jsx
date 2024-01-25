@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { formatCode3 } from "../../Validation&Formatation/formatation";
+import { maskPointThree } from "../../Validation&Formatation/formatation";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackBarContext from "../../contexts/managerService";
 import SouthIcon from '@mui/icons-material/South';
@@ -18,7 +18,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Tooltip from "@mui/material/Tooltip";
 
 
-function InFpo({ dateBpa }) {
+function InFpo({ dateBpa, refresh}) {
 
     const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
@@ -39,7 +39,9 @@ function InFpo({ dateBpa }) {
         inFpo();
         setStartIndexBpac(5);
         setStartIndexBpai(5);
-    }, [dateBpa, reloadErrors]);
+        setErrorsPaBpacDTOS([]);
+        setErrorsPaBpaiDTOS([]);
+    }, [dateBpa,refresh, reloadErrors]);
 
 
     async function inFpo() {
@@ -50,7 +52,7 @@ function InFpo({ dateBpa }) {
             setErrorsPaBpaiDTOS(response.data["errorsPaBpaiDTOS"].slice(0, 5));
             setHaveErrors("inFpo", (response.data["errorsPaBpacDTOS"].length > 0 || response.data["errorsPaBpaiDTOS"].length > 0));
         } catch (e) {
-            console.log("error", e.response);
+            setHaveErrors("inFpo", false);
         }
         setLoadingErrorsFun("inFpo", false);
     }
@@ -170,7 +172,7 @@ function InFpo({ dateBpa }) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div className="">
                                                 <p>
-                                                    PA INVÁLIDO: {formatCode3(item.pa)}
+                                                    PA INVÁLIDO: {maskPointThree(item.pa)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen("errorsPaBpacDTOS", item.id)}>
@@ -219,7 +221,7 @@ function InFpo({ dateBpa }) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div className="">
                                                 <p>
-                                                    PA INVÁLIDO: {formatCode3(item.pa)}
+                                                    PA INVÁLIDO: {maskPointThree(item.pa)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen("errorsPaBpaiDTOS", item.id)}>

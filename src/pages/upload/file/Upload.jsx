@@ -47,7 +47,7 @@ function Upload() {
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    switch (e.response.data[0].errorType) {
+                    switch (e.response.data[0] && e.response.data[0].errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;

@@ -18,7 +18,7 @@ import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined
 import Tooltip from "@mui/material/Tooltip";
 
 
-function AgeDate({ dateBpa }) {
+function AgeDate({ dateBpa, refresh }) {
 
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [person, setPerson] = useState({});
@@ -36,8 +36,9 @@ function AgeDate({ dateBpa }) {
         if(!loadingErrorsFiles.ageMinMax) {
             inAgeDate();
             setStartIndex(5);
+            setErrorsDates([]);
         }
-    }, [loadingErrorsFiles.ageMinMax, dateBpa]);
+    }, [loadingErrorsFiles.ageMinMax, dateBpa, refresh]);
 
     async function inAgeDate() {
         try {
@@ -59,7 +60,7 @@ function AgeDate({ dateBpa }) {
                 ageDate.forEach( age => {
                     ids.push(age.id);
                 });
-                await api.post(`/bpai/update/${0}`, {"ids": ids, "key": "birthDate"});
+                await api.post(`/bpai/update/0`, {"ids": ids, "key": "birthDate"});
 
             } else {
                 const obj = {

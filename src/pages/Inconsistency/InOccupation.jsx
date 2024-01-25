@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/api";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import EditIcon from '@mui/icons-material/Edit';
-import { formatCode3 } from "../../Validation&Formatation/formatation";
+import { maskPointThree } from "../../Validation&Formatation/formatation";
 import SnackBarContext from "../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -16,7 +16,7 @@ import SouthIcon from '@mui/icons-material/South';
 import Radio from '@mui/material/Radio';
 
 
-function InOccupation({ dateBpa }) {
+function InOccupation({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
@@ -37,8 +37,10 @@ function InOccupation({ dateBpa }) {
             inOccupation();
             setStartIndexBpac(5);
             setStartIndexBpai(5);
+            setErrorsOccupationBpacDTOS([]);
+            setErrorsOccupationBpaiDTOS([]);
         }
-    }, [loadingErrorsFiles.inProcedure, dateBpa, reloadErrors]);
+    }, [loadingErrorsFiles.inProcedure, dateBpa, refresh, reloadErrors]);
 
 
     async function inOccupation() {
@@ -166,7 +168,7 @@ function InOccupation({ dateBpa }) {
                                             <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                                 <div className="">
                                                     <p>
-                                                        CBO INVÁLIDO: {formatCode3(item.cbo)}
+                                                        CBO INVÁLIDO: {maskPointThree(item.cbo)}
                                                     </p>
                                                 </div>
                                                 <div className="cursor-pointer" onClick={() => handleClickOpen("errorsOccupationBpacDTOS", item.id)}>
@@ -216,7 +218,7 @@ function InOccupation({ dateBpa }) {
                                             <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                                 <div className="">
                                                     <p>
-                                                        CBO INVÁLIDO: {formatCode3(item.cbo)}
+                                                        CBO INVÁLIDO: {maskPointThree(item.cbo)}
                                                     </p>
                                                 </div>
                                                 <div className="cursor-pointer" onClick={() => handleClickOpen("errorsOccupationBpaiDTOS", item.id)}>
