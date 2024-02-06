@@ -200,7 +200,7 @@ function FilesConf(props) {
                         <>
                           <div className="flex justify-center w-full my-8">
                             <p className="text-base">
-                              Você ainda não tem nenhum arquivo ({nameFile}). Por favor faça o upload.
+                            Você ainda não possui nenhum arquivo ({nameFile}). Por favor, faça o upload.
                             </p>
                           </div>
                           <div className="flex justify-center w-full my-8">

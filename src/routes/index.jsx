@@ -29,45 +29,50 @@ import UploadFpo from "../pages/upload/file/UploadFpo";
 import FpoEdit from "../pages/Consult/FpoEdit";
 import TimeLineFpo from "../pages/Timeline/TimeLineFpo";
 import Client from "../pages/Consult/Client";
+import SexGraphics from "../pages/Graphics/SexGraphics";
+import Welcome from "../pages/Dashboard/welcome/Welcome";
 
 
 const authProtectedRoutes = [
-  { path: "/file/bpa", component: Bpa },
-  { path: "/file/edit/title", component: Title },
-  { path: "/file/edit/bpai", component: Bpai },
-  { path: "/file/edit/bpac", component: Bpac },
-  { path: "/file/consult/fpo", component: FpoEdit },
-  { path: "/file/consult/customers", component: Client },
-  { path: "/file/consult/professionals", component: ProfessionalEdit },
-  { path: "/storage/memory", component: StorageMemory },
-  { path: "/upload/bpa", component: Upload },
-  { path: "/upload/bpai", component: UploadBpai },
-  { path: "/upload/bpac", component: UploadBpac },
-  { path: "/upload/fpo", component: UploadFpo },
-  { path: "/upload/professionals", component: UploadProfessional },
-  { path: "/download/bpa", component: Download },
-  { path: "/validation/file", component: Validation },
-  { path: "/timeline/bpa", component: TimeLineBpa },
-  { path: "/timeline/fpo", component: TimeLineFpo },
-  { path: "/timeline/professionals", component: TimeLineProfessionals },
-  { path: "/inconsistency", component: Inconsistency },
-  { path: "/configurations/files", component: FilesConf },
-  { path: "/configurations/register", component: Profile },
-  { path: "/configurations/password", component: ChangePass },
-  { path: "/treatment/pa", component: TreatmentPa },
-  { path: "/treatment/pa/cbo", component: TreatmentPaCbo },
-  { path: "/treatment/pa/delete", component: DeletePerPa },
-  { path: "/treatment/replacement/bpa", component: ReplacementBpac },
-  { path: "/logout", component: Logout },
-  
+    { path: "/welcome/user/bpadash", component: Welcome },
+    { path: "/file/bpa", component: Bpa },
+    { path: "/file/edit/title", component: Title },
+    { path: "/file/edit/bpai", component: Bpai },
+    { path: "/file/edit/bpac", component: Bpac },
+    { path: "/file/consult/fpo", component: FpoEdit },
+    { path: "/file/consult/customers", component: Client },
+    { path: "/file/consult/professionals", component: ProfessionalEdit },
+    { path: "/storage/memory", component: StorageMemory },
+    { path: "/graphics/sex", component: SexGraphics },
 
-  { path: "/", exact: true, component: () => <Redirect to="/file/bpa" /> },
+    { path: "/upload/bpa", component: Upload },
+    { path: "/upload/bpai", component: UploadBpai },
+    { path: "/upload/bpac", component: UploadBpac },
+    { path: "/upload/fpo", component: UploadFpo },
+    { path: "/upload/professionals", component: UploadProfessional },
+    { path: "/download/bpa", component: Download },
+    { path: "/validation/file", component: Validation },
+    { path: "/timeline/bpa", component: TimeLineBpa },
+    { path: "/timeline/fpo", component: TimeLineFpo },
+    { path: "/timeline/professionals", component: TimeLineProfessionals },
+    { path: "/inconsistency", component: Inconsistency },
+    { path: "/configurations/files", component: FilesConf },
+    { path: "/configurations/register", component: Profile },
+    { path: "/configurations/password", component: ChangePass },
+    { path: "/treatment/pa", component: TreatmentPa },
+    { path: "/treatment/pa/cbo", component: TreatmentPaCbo },
+    { path: "/treatment/pa/delete", component: DeletePerPa },
+    { path: "/treatment/replacement/bpa", component: ReplacementBpac },
+    { path: "/logout", component: Logout },
+
+
+    { path: "/", exact: true, component: () => <Redirect to="/welcome/user/bpadash" /> },
 ];
 
 const publicRoutes = [
-  
-  { path: "/login", component: Login },
-  { path: "/mayra/clarisse", component: Mayra },
+
+    { path: "/login", component: Login },
+    { path: "/mayra/clarisse", component: Mayra },
 ];
 
 export { authProtectedRoutes, publicRoutes };

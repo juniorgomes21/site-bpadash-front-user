@@ -98,7 +98,7 @@ function FpoEdit() {
                 {/* Render Breadcrumbs */}
                 <Breadcrumbs title="FPO" breadcrumbItem="Consultar FPO" />
                 <AlertCustom
-                    msg="A consulta do arquivo FPO é feita no arquivo configurado em (Arquivos de validações)"
+                    msg="A consulta do arquivo FPO é realizada no arquivo configurado em (Arquivos de validações)"
                     type="info"
                 />
                 <div className="flex justify-center items-end w-full mt-5">

@@ -23,15 +23,15 @@ import SouthIcon from '@mui/icons-material/South';
 function InProfessionals({ dateBpa, refresh }) {
 
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
-    const [professional, setProfessional] = useState({});
-    const [professionals, setProfessionals] = useState([]);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
-    const [errorsProfessionals, setErrorsProfessionals] = useState([]);
     const [msgError, setMsgError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [updateAll, setUpdateAll] = useState('false');
     const [startIndex, setStartIndex] = useState(5);
+    const [updateAll, setUpdateAll] = useState('false');
+    const [professional, setProfessional] = useState({});
+    const [professionals, setProfessionals] = useState([]);
+    const [errorsProfessionals, setErrorsProfessionals] = useState([]);
 
     useEffect(() => {
         if(!loadingErrorsFiles.inRace) {
@@ -137,7 +137,7 @@ function InProfessionals({ dateBpa, refresh }) {
                                                     <div className="mx-1 mb-1">
                                                         {
                                                             item.count > 10 &&
-                                                                <Tooltip title="Contagem muito alta, podeser que o CNSMED tenha sido atualizado">
+                                                                <Tooltip title="Contagem muito alta, pode ser que o CNSMED tenha sido atualizado">
                                                                     <ReportProblemOutlinedIcon sx={{ fontSize: 17, color: "red" }}/>
                                                                 </Tooltip>
                                                         }

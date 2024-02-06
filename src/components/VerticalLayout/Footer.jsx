@@ -10,7 +10,7 @@ const Footer = () => {
             <Col md={6}>{new Date().getFullYear()} © Agência Ontech.</Col>
             <Col md={6}>
               <div className="text-sm-end d-none d-sm-block">
-                Design & Develop by Agência Ontech
+                Desevolvido por Agência Ontech
               </div>
             </Col>  
           </Row>

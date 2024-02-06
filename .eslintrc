@@ -1,17 +1,19 @@
 {
-  "rules": {
-    "no-undef": "off"
-  },
-  "extends": [
-    "plugin:react/recommended"
-  ],
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true,
-      "modules": true,
-      "experimentalObjectRestSpread": true
+    "rules": {
+        "no-undef": "off"
+    },
+    "extends": ["plugin:react/recommended"],
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
     }
-  }
 }

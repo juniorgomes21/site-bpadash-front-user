@@ -106,11 +106,10 @@ function Validation(props) {
       <div className="page-content">
         <Container fluid>
           <Breadcrumbs title={props.t("Validações")} breadcrumbItem={props.t("Validações")} />
-          {/* <TableBpai /> */}
           <div>
             <div >
-              <p className="text-sm">Clique no campo que você quer validar ou invalidar.</p>
-              <p className="text-base">Os campos em verde passaram pela validação:</p>
+              <p className="text-sm">Clique no campo que você deseja validar ou invalidar</p>
+              <p className="text-base">Os campos em verde passarão</p>
             </div>
             <TableTitle
               obj={titleBpa}

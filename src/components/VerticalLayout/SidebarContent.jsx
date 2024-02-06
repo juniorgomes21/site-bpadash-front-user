@@ -26,191 +26,226 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import { formatMonth } from "../../Validation&Formatation/formatation";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SettingsIcon from '@mui/icons-material/Settings';
-import Alert from '@mui/material/Alert';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Tooltip } from "@mui/material";
 
 function SidebarContent(props) {
 
-  const ref = useRef();
-  registerLocale('pt-BR', pt);
-  setDefaultLocale('pt-BR');
+    const ref = useRef();
+    registerLocale('pt-BR', pt);
+    setDefaultLocale('pt-BR');
 
-  const user = JSON.parse(localStorage.getItem("@User"));
-  const { dates } = useContext(AuthContext);
-  const { month, year, startDateChange, getFormatedDate } = useContext(DateGlobalBpaContext);
-  const [open, setOpen] = useState(false);
+    const user = JSON.parse(localStorage.getItem("@User"));
+    const { dates } = useContext(AuthContext);
+    const { month, year, startDateChange, getFormattedDate } = useContext(DateGlobalBpaContext);
+    const [open, setOpen] = useState(false);
+    const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    const pathName = props.location.pathname;
+    useEffect(() => {
+        const pathName = props.location.pathname;
 
-    function initMenu() {
-      new MetisMenu("#side-menu");
+        function initMenu() {
+            new MetisMenu("#side-menu");
 
-      let matchingMenuItem = null;
+            let matchingMenuItem = null;
 
-      const ul = document.getElementById("side-menu");
-      const items = ul.getElementsByTagName("a");
+            const ul = document.getElementById("side-menu");
+            const items = ul.getElementsByTagName("a");
 
-      for (let i = 0; i < items.length; ++i) {
-        if (pathName === items[i].pathname) {
-          matchingMenuItem = items[i];
-          break;
-        }
-      }
-
-      if (matchingMenuItem) {
-        activateParentDropdown(matchingMenuItem);
-      }
-    }
-    
-    initMenu();
-  }, [props.location.pathname])
-
-  useEffect(() => {
-    ref.current.recalculate()
-  })
-
-  function scrollElement(item) {
-    if (item) {
-      const currentPosition = item.offsetTop
-      if (currentPosition > window.innerHeight) {
-        ref.current.getScrollElement().scrollTop = currentPosition - 300
-      }
-    }
-  }
-
-  function activateParentDropdown(item) {
-    item.classList.add("active")
-    const parent = item.parentElement
-    const parent2El = parent.childNodes[1]
-    if (parent2El && parent2El.id !== "side-menu") {
-      parent2El.classList.add("mm-show")
-    }
-
-    if (parent) {
-      parent.classList.add("mm-active")
-      const parent2 = parent.parentElement
-
-      if (parent2) {
-        parent2.classList.add("mm-show") // ul tag
-
-        const parent3 = parent2.parentElement // li tag
-
-        if (parent3) {
-          parent3.classList.add("mm-active") // li
-          parent3.childNodes[0].classList.add("mm-active") //a
-          const parent4 = parent3.parentElement // ul
-          if (parent4) {
-            parent4.classList.add("mm-show") // ul
-            const parent5 = parent4.parentElement
-            if (parent5) {
-              parent5.classList.add("mm-show") // li
-              parent5.childNodes[0].classList.add("mm-active") // a tag
-            }
-          }
-        }
-      }
-      scrollElement(item);
-      return false
-    }
-    scrollElement(item);
-    return false
-  }
-
-  function handleClickOpen() {
-    setOpen(true);
-  }
-
-  function handleClose() {
-    setOpen(false);
-  }
-
-  function handleListItemClick(date) {
-    startDateChange(date);
-    handleClose();
-  }
-
-  function testDate(date) {
-    const datex = (date[1] + "-" + ( date[0] < 10 ? "0" + date[0] : date[0]) + "-" + "01");
-    return datex === getFormatedDate();
-  }
-
-  return (
-    <>
-      <SimpleBar className="h-100" ref={ref}>
-        <div id="sidebar-menu">
-          <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title mt-2">{props.t("Data Geral")} </li>
-              <div className="logo logo-light ml-6 cursor-pointer" onClick={handleClickOpen}>
-                <CalendarMonthIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-
-                <span className="logo-lg">
-                  {props.t(`${formatMonth(month)} de ${year}`)}
-                </span>
-              </div>
-            <li className="menu-title">{props.t("Menu")} </li>
-
-            {
-              !user.changePass &&
-                <div>
-                  <Alert variant="filled" severity="warning">
-                    Altere sua senha!
-                  </Alert>
-                </div>
+            for (let i = 0; i < items.length; ++i) {
+                if (pathName === items[i].pathname) {
+                    matchingMenuItem = items[i];
+                    break;
+                }
             }
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bxs-file-doc"></i>
-                <span>{props.t("Meus Arquivos")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/file/bpa">{props.t("BPA")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/title">{props.t("CABEÇALHO")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/bpai">{props.t("BPA-I")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/edit/bpac">{props.t("BPA-C")}</Link>
-                </li>
-              </ul>
-            </li>
+            if (matchingMenuItem) {
+                activateParentDropdown(matchingMenuItem);
+            }
+        }
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Linha do Tempo")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/timeline/bpa">{props.t("BPA")}</Link>
-                </li>
-                <li>
-                  <Link to="/timeline/fpo">{props.t("FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/timeline/professionals">{props.t("PROFISSIONAIS")}</Link>
-                </li>
-              </ul>
-            </li>
+        initMenu();
+    }, [props.location.pathname])
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bx-stats"></i>
-                <span>{props.t("Dashboards")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/storage/memory">{props.t("Memória de Armazenamento")}</Link>
-                </li>
+    useEffect(() => {
+        ref.current.recalculate()
+    })
+
+    function scrollElement(item) {
+        if (item) {
+            const currentPosition = item.offsetTop
+            if (currentPosition > window.innerHeight) {
+                ref.current.getScrollElement().scrollTop = currentPosition - 300
+            }
+        }
+    }
+
+    function activateParentDropdown(item) {
+        item.classList.add("active")
+        const parent = item.parentElement
+        const parent2El = parent.childNodes[1]
+        if (parent2El && parent2El.id !== "side-menu") {
+            parent2El.classList.add("mm-show")
+        }
+
+        if (parent) {
+            parent.classList.add("mm-active")
+            const parent2 = parent.parentElement
+
+            if (parent2) {
+                parent2.classList.add("mm-show") // ul tag
+
+                const parent3 = parent2.parentElement // li tag
+
+                if (parent3) {
+                    parent3.classList.add("mm-active") // li
+                    parent3.childNodes[0].classList.add("mm-active") //a
+                    const parent4 = parent3.parentElement // ul
+                    if (parent4) {
+                        parent4.classList.add("mm-show") // ul
+                        const parent5 = parent4.parentElement
+                        if (parent5) {
+                            parent5.classList.add("mm-show") // li
+                            parent5.childNodes[0].classList.add("mm-active") // a tag
+                        }
+                    }
+                }
+            }
+            scrollElement(item);
+            return false
+        }
+        scrollElement(item);
+        return false
+    }
+
+    useEffect(() => {
+        let match = true;
+
+        dates.forEach( date => {
+            const monthF = date[0];
+
+            const datex = (date[1] + "-" + (monthF < 10 ? "0" + monthF : monthF) + "-" + "01");
+            const matchDate = datex === getFormattedDate();
+
+            if (matchDate) {
+                match = false;
+                return;
+            }
+
+        });
+        setShow(match);
+
+    }, [dates, month, year])
+
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
+
+    function handleListItemClick(date) {
+        startDateChange(date);
+        handleClose();
+    }
+
+    function testDate(date) {
+        const datex = (date[1] + "-" + (date[0] < 10 ? "0" + date[0] : date[0]) + "-" + "01");
+        return datex === getFormattedDate();
+    }
+
+    return (
+        <>
+            <SimpleBar className="h-100" ref={ref}>
+                <div id="sidebar-menu">
+                    <ul className="metismenu list-unstyled" id="side-menu">
+                        <li className="menu-title mt-2">{props.t("Data Geral")} </li>
+                        <div className="flex items-center logo logo-light ml-6 cursor-pointer" onClick={handleClickOpen}>
+                            <CalendarMonthIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                            <span className="logo-lg">
+                                {props.t(`${formatMonth(month)} de ${year}`)}
+                            </span>
+                            {
+                                show &&
+                                <span className="logo-lg ml-4 mb-2">
+                                    <Tooltip title="Selecione uma data BPA válida" placement="top">
+                                        <WarningAmberIcon sx={{ color: "red", fontSize: 27, marginBottom: 0.5 }} />
+                                    </Tooltip>
+                                </span>
+                            }
+                        </div>
+                        <li className="menu-title">{props.t("Menu")} </li>
+
+                        {
+                            !user.changePass &&
+                            <li className="bg-orange-500 text-white">
+                                <Link to="/configurations/password" className="">
+                                    <WarningAmberIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                    <span>{props.t("Altere sua senha!")}</span>
+                                </Link>
+                            </li>
+                        }
+
+                        <li>
+                            <Link to="/welcome/user/bpadash" className="">
+                                <i className="bx bx-home-circle"></i>
+                                <span>{props.t("Tela Inicial")}</span>
+                            </Link>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <i className="bx bxs-file-doc"></i>
+                                <span>{props.t("Meus Arquivos")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/file/bpa">{props.t("BPA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/file/edit/title">{props.t("CABEÇALHO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/file/edit/bpai">{props.t("BPA-I")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/file/edit/bpac">{props.t("BPA-C")}</Link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <ListAltIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Linha do Tempo")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/timeline/bpa">{props.t("BPA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/timeline/fpo">{props.t("FPO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/timeline/professionals">{props.t("PROFISSIONAIS")}</Link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <i className="bx bx-stats"></i>
+                                <span>{props.t("Dashboards")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/storage/memory">{props.t("Controle de Memória")}</Link>
+                                </li>
+                                {/* <li>
+                                    <Link to="/graphics/sex">{props.t("Sexo")}</Link>
+                                </li> */}
                 {/* <li>
-                  <Link to="/dashboard">{props.t("Produção por Meta")}</Link>
-                </li>
-                <li>
                   <Link to="/dashboard-saas">{props.t("Produção CNSMED (QT)")}</Link>
                 </li>
                 <li>
@@ -252,151 +287,151 @@ function SidebarContent(props) {
                 <li>
                   <Link to="/blog">{props.t("Distribuição por Procedimento (BPA-C)")}</Link>
                 </li> */}
-              </ul>
-            </li>
+                            </ul>
+                        </li>
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <PageviewIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Consultas")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/file/consult/fpo">{props.t("FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/consult/customers">{props.t("Paciênte")}</Link>
-                </li>
-                <li>
-                  <Link to="/file/consult/professionals">{props.t("Profissionais")}</Link>
-                </li>
-              </ul>
-            </li>
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <PageviewIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Consultas")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/file/consult/fpo">{props.t("FPO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/file/consult/customers">{props.t("Paciênte")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/file/consult/professionals">{props.t("Profissionais")}</Link>
+                                </li>
+                            </ul>
+                        </li>
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <i className="bx bxs-cloud-upload"></i>
-                <span>{props.t("Uploads")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/upload/bpa">{props.t("BPA")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/fpo">{props.t("FPO")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
-                </li>
-                <li>
-                  <Link to="/upload/professionals">{props.t("PROFISSIONAIS")}</Link>
-                </li>
-              </ul>
-            </li>
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <i className="bx bxs-cloud-upload"></i>
+                                <span>{props.t("Uploads")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/upload/bpa">{props.t("BPA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/upload/fpo">{props.t("FPO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/upload/bpai">{props.t("BPA-I")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/upload/bpac">{props.t("BPA-C")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/upload/professionals">{props.t("PROFISSIONAIS")}</Link>
+                                </li>
+                            </ul>
+                        </li>
 
-            <li>
-              <Link to="/#" className="has-arrow">
-                <DomainVerificationIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Tratamento BPA")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/treatment/pa">{props.t("PA")}</Link>
-                </li>
-                <li>
-                  <Link to="/treatment/pa/cbo">{props.t("PA & CBO")}</Link>
-                </li>
-                <li>
-                  <Link to="/treatment/pa/delete">{props.t("Apagar por PA")}</Link>
-                </li>
-                <li>
-                  <Link to="/treatment/replacement/bpa">{props.t("Substituir valor BPA")}</Link>
-                </li>
-              </ul>
-            </li>
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <DomainVerificationIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Tratamento BPA")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/treatment/pa">{props.t("PA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/treatment/pa/cbo">{props.t("PA & CBO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/treatment/pa/delete">{props.t("Apagar por PA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/treatment/replacement/bpa">{props.t("Substituir valor BPA")}</Link>
+                                </li>
+                            </ul>
+                        </li>
 
-            <li>
-              <Link to="/inconsistency" className="">
-                <WarningAmberIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Inconsistências BPA")}</span>
-              </Link>
-            </li>
+                        <li>
+                            <Link to="/inconsistency" className="">
+                                <WarningAmberIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Inconsistências BPA")}</span>
+                            </Link>
+                        </li>
 
-            <li>
-              <Link to="/validation/file" className="">
-                <i className="bx bx-task"></i>
-                <span>{props.t("Validação de arquivo")}</span>
-              </Link>
-            </li>
+                        <li>
+                            <Link to="/validation/file" className="">
+                                <i className="bx bx-task"></i>
+                                <span>{props.t("Validação de arquivo")}</span>
+                            </Link>
+                        </li>
 
-            <li>
-              <Link to="/download/bpa" className="">
-                <i className="bx bx-download"></i>
-                <span>{props.t("Download BPA")}</span>
-              </Link>
-            </li>
-            
-            <li>
-              <Link to="/#" className="has-arrow">
-                <SettingsIcon sx={{ fontSize: 20, mr: 1.5 }}/>
-                <span>{props.t("Configurações")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/configurations/files">{props.t("Arquivos de Validações")}</Link>
-                </li>
-                <li>
-                  <Link to="/configurations/register">{props.t("Cadastro")}</Link>
-                </li>
-                <li>
-                  <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
-                </li>
-                <li>
-                  <Link to="/logout">{props.t("Sair")}</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </SimpleBar>
-      <Dialog onClose={handleClose} open={open}>
-          <DialogTitle className="w-80">Selecione a data do BPA</DialogTitle>
-          <List sx={{ pt: 0 }}>
-            <div className="m-3">
-              {
-                dates.length == 0 ?
-                  <div className="m-4">
-                    <AlertCustom
-                      type="info"
-                      msg="Você não possui nenhum arquivo BPA"
-                    />
-                  </div>
-                :
-                  dates.map((date, index) => (
-                    <ListItem disableGutters key={index} className={`border-[1px] ${testDate(date) ? "border-green-500" : "border-default"} my-2 rounded-md hover:bg-green-100`}>
-                      <ListItemButton onClick={() => handleListItemClick(date)}>
-                        <ListItemAvatar>
-                          <Avatar sx={{ bgcolor: testDate(date) ? green[100] : blue[100], color: blue[600] }}>
-                            { testDate(date) ? <CheckCircleIcon color="success"/> : <DescriptionIcon />}
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={formatMonth(date[0]) + " de " + date[1]} />
-                      </ListItemButton>
-                    </ListItem>
-              ))}
-            </div>
-          </List>
-        </Dialog>
-    </>
-  )
+                        <li>
+                            <Link to="/download/bpa" className="">
+                                <i className="bx bx-download"></i>
+                                <span>{props.t("Download BPA")}</span>
+                            </Link>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <SettingsIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Configurações")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/configurations/files">{props.t("Arquivos de Validações")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/configurations/register">{props.t("Cadastro")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/logout">{props.t("Sair")}</Link>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </SimpleBar>
+            <Dialog onClose={handleClose} open={open}>
+                <DialogTitle className="w-80">Selecione a data do BPA</DialogTitle>
+                <List sx={{ pt: 0 }}>
+                    <div className="m-3">
+                        {
+                            dates.length == 0 ?
+                                <div className="m-4">
+                                    <AlertCustom
+                                        type="info"
+                                        msg="Você não possui nenhum arquivo BPA"
+                                    />
+                                </div>
+                                :
+                                dates.map((date, index) => (
+                                    <ListItem disableGutters key={index} className={`border-[1px] ${testDate(date) ? "border-green-500" : "border-default"} my-2 rounded-md hover:bg-green-100`}>
+                                        <ListItemButton onClick={() => handleListItemClick(date)}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: testDate(date) ? green[100] : blue[100], color: blue[600] }}>
+                                                    {testDate(date) ? <CheckCircleIcon color="success" /> : <DescriptionIcon />}
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary={formatMonth(date[0]) + " de " + date[1]} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                ))}
+                    </div>
+                </List>
+            </Dialog>
+        </>
+    )
 }
 
 SidebarContent.propTypes = {
-  location: PropTypes.object,
-  t: PropTypes.any,
+    location: PropTypes.object,
+    t: PropTypes.any,
 }
 
 export default withRouter(withTranslation()(SidebarContent))

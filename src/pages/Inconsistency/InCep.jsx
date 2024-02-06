@@ -271,11 +271,11 @@ function InCep({ dateBpa, refresh }) {
                     {
                         errors.haveInvalid ?
                             <p className="text-center">
-                                ATENÇÃO, os CEPs seram atualizados pelo CEP mais próximo com exceção de CEPs em branco.
+                                ATENÇÃO, os CEPs serão atualizados pelo CEP mais próximo com exceção de CEPs em branco.
                             </p>
                         :
                             <p className="text-center">
-                                ATENÇÃO, os CEPs seram atualizados pelo CEP da sua unidade.
+                                ATENÇÃO, os CEPs serão atualizados pelo CEP da sua unidade.
                             </p>
                     }
                 </div>

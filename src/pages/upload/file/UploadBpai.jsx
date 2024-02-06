@@ -68,7 +68,9 @@ function UploadBpai(props) {
                     reset();
                     openSnackBarFun(false, "BPA-I salvo!");
                 } catch(e) {
-                    switch (e.response.data[0] && e.response.data[0].errorType) {
+                    const response = e.response.data[0];
+
+                    switch (response && response.errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;

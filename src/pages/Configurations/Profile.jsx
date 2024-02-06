@@ -224,15 +224,6 @@ function Profile(props) {
                         </Card>
                     </Col>
                 </Row>
-                {/* <div>
-                    <LoadingButton
-                        variant="contained"
-                        color="success"
-                        loading={loading}
-                    >
-                        SALVAR
-                    </LoadingButton>
-                </div> */}
             </Container>
             </div>
         </>

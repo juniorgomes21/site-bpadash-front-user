@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import api from "../services/api";
 import isValidToken from "../isValidToken/isValidToken";
 
@@ -33,11 +33,12 @@ export function AuthProvider({ children }) {
         setLoadingLogin(true);
         try {
             const response = await api.post('/auth', { "email": email, "password": password });
+
             localStorage.setItem("@TokenAuthentication", response.data.token);
-            const responseUser = await api.get('/user');
-            await getDates();
-            localStorage.setItem("@User", JSON.stringify(responseUser.data));
-            window.location.href = "/file/bpa";
+            localStorage.setItem("@User", JSON.stringify(response.data.userDTO));
+            localStorage.setItem("@Dates", JSON.stringify(response.data.datesDTO.dates));
+
+            window.location.href = "/welcome/user/bpadash";
 
         } catch (e) {
             setErrorLogin(true);
@@ -57,7 +58,6 @@ export function AuthProvider({ children }) {
     }
 
     function handleLogout() {
-        console.log("chamou");
         localStorage.removeItem("@TokenAuthentication");
         if(!window.location.href.includes("login")) window.location.href = "/login";
     }

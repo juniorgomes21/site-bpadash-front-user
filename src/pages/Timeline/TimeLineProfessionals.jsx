@@ -28,7 +28,7 @@ function TimeLineProfessionals(props) {
 
     const screenSize = window.screen.width;
     
-    const { getFormatedDate } = useContext(DateGlobalBpaContext);
+    const { getFormattedDate } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(true);
     const [timeLine, setTimeLine] = useState([]);

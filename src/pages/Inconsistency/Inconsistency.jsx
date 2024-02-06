@@ -62,54 +62,80 @@ const files = [
 function Inconsistency(props) {
 
   document.title="Inconsistências";
-  
-  const dates = JSON.parse(localStorage.getItem("@Dates"));
-  const { month, year, getFormatedDate } = useContext(DateGlobalBpaContext);
+
+  const { dates } = useContext(AuthContext);
+  const { month, year, getFormattedDate } = useContext(DateGlobalBpaContext);
   const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
   const [show, setShow] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [dateBpa, setDateBpa] = useState(getFormatedDate());
+  const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+  const [haveDate, setHaveDate] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [dateBpa, setDateBpa] = useState(getFormattedDate());
 
   useEffect(() => {
-    haveFiles();
-    setLoadingErrorsfiles({
-      "inFpo": true,
-      "ageDate": true,
-      "ageMinMax": true,
-      "inCep": true,
-      "inQtService":true,
-      "inDateService": true,
-      "inRace": true,
-      "inProfessionals": true,
-      "inProcedure": true,
-      "inOccupation": true
-    });
-    setErrorsfiles({
-      "inFpo": true,
-      "ageDate": true,
-      "ageMinMax": true,
-      "inCep": true,
-      "inQtService":true,
-      "inDateService": true,
-      "inRace": true,
-      "inProfessionals": true,
-      "inProcedure": true,
-      "inOccupation": true
-    });
-    setDateBpa(getFormatedDate());
-  }, [month, year, refresh])
+    testDate();
+  }, [month, year])
 
-  
+  useEffect(() => {
+    if(!loading && haveDate) {
+      setLoadingErrorsfiles({
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+      });
+      setErrorsfiles({
+        "inFpo": true,
+        "ageDate": true,
+        "ageMinMax": true,
+        "inCep": true,
+        "inQtService":true,
+        "inDateService": true,
+        "inRace": true,
+        "inProfessionals": true,
+        "inProcedure": true,
+        "inOccupation": true
+      });
+      setDateBpa(getFormattedDate());
+    }
+  }, [loading, month, year, refresh])
+
   async function haveFiles() {
     try {
       const response = await api.get("/sigtap/have/files");
       setShowAlert(!response.data);
+      console.log("chamou");
     } catch(e) {
       //
     }
   }
+  
+  function testDate() {
+    let match = false;
+    
+    dates.forEach( date => {
+      const monthF = date[0];
 
+      const datex = (date[1] + "-" + ( monthF < 10 ? "0" + monthF : monthF) + "-" + "01");
+      const matchDate = datex === getFormattedDate();
+
+      if(matchDate) {
+        match = matchDate;
+        setHaveDate(match);
+      }
+    });
+
+    if(match) haveFiles();
+
+    setLoading(false);
+  }
 
   return (
     <div className="page-content">
@@ -142,15 +168,27 @@ function Inconsistency(props) {
                   !show ?
                     <div className="flex justify-center w-full">
                       <div className="flex flex-col items-center">
-                        <p className="text-base">Aqui você pode ver todas as inconsistências do arquivo atual.</p>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          className="mt-3"
-                          onClick={() => setShow(true)}
-                        >
-                          EXECUTAR
-                        </Button>
+                        {
+                          haveDate ?
+                            <>
+                              <p className="text-base">Aqui você pode ver todas as inconsistências do arquivo atual.</p>
+                              <Button
+                                variant="contained"
+                                color="success"
+                                className="mt-3"
+                                onClick={() => setShow(true)}
+                              >
+                                EXECUTAR
+                              </Button>
+                            </>
+                          :
+                            <>
+                              <AlertCustom
+                                msg="Você não possui o arquivo BPA selecionado, faça o upload ou mude a data do arquivo"
+                                type="warning"
+                              />
+                            </>
+                        }
                       </div>
                     </div>
                   :

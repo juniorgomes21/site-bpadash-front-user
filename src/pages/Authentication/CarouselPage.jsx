@@ -1,0 +1,31 @@
+import React from "react";
+import { Col } from "reactstrap";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+const CarouselPage = () => {
+    return (
+        <>
+            <Col xl={9}>
+                <div className="auth-full-bg pt-lg-5 p-4">
+                    <div className="w-100">
+                        <div className="bg-overlay"></div>
+                        <div className="d-flex h-100 flex-column">
+                            <div className="p-4 mt-auto">
+                                <div className="row justify-content-center">
+                                    <div className="col-lg-7">
+                                        <div className="text-center">
+                                            <h4 className="mb-3"></h4>
+                                            <div dir="ltr">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Col>
+        </>
+    );
+};
+export default CarouselPage;

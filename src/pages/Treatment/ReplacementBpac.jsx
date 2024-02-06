@@ -50,7 +50,7 @@ function ReplacementBpac(props) {
     const url = "/treatment/replacement/custom";
     const { month, year } = useContext(DatePickerContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const { getFormatedDate } = useContext(DatePickerContext);
+    const { getFormattedDate } = useContext(DatePickerContext);
     const [rules, setRules] = useState({});
     const [indexState, setIndexState] = useState(-1);
     const [loading, setLoading] = useState(true);
@@ -305,7 +305,7 @@ function ReplacementBpac(props) {
         setLoadingAction(true);
         handleClose();
         try {
-            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormatedDate() });
+            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
             handleClose();
             openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
@@ -319,7 +319,7 @@ function ReplacementBpac(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post( url + "/execute/0", { "dateBpa": getFormatedDate() });
+            const response = await api.post( url + "/execute/0", { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
         } catch (e) {
             console.log(e);
@@ -670,12 +670,10 @@ function ReplacementBpac(props) {
                     />
                     <AlertCust
                         type="warning"
-                        msg={`As regras seram aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
+                        msg={`As regras serão aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
                     />
                     <p className="flex justify-center mt-8 text-center text-sm">
-                        Adicione regras de substituição de campo. Aqui você escolhe um campo no arquivo BPA que vai ser substituído e você pode adicionar até 3
-                        critérios para que essa regra sejá aplicada. Ao executar a regra todos os campos escolhido por você que atenda os critérios informados seram substituidos
-                        pelo novo valor do campo informado.
+                        Adicione regras de substituição de campo. Aqui, você escolhe um campo no arquivo BPA que será substituído e pode adicionar até 3 critérios para que essa regra seja aplicada. Ao executar a regra, todos os campos escolhidos por você que atenderem aos critérios informados serão substituídos pelo novo valor do campo especificado.
                     </p>
                     {
                         loading ?

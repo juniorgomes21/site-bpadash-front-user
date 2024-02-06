@@ -99,10 +99,16 @@ function ProfessionalEdit() {
             setProfessional(response.data);
         } catch (e) {
             const response = e.response.data;
-            if(response && response === "NOT EXIST DATE PROFESSIONALS") {
-                openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
-            } else {
-                openSnackBarFun(true, "Nenhum profissional encontrado!");
+            
+            switch(response && response) {
+                case "NOT FOUND":
+                    openSnackBarFun(true, "Nenhum profissional encontrado!");
+                    break;
+                case "NOT EXIST DATE":
+                    openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
+                    break;
+                default:
+                    openSnackBarFun();
             }
         }
         setLoading(false);
@@ -147,26 +153,26 @@ function ProfessionalEdit() {
                     {/* Render Breadcrumbs */}
                     <Breadcrumbs title="Profissional" breadcrumbItem="Consultar profissional" />
                     <AlertCustom
-                        msg="Consulte e edite os profissionais. A consulta do profissional é feita no arquivo configurado em (Arquivos de validações)"
+                        msg="Consulte e edite os profissionais. A consulta do profissional é realizada no arquivo configurado em (Arquivos de validações)."
                         type="info"
                     />
                     <div className="flex justify-center items-end w-full mt-5">
                         <TextField
                             type="text"
-                            label="ID do profissional"
+                            label="CNS ou Nome do profissional"
                             variant="outlined"
                             value={idProfessional}
                             size="small"
                             onChange={ e => {
                                 const inputValue = e.target.value;
-                                if (!isNaN(Number(e.target.value)) && inputValue.length <= 16) setIdProfessional(inputValue);
+                                if (inputValue.length <= 50) setIdProfessional(inputValue);
                             }}
                             className="w-1/2 mt-4 mr-3"
                         />
                         <LoadingButton
                             loading={loading}
                             variant="contained"
-                            disabled={idProfessional === '' || idProfessional.length < 16}
+                            disabled={idProfessional === '' || idProfessional.length < 10}
                             endIcon={<SearchIcon />}
                             sx={{
                                 ml: 3, mb: 0.3

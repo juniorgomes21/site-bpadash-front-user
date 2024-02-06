@@ -23,7 +23,7 @@ function PublicPlace(props) {
           />
           <AlertCust
             type="warning"
-            msg={`As regras seram aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
+            msg={`As regras serão aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
           />
         </Container>
       </div>

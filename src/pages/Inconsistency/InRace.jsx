@@ -240,7 +240,7 @@ function InRace({ dateBpa, refresh }) {
                 />
                 <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
                     <p className="text-center">
-                        ATENÇÃO, as raças dos paciêntes seram atualizadas de acordo com os registros dos mesmos em outros arquivos BPA.
+                        ATENÇÃO, as raças dos paciêntes serão atualizadas de acordo com os registros dos mesmos em outros arquivos BPA.
                     </p>
                 </div>
                 </DialogContent>

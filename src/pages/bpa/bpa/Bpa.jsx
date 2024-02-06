@@ -12,12 +12,13 @@ import api from "../../../services/api";
 import DateGlobalBpaContext from "../../../contexts/DateGlobalBpa";
 import AlertCustom from "../../../GlobalComponents/AlertCustom";
 import { formatMonth } from "../../../Validation&Formatation/formatation";
-
+import { useHistory } from "react-router-dom";
 
 function BPA(props) {
 
   document.title="Meus arquivos BPA";
 
+  const history = useHistory();
   const { month, year } = useContext(DateGlobalBpaContext);
   const [bpa, setBpa] = useState({});
   const [identifier, setIdentifier] = useState('');
@@ -39,6 +40,10 @@ function BPA(props) {
     setLoading(false);
   }
 
+  function xxx() {
+    history.push("/file/edit/bpac")
+  }
+
   return (
     <>
       <div className="page-content">
@@ -47,7 +52,7 @@ function BPA(props) {
             <div className="mb-3">
               {
                 Object.keys(bpa).length > 0 &&
-                  <div className="flex justify-center text-base border-2 border-[#2a3042] rounded-xl p-2">
+                  <div className="flex justify-center text-base border-2 border-[#2a3042] rounded-xl p-2" onClick={() => xxx()}>
                     <div>
                       <p>Tamanho do Documento:</p>
                     </div>

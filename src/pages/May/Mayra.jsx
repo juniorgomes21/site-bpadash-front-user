@@ -3,6 +3,7 @@ import React from "react";
 import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
+import Mj from "../../assets/images/MJ.png";
 
 function Mayra(props) {
   //meta title
@@ -17,11 +18,11 @@ function Mayra(props) {
             title={props.t("S2")}
             breadcrumbItem={props.t("De Junior Para Mayra Clarisse")}
           />
-            <div className="flex w-full justify-center text-4xl text-red-700 mb-3">
-                <p>Para a moça mais especial da minha vida!</p>
+            <div className="flex w-full justify-center text-xl text-red-700 mb-3">
+                <p>A mulher da minha vida tem um nome Mayra Clarisse, vc é tudo pra mim meu amor S2!</p>
             </div>
             <div className="flex w-full justify-center">
-                <img src="https://www.polenflor.com.br/media/catalog/product/cache/1/image/800x/17f82f742ffe127f42dca9de82fb58b1/i/m/img_12.jpg" alt="..." />
+                <img src={Mj} alt="..." />
             </div>
         </Container>
       </div>

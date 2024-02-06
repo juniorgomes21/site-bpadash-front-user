@@ -25,478 +25,478 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
 function TreatmentPaCbo(props) {
-  
-  document.title="Substituição de CBO";
 
-  const url = "/treatment/replacement/pa/cbo";
-  const { openSnackBarFun } = useContext(SnackBarContext);
-  const { getFormatedDate } = useContext(DatePickerContext);
-  const [rulePaCbo, setRulePaCbo] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [msgError, setMsgError] = useState("");
-  const [loadingAction, setLoadingAction] = useState(false);
-  const [ruleObj, setRuleObj] = useState({"id": 0, "index": -1});
-  const [paransCbo, setParansCbo] = useState({ "pa": "", "cboCurrent": "", "cboNew": "" });
-  const [errorsCbo, setErrorsCbo] = useState({ "pa": false, "cboCurrent": false, "cboNew": false, "error": false, "equals": false });
-  const [open, setOpen] = useState({"delete": false, "edit": false, "play": false, "create": false, "playAll": false});
+    document.title = "Substituição de CBO";
 
-
-  useEffect(() => {
-    apiGetRulesPaCbo();
-  }, [])
+    const url = "/treatment/replacement/pa/cbo";
+    const { openSnackBarFun } = useContext(SnackBarContext);
+    const { getFormattedDate } = useContext(DatePickerContext);
+    const [rulePaCbo, setRulePaCbo] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [msgError, setMsgError] = useState("");
+    const [loadingAction, setLoadingAction] = useState(false);
+    const [ruleObj, setRuleObj] = useState({ "id": 0, "index": -1 });
+    const [paransCbo, setParansCbo] = useState({ "pa": "", "cboCurrent": "", "cboNew": "" });
+    const [errorsCbo, setErrorsCbo] = useState({ "pa": false, "cboCurrent": false, "cboNew": false, "error": false, "equals": false });
+    const [open, setOpen] = useState({ "delete": false, "edit": false, "play": false, "create": false, "playAll": false });
 
 
-  async function apiGetRulesPaCbo() {
-    try {
-      const response = await api.get( url + "/get");
-      setRulePaCbo(response.data);
-    } catch (e) {
-      console.log(e);
-    }
-    setLoading(false);
-  }
+    useEffect(() => {
+        apiGetRulesPaCbo();
+    }, [])
 
-  async function apiCreateRulePaCbo() {
-    try {
-      const obj = {
-        "pa": paransCbo.pa,
-        "cboCurrent": paransCbo.cboCurrent,
-        "cboNew": paransCbo.cboNew
-      }
-      await api.post( url + "/create", obj);
-      await apiGetRulesPaCbo();
-      handleClose();
-      openSnackBarFun(false, "Regra PA salva");
 
-    } catch(e) {
-      setErrorsCbo({ ...errorsCbo, ["error"]: true});
-      switch (e.response.data) {
-        case "PARANS IQUALS" :
-          setMsgError("Os CBOs não pode ser iguais");
-          break;
-        case "REACHED MAX LENGTH" :
-          setMsgError("Você alcançou o número máximo de regras");
-          break;
-        case "EXIST RULE" :
-          setMsgError("Uma regra para esse CBO já existe ");
-          break;
-        default:
-          setMsgError("Ops, algo deu errado");
-          openSnackBarFun(true, "Ops, algo deu errado");
-      }
-    }
-  }
-
-  async function apiHandleChange(event, rule, type) {
-    try {
-      let obj = {}
-
-      if(type === "bpac") {
-        obj = {
-          "executeBpac": !rule.executeBpac,
-          "executeBpai": rule.executeBpai
+    async function apiGetRulesPaCbo() {
+        try {
+            const response = await api.get(url + "/get");
+            setRulePaCbo(response.data);
+        } catch (e) {
+            console.log(e);
         }
-      } else {
-        obj = {
-          "executeBpac": rule.executeBpac,
-          "executeBpai": !rule.executeBpai
+        setLoading(false);
+    }
+
+    async function apiCreateRulePaCbo() {
+        try {
+            const obj = {
+                "pa": paransCbo.pa,
+                "cboCurrent": paransCbo.cboCurrent,
+                "cboNew": paransCbo.cboNew
+            }
+            await api.post(url + "/create", obj);
+            await apiGetRulesPaCbo();
+            handleClose();
+            openSnackBarFun(false, "Regra PA salva");
+
+        } catch (e) {
+            setErrorsCbo({ ...errorsCbo, ["error"]: true });
+            switch (e.response.data) {
+                case "PARANS IQUALS":
+                    setMsgError("Os CBOs não pode ser iguais");
+                    break;
+                case "REACHED MAX LENGTH":
+                    setMsgError("Você alcançou o número máximo de regras");
+                    break;
+                case "EXIST RULE":
+                    setMsgError("Uma regra para esse CBO já existe ");
+                    break;
+                default:
+                    setMsgError("Ops, algo deu errado");
+                    openSnackBarFun(true, "Ops, algo deu errado");
+            }
         }
-      }
-      await api.post( url + `/update/execute/file/${rule.id}`, obj);
-      await apiGetRulesPaCbo();
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function apiDeleteRule() {
-    setLoadingAction(true);
-    try {
-      await api.post( url + `/delete/${ruleObj.id}`);
-      await apiGetRulesPaCbo();
-      handleClose();
-      openSnackBarFun(false, "Regra apagada");
-    } catch (e) {
-      console.log(e);
-      openSnackBarFun();
-    }
-    setLoadingAction(false);
-  }
-
-  async function apiEditRulePaCbo() {
-    try {
-      const obj = {
-        "pa": paransCbo.pa,
-        "cboCurrent": paransCbo.cboCurrent,
-        "cboNew": paransCbo.cboNew
-      }
-      await api.post( url + `/edit/${ruleObj.id}`, obj);
-      await apiGetRulesPaCbo();
-      handleClose();
-      openSnackBarFun(false, "Regra CBO salva");
-    } catch(e) {
-      setErrorsCbo({ ...errorsCbo, ["error"]: true });
-      switch (e.response.data) {
-        case "PARANS IQUALS" :
-          setMsgError("Os CBOs não pode ser iguais");
-          break;
-        case "REACHED MAX LENGTH" :
-          setMsgError("Você alcançou o número máximo de regras");
-          break;
-        case "EXIST RULE" :
-          setMsgError("Uma regra para esse CBO já existe ");
-          break;
-        default:
-          setMsgError("Ops, algo deu errado");
-          openSnackBarFun(true, "Ops, algo deu errado");
-      }
-    }
-  }
-
-  async function apiPlayRule() {
-    setLoadingAction(true);
-    handleClose();
-    try {
-      const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormatedDate() });
-      handleClose();
-      openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
-    } catch (e) {
-      console.log(e);
-      openSnackBarFun();
-    }
-    setLoadingAction(false);
-  }
-  
-  async function apiPlayAll() {
-    setLoading(true);
-    handleClose();
-    try {
-      const response = await api.post( url + "/execute/0", { "dateBpa": getFormatedDate() });
-      openSnackBarFun(false, `Todas regras executadas ${response.data} linhas alteradas`);
-      
-    } catch (e) {
-      console.log(e);
-      openSnackBarFun();
-    }
-    setLoading(false);
-  }
-
-  function actionDialog(actionDi) {
-    if(actionDi === "delete") {
-      apiDeleteRule();
-    } else {
-      apiPlayRule();
-    }
-  }
-
-  function handleClickOpen(dialog, id, index) {
-    setRuleObj({ "id": id, "index": index });
-
-    if(dialog === "edit") {
-      const rule = rulePaCbo.ruleTreatmentPaCboList.find(item => item.id === id);
-      setParansCbo({ "pa": rule.pa, "cboCurrent": rule.cboCurrent, "cboNew": rule.cboNew });
     }
 
-    setOpen({ ...open, [dialog]: true });
-  }
+    async function apiHandleChange(event, rule, type) {
+        try {
+            let obj = {}
 
-  function handleClose() {
-    setParansCbo({ "pa": "", "cboCurrent": "", "cboNew": "" });
-    setErrorsCbo({ "pa": false, "cboCurrent": false, "cboNew": false, "error": false });
-    setOpen({"delete": false, "edit": false, "play": false, "create": false, "playAll": false});
-  }
-
-  function isValid() {
-    const haveErrorPa = paransCbo.pa.length != 10;
-    const haveErrorCboCurrent = paransCbo.cboCurrent.length != 6;
-    const haveErrorCboNew = paransCbo.cboNew.length != 6;
-    const haveErrorEquals = paransCbo.cboNew === paransCbo.cboCurrent;
-
-    if (haveErrorPa || haveErrorCboNew || haveErrorCboCurrent || haveErrorEquals) {
-      setMsgError(haveErrorEquals && "Os CBOs não podem ser iguais");
-      setErrorsCbo({ "pa": haveErrorPa, "cboCurrent": haveErrorCboCurrent, "cboNew": haveErrorCboNew, "error": haveErrorEquals, "equals": haveErrorEquals });
-    } else {
-      if(open.create) {
-        apiCreateRulePaCbo();
-      } else {
-        apiEditRulePaCbo();
-      }
+            if (type === "bpac") {
+                obj = {
+                    "executeBpac": !rule.executeBpac,
+                    "executeBpai": rule.executeBpai
+                }
+            } else {
+                obj = {
+                    "executeBpac": rule.executeBpac,
+                    "executeBpai": !rule.executeBpai
+                }
+            }
+            await api.post(url + `/update/execute/file/${rule.id}`, obj);
+            await apiGetRulesPaCbo();
+        } catch (e) {
+            console.log(e);
+        }
     }
-  }
-  
 
-  return (
-    <>
-      <div className="page-content">
-        <Container fluid>
-          {/* Render Breadcrumb */}
-          <Breadcrumbs
-            title={props.t("Substituição de CBO")}
-            breadcrumbItem={props.t("Substituição de CBO")}
-          />
-          <AlertCust
-            type="warning"
-            msg="AS REGRAS SERAM EXECUTADAS NO ARQUIVO BPA SELECIONADO"
-          />
-          <p className="flex justify-center mt-8">
-            Adicione regras de substituição CBO. Ao executar uma regra todos os campos CBO informados seram substituidos pelo novo CBO informado.
-          </p>
-          {
-            loading ?
-              <div className="flex justify-center mt-10">
-                <CircularProgress size={25}/>
-              </div>
-            :
-              rulePaCbo.ruleTreatmentPaCboList.length > 0 ?
-                  <div className="flex flex-col items-center w-full mt-10">
-                    <p className="font-bold">
-                      - MINHAS REGRAS -
-                    </p>
-                    <div className="w-full my-4">
-                      {
-                        rulePaCbo.ruleTreatmentPaCboList.map((rule, index) => (
-                          <div key={index}  className="my-4">
-                            <div className="flex justify-end w-full mb-1">
-                              <div className="flex items-center">
-                                <Radio
-                                  checked={rule.executeBpac}
-                                  onClick={(e) => apiHandleChange(e, rule, "bpac")}
-                                  name="radio-buttons"
-                                />
-                                <p className="mr-2">BPAC</p>
-                              </div>
-                              <div className="flex items-center">
-                                <Radio
-                                  checked={rule.executeBpai}
-                                  onClick={(e) => apiHandleChange(e, rule, "bpai")}
-                                  name="radio-buttons"
-                                />
-                                <p className="mr-2">BPAI</p>
-                                <Tooltip title="Selecione o arquivo que a regra será executada">
-                                  <HelpOutlineIcon sx={{ fontSize: 20 }}/>
-                                </Tooltip>
-                              </div>
-                            </div>
-                            <div className="flex justify-between items-center font-bold border-default border-[1px] rounded-lg p-2">
-                              <div className="flex flex-col">
-                                <div className="flex">
-                                  <p>PA: </p> <p className="ml-2">{rule.pa}</p> <p className="mx-1">/</p> <p> CBO: </p><p className="ml-2">{rule.cboCurrent}</p>
-                                </div>
-                                <div className="flex mt-2">
-                                  <p> NOVO CBO: </p>
-                                  <p className="ml-2">{rule.cboNew}</p>
-                                </div>
-                              </div>
-                              <div className="flex">
-                                {
-                                  loadingAction && index == ruleObj.index ?
-                                    <div className="mr-4 mt-2">
-                                      <CircularProgress size={20} />
-                                    </div>
-                                  :
-                                    <>
-                                      <Tooltip title="Excluir">
-                                        <LoadingButton
-                                          color="error"
-                                          variant="contained"
-                                          size="small"
-                                          onClick={() => handleClickOpen("delete", rule.id, index)}
-                                        >
-                                          <DeleteForeverIcon />
-                                        </LoadingButton>
-                                      </Tooltip>
-                                      <div className="mx-2">
-                                        <Tooltip title="Editar">
-                                          <LoadingButton
-                                            variant="contained"
-                                            size="small"
-                                            onClick={() => handleClickOpen("edit", rule.id, index)}
-                                          >
-                                            <ModeEditIcon />
-                                          </LoadingButton>
-                                        </Tooltip>
-                                      </div>
-                                      <Tooltip title="Executar">
-                                        <LoadingButton
-                                          disabled={rule.executeBpac == false && rule.executeBpai == false}
-                                          color="success"
-                                          variant="contained"
-                                          size="small"
-                                          onClick={() => handleClickOpen("play", rule.id, index)}
-                                        >
-                                          <PlayArrowIcon />
-                                        </LoadingButton>
-                                      </Tooltip>
-                                    </>
-                                }
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  </div>
-                :
-                  <div className="mt-10">
-                    <AlertCust
-                      type="info"
-                      msg="Você ainda não possui nenhuma regra"
+    async function apiDeleteRule() {
+        setLoadingAction(true);
+        try {
+            await api.post(url + `/delete/${ruleObj.id}`);
+            await apiGetRulesPaCbo();
+            handleClose();
+            openSnackBarFun(false, "Regra apagada");
+        } catch (e) {
+            console.log(e);
+            openSnackBarFun();
+        }
+        setLoadingAction(false);
+    }
+
+    async function apiEditRulePaCbo() {
+        try {
+            const obj = {
+                "pa": paransCbo.pa,
+                "cboCurrent": paransCbo.cboCurrent,
+                "cboNew": paransCbo.cboNew
+            }
+            await api.post(url + `/edit/${ruleObj.id}`, obj);
+            await apiGetRulesPaCbo();
+            handleClose();
+            openSnackBarFun(false, "Regra CBO salva");
+        } catch (e) {
+            setErrorsCbo({ ...errorsCbo, ["error"]: true });
+            switch (e.response.data) {
+                case "PARANS IQUALS":
+                    setMsgError("Os CBOs não pode ser iguais");
+                    break;
+                case "REACHED MAX LENGTH":
+                    setMsgError("Você alcançou o número máximo de regras");
+                    break;
+                case "EXIST RULE":
+                    setMsgError("Uma regra para esse CBO já existe ");
+                    break;
+                default:
+                    setMsgError("Ops, algo deu errado");
+                    openSnackBarFun(true, "Ops, algo deu errado");
+            }
+        }
+    }
+
+    async function apiPlayRule() {
+        setLoadingAction(true);
+        handleClose();
+        try {
+            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
+            handleClose();
+            openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
+        } catch (e) {
+            console.log(e);
+            openSnackBarFun();
+        }
+        setLoadingAction(false);
+    }
+
+    async function apiPlayAll() {
+        setLoading(true);
+        handleClose();
+        try {
+            const response = await api.post(url + "/execute/0", { "dateBpa": getFormattedDate() });
+            openSnackBarFun(false, `Todas regras executadas ${response.data} linhas alteradas`);
+
+        } catch (e) {
+            console.log(e);
+            openSnackBarFun();
+        }
+        setLoading(false);
+    }
+
+    function actionDialog(actionDi) {
+        if (actionDi === "delete") {
+            apiDeleteRule();
+        } else {
+            apiPlayRule();
+        }
+    }
+
+    function handleClickOpen(dialog, id, index) {
+        setRuleObj({ "id": id, "index": index });
+
+        if (dialog === "edit") {
+            const rule = rulePaCbo.ruleTreatmentPaCboList.find(item => item.id === id);
+            setParansCbo({ "pa": rule.pa, "cboCurrent": rule.cboCurrent, "cboNew": rule.cboNew });
+        }
+
+        setOpen({ ...open, [dialog]: true });
+    }
+
+    function handleClose() {
+        setParansCbo({ "pa": "", "cboCurrent": "", "cboNew": "" });
+        setErrorsCbo({ "pa": false, "cboCurrent": false, "cboNew": false, "error": false });
+        setOpen({ "delete": false, "edit": false, "play": false, "create": false, "playAll": false });
+    }
+
+    function isValid() {
+        const haveErrorPa = paransCbo.pa.length != 10;
+        const haveErrorCboCurrent = paransCbo.cboCurrent.length != 6;
+        const haveErrorCboNew = paransCbo.cboNew.length != 6;
+        const haveErrorEquals = paransCbo.cboNew === paransCbo.cboCurrent;
+
+        if (haveErrorPa || haveErrorCboNew || haveErrorCboCurrent || haveErrorEquals) {
+            setMsgError(haveErrorEquals && "Os CBOs não podem ser iguais");
+            setErrorsCbo({ "pa": haveErrorPa, "cboCurrent": haveErrorCboCurrent, "cboNew": haveErrorCboNew, "error": haveErrorEquals, "equals": haveErrorEquals });
+        } else {
+            if (open.create) {
+                apiCreateRulePaCbo();
+            } else {
+                apiEditRulePaCbo();
+            }
+        }
+    }
+
+
+    return (
+        <>
+            <div className="page-content">
+                <Container fluid>
+                    {/* Render Breadcrumb */}
+                    <Breadcrumbs
+                        title={props.t("Substituição de CBO")}
+                        breadcrumbItem={props.t("Substituição de CBO")}
                     />
-                  </div>
-          }
-          <div className="fixed bottom-16 right-4">
-            <Button
-              variant="contained"
-              sx={{
-                mr: 2
-              }}
-              onClick={() => handleClickOpen("create")}
-            >
-              NOVA REGRA
-            </Button>
-            <Button
-              color="success"
-              variant="contained"
-              onClick={() => handleClickOpen("playAll")}
-            >
-              EXECUTAR TODAS AS REGRAS
-            </Button>
-          </div>
-          <Dialog open={open["create"] || open["edit"]} onClose={() => handleClose()}>
-            <DialogTitle>{open.create ? "Adicione uma nova regra CBO" : "Editar regra CBO"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText className="mb-3">
-                {open.create && `Você pode adicionar ${rulePaCbo.count} regras`}
-              </DialogContentText>
-              {
-                errorsCbo.error &&
-                  <div className="my-3 text-red-500">
-                    <p>{msgError}</p>
-                  </div>
-              }
-              <TextField
-                fullWidth
-                id="pa"
-                label="PA"
-                type="text"
-                error={errorsCbo.pa}
-                value={paransCbo.pa}
-                variant="standard"
-                onChange={ e => {
-                  if(errorsCbo.pa) setErrorsCbo({...errorsCbo, ["pa"]: false});
-                  if(!isNaN(Number(e.target.value)) && e.target.value.length <= 10) setParansCbo({...paransCbo, ["pa"]: e.target.value});;
-                }}
-                helperText={errorsCbo.pa && "O campo deve ter 10 dígitos"}
-              />
-                <TextField
-                  fullWidth
-                  id="oldCbo"
-                  label="CBO a ser substituído"
-                  error={errorsCbo.cboCurrent || errorsCbo.error || errorsCbo.equals}
-                  value={paransCbo.cboCurrent}
-                  type="text"
-                  variant="standard"
-                  onChange={ e => {
-                    if(errorsCbo.cboCurrent || errorsCbo.error || errorsCbo.equals) setErrorsCbo({...errorsCbo, ["cboCurrent"]: false, ["error"]: false, ["equals"]: false});
-                    if(!isNaN(Number(e.target.value))  && e.target.value.length <= 6) setParansCbo({...paransCbo, ["cboCurrent"]: e.target.value});
-                  }}
-                  helperText={errorsCbo.cboCurrent && "O campo deve ter 6 dígitos"}
-                  sx={{
-                    my: 2
-                  }}
-                />
-              <TextField
-                fullWidth
-                id="newCbo"
-                label="Novo CBO"
-                error={errorsCbo.cboNew || errorsCbo.equals}
-                value={paransCbo.cboNew}
-                type="text"
-                variant="standard"
-                onChange={ e => {
-                  if(errorsCbo.cboNew || errorsCbo.error || errorsCbo.equals) setErrorsCbo({...errorsCbo, ["cboNew"]: false, ["error"]: false, ["equals"]: false});
-                  if(!isNaN(Number(e.target.value))  && e.target.value.length <= 6) setParansCbo({...paransCbo, ["cboNew"]: e.target.value});
-                }}
-                helperText={errorsCbo.cboNew && "O campo deve ter 6 dígitos"}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleClose()}
-              >
-                FECHAR
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={isValid}
-              >
-                SALVAR
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Dialog open={open["delete"] || open["play"]} onClose={() => handleClose()}>
-            <DialogTitle>
-            {open.delete ? "Deseja realmente apagar essa regras?" : "Deseja realmente executar essa regras?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText className="mb-3">
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                color={open.delete ? "primary" : "error"}
-                onClick={() => handleClose()}
-              >
-                FECHAR
-              </Button>
-              <Button
-                variant="contained"
-                color={open.delete ? "error" : "success"}
-                onClick={() => actionDialog(open.delete ? "delete" : "playRule")}
-              >
-                {open.delete ? "APAGAR" : "EXECUTAR"}
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Dialog open={open["playAll"]} onClose={() => handleClose()}>
-            <DialogTitle>
-              Deseja realmente executar todas as regras?
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText className="mb-3">
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleClose()}
-              >
-                FECHAR
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => apiPlayAll()}
-              >
-                EXECUTAR TODAS
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Container>
-      </div>
+                    <AlertCust
+                        type="warning"
+                        msg="AS REGRAS SERÃO EXECUTADAS NO ARQUIVO BPA SELECIONADO"
+                    />
+                    <p className="flex justify-center mt-8">
+                        Adicione regras de substituição para o campo CBO. Ao executar uma regra, todos os campos CBO informados serão substituídos pelo novo valor de CBO informado.
+                    </p>
+                    {
+                        loading ?
+                            <div className="flex justify-center mt-10">
+                                <CircularProgress size={25} />
+                            </div>
+                            :
+                            rulePaCbo.ruleTreatmentPaCboList.length > 0 ?
+                                <div className="flex flex-col items-center w-full mt-10">
+                                    <p className="font-bold">
+                                        - MINHAS REGRAS -
+                                    </p>
+                                    <div className="w-full my-4">
+                                        {
+                                            rulePaCbo.ruleTreatmentPaCboList.map((rule, index) => (
+                                                <div key={index} className="my-4">
+                                                    <div className="flex justify-end w-full mb-1">
+                                                        <div className="flex items-center">
+                                                            <Radio
+                                                                checked={rule.executeBpac}
+                                                                onClick={(e) => apiHandleChange(e, rule, "bpac")}
+                                                                name="radio-buttons"
+                                                            />
+                                                            <p className="mr-2">BPAC</p>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <Radio
+                                                                checked={rule.executeBpai}
+                                                                onClick={(e) => apiHandleChange(e, rule, "bpai")}
+                                                                name="radio-buttons"
+                                                            />
+                                                            <p className="mr-2">BPAI</p>
+                                                            <Tooltip title="Selecione o arquivo que a regra será executada">
+                                                                <HelpOutlineIcon sx={{ fontSize: 20 }} />
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex justify-between items-center font-bold border-default border-[1px] rounded-lg p-2">
+                                                        <div className="flex flex-col">
+                                                            <div className="flex">
+                                                                <p>PA: </p> <p className="ml-2">{rule.pa}</p> <p className="mx-1">/</p> <p> CBO: </p><p className="ml-2">{rule.cboCurrent}</p>
+                                                            </div>
+                                                            <div className="flex mt-2">
+                                                                <p> NOVO CBO: </p>
+                                                                <p className="ml-2">{rule.cboNew}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex">
+                                                            {
+                                                                loadingAction && index == ruleObj.index ?
+                                                                    <div className="mr-4 mt-2">
+                                                                        <CircularProgress size={20} />
+                                                                    </div>
+                                                                    :
+                                                                    <>
+                                                                        <Tooltip title="Excluir">
+                                                                            <LoadingButton
+                                                                                color="error"
+                                                                                variant="contained"
+                                                                                size="small"
+                                                                                onClick={() => handleClickOpen("delete", rule.id, index)}
+                                                                            >
+                                                                                <DeleteForeverIcon />
+                                                                            </LoadingButton>
+                                                                        </Tooltip>
+                                                                        <div className="mx-2">
+                                                                            <Tooltip title="Editar">
+                                                                                <LoadingButton
+                                                                                    variant="contained"
+                                                                                    size="small"
+                                                                                    onClick={() => handleClickOpen("edit", rule.id, index)}
+                                                                                >
+                                                                                    <ModeEditIcon />
+                                                                                </LoadingButton>
+                                                                            </Tooltip>
+                                                                        </div>
+                                                                        <Tooltip title="Executar">
+                                                                            <LoadingButton
+                                                                                disabled={rule.executeBpac == false && rule.executeBpai == false}
+                                                                                color="success"
+                                                                                variant="contained"
+                                                                                size="small"
+                                                                                onClick={() => handleClickOpen("play", rule.id, index)}
+                                                                            >
+                                                                                <PlayArrowIcon />
+                                                                            </LoadingButton>
+                                                                        </Tooltip>
+                                                                    </>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                                :
+                                <div className="mt-10">
+                                    <AlertCust
+                                        type="info"
+                                        msg="Você ainda não possui nenhuma regra"
+                                    />
+                                </div>
+                    }
+                    <div className="fixed bottom-16 right-4">
+                        <Button
+                            variant="contained"
+                            sx={{
+                                mr: 2
+                            }}
+                            onClick={() => handleClickOpen("create")}
+                        >
+                            NOVA REGRA
+                        </Button>
+                        <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() => handleClickOpen("playAll")}
+                        >
+                            EXECUTAR TODAS AS REGRAS
+                        </Button>
+                    </div>
+                    <Dialog open={open["create"] || open["edit"]} onClose={() => handleClose()}>
+                        <DialogTitle>{open.create ? "Adicione uma nova regra CBO" : "Editar regra CBO"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText className="mb-3">
+                                {open.create && `Você pode adicionar ${rulePaCbo.count} regras`}
+                            </DialogContentText>
+                            {
+                                errorsCbo.error &&
+                                <div className="my-3 text-red-500">
+                                    <p>{msgError}</p>
+                                </div>
+                            }
+                            <TextField
+                                fullWidth
+                                id="pa"
+                                label="PA"
+                                type="text"
+                                error={errorsCbo.pa}
+                                value={paransCbo.pa}
+                                variant="standard"
+                                onChange={e => {
+                                    if (errorsCbo.pa) setErrorsCbo({ ...errorsCbo, ["pa"]: false });
+                                    if (!isNaN(Number(e.target.value)) && e.target.value.length <= 10) setParansCbo({ ...paransCbo, ["pa"]: e.target.value });;
+                                }}
+                                helperText={errorsCbo.pa && "O campo deve ter 10 dígitos"}
+                            />
+                            <TextField
+                                fullWidth
+                                id="oldCbo"
+                                label="CBO a ser substituído"
+                                error={errorsCbo.cboCurrent || errorsCbo.error || errorsCbo.equals}
+                                value={paransCbo.cboCurrent}
+                                type="text"
+                                variant="standard"
+                                onChange={e => {
+                                    if (errorsCbo.cboCurrent || errorsCbo.error || errorsCbo.equals) setErrorsCbo({ ...errorsCbo, ["cboCurrent"]: false, ["error"]: false, ["equals"]: false });
+                                    if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) setParansCbo({ ...paransCbo, ["cboCurrent"]: e.target.value });
+                                }}
+                                helperText={errorsCbo.cboCurrent && "O campo deve ter 6 dígitos"}
+                                sx={{
+                                    my: 2
+                                }}
+                            />
+                            <TextField
+                                fullWidth
+                                id="newCbo"
+                                label="Novo CBO"
+                                error={errorsCbo.cboNew || errorsCbo.equals}
+                                value={paransCbo.cboNew}
+                                type="text"
+                                variant="standard"
+                                onChange={e => {
+                                    if (errorsCbo.cboNew || errorsCbo.error || errorsCbo.equals) setErrorsCbo({ ...errorsCbo, ["cboNew"]: false, ["error"]: false, ["equals"]: false });
+                                    if (!isNaN(Number(e.target.value)) && e.target.value.length <= 6) setParansCbo({ ...paransCbo, ["cboNew"]: e.target.value });
+                                }}
+                                helperText={errorsCbo.cboNew && "O campo deve ter 6 dígitos"}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => handleClose()}
+                            >
+                                FECHAR
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={isValid}
+                            >
+                                SALVAR
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={open["delete"] || open["play"]} onClose={() => handleClose()}>
+                        <DialogTitle>
+                            {open.delete ? "Deseja realmente apagar essa regras?" : "Deseja realmente executar essa regras?"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText className="mb-3">
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                variant="contained"
+                                color={open.delete ? "primary" : "error"}
+                                onClick={() => handleClose()}
+                            >
+                                FECHAR
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color={open.delete ? "error" : "success"}
+                                onClick={() => actionDialog(open.delete ? "delete" : "playRule")}
+                            >
+                                {open.delete ? "APAGAR" : "EXECUTAR"}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={open["playAll"]} onClose={() => handleClose()}>
+                        <DialogTitle>
+                            Deseja realmente executar todas as regras?
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText className="mb-3">
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => handleClose()}
+                            >
+                                FECHAR
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => apiPlayAll()}
+                            >
+                                EXECUTAR TODAS
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </Container>
+            </div>
 
-    </>
-  );
+        </>
+    );
 };
 
 TreatmentPaCbo.propTypes = {
-  t: PropTypes.any,
-  chartsData: PropTypes.any,
-  onGetChartsData: PropTypes.func,
+    t: PropTypes.any,
+    chartsData: PropTypes.any,
+    onGetChartsData: PropTypes.func,
 };
 
 export default withTranslation()(TreatmentPaCbo);

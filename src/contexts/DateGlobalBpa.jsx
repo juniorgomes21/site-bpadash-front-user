@@ -27,12 +27,12 @@ export function DateGlobalBpaProvider({ children }) {
         if(localStorage.getItem("@Year") == null)  localStorage.setItem("@Year", date.getFullYear());
     }
 
-    function getFormatedDate() {
+    function getFormattedDate() {
         return (year + "-" + ( month < 10 ? "0" + month : month) + "-" + "01");
     }
 
     return (
-        <DateGlobalBpaContext.Provider value={{ month, year, startDateChange, getFormatedDate }}>
+        <DateGlobalBpaContext.Provider value={{ month, year, startDateChange, getFormattedDate }}>
             {children}
         </DateGlobalBpaContext.Provider>
     )

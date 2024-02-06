@@ -44,7 +44,7 @@ function InDateService({ dateBpa, refresh }) {
             services.forEach(service => {
                 ids.push(service.id);
             });
-            await api.post(`/bpai/update/${0}`, { "dateBpaInvalid": services[0].dateBpa, "ids": ids, "key": "dateInvalidBpa" });
+            await api.post(`/bpai/update/${0}`, { "dateBpaInvalid": services[0].dateBpa, "ids": ids, "key": "dateBpaInvalid" });
             await inDataService();
             openSnackBarFun(false, ids.length > 1 ? "Datas Alteradas" : "Data Alterada");
             

@@ -31,7 +31,7 @@ function DeletePerPa(props) {
 
     const url = "/treatment/deleteperpa";
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const { month, year, getFormatedDate } = useContext(DatePickerContext);
+    const { month, year, getFormattedDate } = useContext(DatePickerContext);
     const [rulePaDelete, setRulePaDelete] = useState({});
     const [loading, setLoading] = useState(true);
     const [msgError, setMsgError] = useState("");
@@ -127,7 +127,7 @@ function DeletePerPa(props) {
         setLoadingAction(true);
         handleClose();
         try {
-          const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormatedDate() });
+          const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
           handleClose();
           openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
@@ -141,7 +141,7 @@ function DeletePerPa(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post( url + "/execute/0", { "dateBpa": getFormatedDate() });
+            const response = await api.post( url + "/execute/0", { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
         } catch (e) {
             openSnackBarFun();
@@ -214,10 +214,10 @@ function DeletePerPa(props) {
                     />
                     <AlertCust
                         type="warning"
-                        msg="AS REGRAS SERAM EXECUTADAS NO ARQUIVO BPA SELECIONADO"
+                        msg="AS REGRAS SERÃO EXECUTADAS NO ARQUIVO BPA SELECIONADO"
                     />
                     <p className="flex justify-center mt-8">
-                        Adicione regras de exclusão para o campo PA. Ao executar uma regra todos os campos PA informados seram excluidos com suas respectivas linhas do arquivo BPA.
+                        Adicione regras de exclusão para o campo PA. Ao executar uma regra, todos os campos PA informados serão excluídos, juntamente com suas respectivas linhas, do arquivo BPA.
                     </p>
                     {
                         loading ?
@@ -409,7 +409,7 @@ function DeletePerPa(props) {
             </Dialog>
             <Dialog open={open["playAll"]} onClose={() => handleClose()}>
                 <DialogTitle>
-                    As regras seram executadas no arquivo de ({formatMonth(month)} de {year}). Executar regras?
+                    As regras serão executadas no arquivo de ({formatMonth(month)} de {year}). Executar regras?
                 </DialogTitle>
                 <DialogContent>
                 <DialogContentText className="mb-3">

@@ -103,6 +103,15 @@ export function formatDateString(date: string, showDay: boolean) {
     return (showDay ? day + "-" : "") + month + "-" + year;
 }
 
+export function maskCmp(date: string, showDay: boolean) {
+    
+    let month = date.substring(4, 6);
+    let year = date.substring(0, 4);
+
+    return month + "/" + year;
+}
+
+
 export function formatDateStringFull(date: string) {
     
     let day = date.substring(6, 8);
@@ -139,6 +148,13 @@ export function maskPointThree(value: string) {
     value = value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 
     return value;
+}
+
+export function maskPa(value: string) {
+
+    const mascara = `${value[0]}.${value.slice(1, 3)}.${value.slice(3, 5)}.${value.slice(5, 7)}.${value.slice(7, 9)}-${value[9]}`;
+
+    return mascara;
 }
 
 export function formatNameMonth(monthNumber: number) {
@@ -182,13 +198,13 @@ export function formatDateAndHours(date: string) {
 
 export function maskCell(num: string) {
         
-    num = num.replace(/\D/g,'');
-    num = num.replace(/(\d{2})(\d)/,"($1) $2");
-    num = num.replace(/(\d)(\d{4})$/,"$1-$2");
+    // num = num.replace(/\D/g,'');
+    // num = num.replace(/(\d{2})(\d)/,"($1) $2");
+    // num = num.replace(/(\d)(\d{4})$/,"$1-$2");
 
-    return num;
+    // return num;
 
-    // return "(" + num.substring(0, 2) + ") " + num.substring(2, 3) + " " + num.substring(3, 7) + "-" + num.substring(7, 11);
+    return num.substring(0, 1) + " " + num.substring(1, 5) + "-" + num.substring(5, 9);
 }
 
 export function unformatCell(num: string) {

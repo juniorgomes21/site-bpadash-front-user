@@ -229,7 +229,7 @@ function InCep({ dateBpa }) {
                 />
                 <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
                     <p className="text-center">
-                        ATENÇÃO, os CEPs seram atualizados pelo CEP mais próximo.
+                        ATENÇÃO, os CEPs serão atualizados pelo CEP mais próximo.
                     </p>
                 </div>
                 </DialogContent>

@@ -14,6 +14,21 @@ import api from "../../../../services/api";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
 import HeaderTable from "./HeaderTable";
 import EnhancedTableHead from "./EnhancedTableHead";
+import { maskCmp, maskPa } from "../../../../Validation&Formatation/formatation";
+
+const names = [
+    'cnes',
+    'cmp',
+    'cbo',
+    'flh',
+    'seq',
+    'pa',
+    'idade',
+    'qt',
+    'org',
+    'fim'
+];
+
 
 export default function TableBpac({ identifier }) {
   const [bpacList, setBpacList] = useState([]);
@@ -49,13 +64,14 @@ export default function TableBpac({ identifier }) {
     setSize(event.target.value);
   }
 
-  function hasOnlyWhitEspace(str) {
-    if(/^\s*$/.test(str)) {
-      return "Em branco"
+  function auxMask(field, value) {
+    switch(field) {
+        case 'pa': return maskPa(value);
+        case 'cmp': return maskCmp(value, false);
+
+        default: return (/^\s*$/.test(value)) ? "Em branco" : value;
     }
-  
-    return str;
-  }
+}
 
   return (
     <div className='w-full'>
@@ -77,16 +93,15 @@ export default function TableBpac({ identifier }) {
                               tabIndex={-1}
                               key={index}
                             >
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.cnes)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.cmp)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.cbo)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.flh)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.seq)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.pa)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.idade)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.qt)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.org)}</TableCell>
-                              <TableCell align="center">{hasOnlyWhitEspace(bpac.fim)}</TableCell>
+                                {
+                                    names.map((name, index) => (
+                                        <TableCell key={index} align="center" className="truncate">
+                                            {
+                                                auxMask(name, bpac[name])
+                                            }
+                                        </TableCell>
+                                    ))
+                                }
                             </TableRow>
                         ))}
                     </TableBody>

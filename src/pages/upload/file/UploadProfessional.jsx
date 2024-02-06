@@ -46,7 +46,9 @@ function UploadProfessional() {
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    switch (e.response.data[0] && e.response.data[0].errorType) {
+                    const response = e.response.data[0];
+
+                    switch (response && response.errorType) {
                         case "EXIST DATE":
                             openSnackBarFun(true, "Já existe um arquivo de profissionais na data informada!");
                             break;

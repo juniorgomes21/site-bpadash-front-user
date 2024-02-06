@@ -23,6 +23,7 @@
     "@mui/lab": "^5.0.0-alpha.146",
     "@mui/material": "^5.14.11",
     "@mui/styled-engine-sc": "^5.11.0",
+    "@mui/x-charts": "^6.19.1",
     "@mui/x-date-pickers": "^6.18.1",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@reduxjs/toolkit": "^1.8.5",

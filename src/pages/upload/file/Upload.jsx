@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { Card, CardBody, CardTitle, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -10,24 +10,27 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SnackBarContext from "../../../contexts/managerService";
 import DivErrors from "../DivErrors";
 import DivLoadingSvg from "../DivLoadingSvg";
-import "react-datepicker/dist/react-datepicker.css";
 import AuthContext from "../../../contexts/Auth";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 function Upload() {
 
     document.title="Upload BPA";
     
+    const user = JSON.parse(localStorage.getItem("@User"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getDates } = useContext(AuthContext);
+
     const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [loading, setLoading] = useState(false);
     const [bytes, setBytes] = useState(0);
-    const [selectedFiles, setSelectedFiles] = useState([]);
-    const [displayedErrors, setDisplayedErrors] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [startIndex, setStartIndex] = useState(5);
     const [errorsFile, setErrorsFile] = useState([]);
+    const [description, setDescription] = useState('');
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [displayedErrors, setDisplayedErrors] = useState([]);
 
     async function apiCreateBpa() {
         setLoading(true);
@@ -42,21 +45,22 @@ function Upload() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewBpa', JSON.stringify(paramNewBpa));
-                    await api.post('/bpa/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/bpa/create/${user.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     await getDates();
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    switch (e.response.data[0] && e.response.data[0].errorType) {
-                        case "NOT STORAGE":
-                            openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
-                            break;
-                        case "NOT EXIST DATE":
+                    const response = e.response.data[0];
+                    switch (response && response.errorType) {
+                        case "EXIST DATE":
                             openSnackBarFun(true, "Já existe um arquivo com a data informada!");
                             break;
                         case "FILE INVALID":
                             openSnackBarFun(true, "Arquivo não contem linhas BPA-I");
-                            break;    
+                            break;
+                        case "NOT STORAGE":
+                            openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
+                            break;  
                         default:
                             setErrorsFile(e.response.data);
                             const nextErrors = e.response.data.slice(0, 5);

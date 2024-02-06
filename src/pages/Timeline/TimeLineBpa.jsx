@@ -28,6 +28,7 @@ function TimeLineBpa(props) {
 
     const screenSize = window.screen.width;
     
+    const user = JSON.parse(localStorage.getItem("@User"));
     const { month, year } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getDates } = useContext(AuthContext);
@@ -54,7 +55,7 @@ function TimeLineBpa(props) {
     async function apiDelete() {
         try {
             setLoading(true);
-            await api.post("/bpa/delete", select);
+            await api.post(`/bpa/delete/${user.key}`, select);
             await getDates();
             openSnackBarFun(false, "Arquivos apagados!")
             setSelect([]);

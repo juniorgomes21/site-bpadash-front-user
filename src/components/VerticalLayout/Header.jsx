@@ -93,31 +93,6 @@ function Header(props) {
   const [inputValue, setInputValue] = useState("");
 
 
-  useEffect(() => {
-    // getPaCbo();
-  }, [])
-
-  // async function getPaCbo() {
-  //   try {
-  //     const response = await api.get(`/bpai/get/pa/cbo/${month}/${year}`);
-  //     setPaCbo(response.data);
-  //   } catch(e) {
-  //     console.log(e.response);
-  //   }
-  // }
-
-  async function searchPaCbo() {
-    setLoading(true);
-    open(true);
-    try {
-      const response = await api.get(`/bpa/get/${inputValue}`);
-      setBpax(response.data);
-    } catch(e) {
-      console.log(e.response);
-    }
-    setLoading(false);
-  }
-
   function tToggle() {
     var body = document.body;
     if (window.screen.width <= 998) {

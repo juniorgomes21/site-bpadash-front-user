@@ -328,7 +328,7 @@ function AgeDate({ dateBpa, refresh }) {
                 />
                 <div className="border-[1px] border-orange-400 rounded-md mt-4 p-4">
                     <p className="text-center">
-                        ATENÇÃO, a atualização geral tem precisão apenas no ano do nascimento. Os valores mês e dia seram atualizados de acordo
+                        ATENÇÃO, a atualização geral tem precisão apenas no ano do nascimento. Os valores mês e dia serão atualizados de acordo
                         com os valores já presentes na data de nascimento do paciente.
                     </p>
                 </div>

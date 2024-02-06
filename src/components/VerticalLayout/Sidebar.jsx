@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import SidebarContent from "./SidebarContent";
 import { Link } from "react-router-dom";
-import logoLightPng from "../../assets/images/logo_bpa.png";
+import logoLightPng from "../../assets/images/logo_bpa0.png";
 import bpa from "../../assets/images/bpa.png";
 
 function Sidebar(props) {
@@ -16,11 +16,11 @@ function Sidebar(props) {
         <div className="navbar-brand-box">
           <Link to="/" className="logo logo-light">
             <span className="logo-sm">
-              <img src={logoLightPng} alt="" style={{ height: 70, width: 100 }} />
+              <img src={logoLightPng} alt="" style={{ height: 50, width: 80, marginTop: 20 }} />
             </span>
             <span className="logo-lg">
-              <div className="flex justify-center">
-                <img src={bpa} style={{ height: 80, width: 190 }} />
+              <div className="flex justify-center items-center">
+                <img src={bpa} style={{ height: 80, width: 140 }} />
               </div>
             </span>
           </Link>

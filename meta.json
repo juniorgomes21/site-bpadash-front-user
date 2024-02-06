@@ -43,7 +43,10 @@ obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tare
 =================================== A FAZERES ===============================================
 
 () colocar uma referencia para o usuário identificar qual pacote está usando em configurações
+() colocar o número de regras que o usuário tem
 () adicionar @Transectional em todos os métodos que utilizam armazenamento do usuário
+() avaliar as regras em executar todas as regras.
+() lembrar de atualizar o os valores do usuário quando fazer alteração upload e nova regra
 
 =================================== CORREÇÕES ===============================================
 

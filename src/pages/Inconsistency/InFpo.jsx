@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { maskPointThree } from "../../Validation&Formatation/formatation";
+import { maskPa, maskPointThree } from "../../Validation&Formatation/formatation";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SnackBarContext from "../../contexts/managerService";
 import SouthIcon from '@mui/icons-material/South';
@@ -172,7 +172,7 @@ function InFpo({ dateBpa, refresh}) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div className="">
                                                 <p>
-                                                    PA INVÁLIDO: {maskPointThree(item.pa)}
+                                                    PA INVÁLIDO: {maskPa(item.pa)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen("errorsPaBpacDTOS", item.id)}>
@@ -221,7 +221,7 @@ function InFpo({ dateBpa, refresh}) {
                                         <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                             <div className="">
                                                 <p>
-                                                    PA INVÁLIDO: {maskPointThree(item.pa)}
+                                                    PA INVÁLIDO: {maskPa(item.pa)}
                                                 </p>
                                             </div>
                                             <div className="cursor-pointer" onClick={() => handleClickOpen("errorsPaBpaiDTOS", item.id)}>

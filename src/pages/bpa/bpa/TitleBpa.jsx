@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -30,367 +30,368 @@ import AddHomeIcon from '@mui/icons-material/AddHome';
 
 const headCells = [
     {
-      id: 'hdr',
-      label: 'hdr',
+        id: 'hdr',
+        label: 'hdr',
     },
     {
-      id: 'mvm',
-      label: 'mvm',
+        id: 'mvm',
+        label: 'mvm',
     },
     {
-      id: 'lin',
-      label: 'lin',
+        id: 'lin',
+        label: 'lin',
     },
     {
-      id: 'flh',
-      label: 'flh',
+        id: 'flh',
+        label: 'flh',
     },
     {
-      id: 'smtVrf',
-      label: 'smtVrf',
+        id: 'smtVrf',
+        label: 'smtVrf',
     },
     {
-      id: 'rsp',
-      label: 'rsp',
+        id: 'rsp',
+        label: 'rsp',
     },
     {
-      id: 'sgl',
-      label: 'sgl',
+        id: 'sgl',
+        label: 'sgl',
     },
     {
-      id: 'cgccpf',
-      label: 'cgccpf',
+        id: 'cgccpf',
+        label: 'cgccpf',
     },
     {
-      id: 'dst',
-      label: 'dst',
+        id: 'dst',
+        label: 'dst',
     },
     {
-      id: 'dstIn',
-      label: 'dstIn',
+        id: 'dstIn',
+        label: 'dstIn',
     },
     {
-      id: 'versao',
-      label: 'versao',
+        id: 'versao',
+        label: 'versao',
     },
     {
-      id: 'fim',
-      label: 'fim',
+        id: 'fim',
+        label: 'fim',
     },
 ];
 
 export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
 
-  const { getDates } = useContext(AuthContext);
-  const { openSnackBarFun } = useContext(SnackBarContext);
-  const { getFormatedDate } = useContext(DateGlobalBpaContext);
-  const [titleBpa, setTitleBpa] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [countRules, setCountrules] = useState(0);
-  const [open, setOpen] = useState({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
+    const { getDates } = useContext(AuthContext);
+    const { openSnackBarFun } = useContext(SnackBarContext);
+    const { getFormattedDate } = useContext(DateGlobalBpaContext);
+    const [titleBpa, setTitleBpa] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [countRules, setCountRules] = useState(0);
+    const [open, setOpen] = useState({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
 
-  useEffect(() => {
-    apiGetTitle();
-  }, []);
+    useEffect(() => {
+        apiGetTitle();
+    }, []);
 
-  async function apiGetTitle() {
-    try {
-      const response = await api.get(`/title/get/${identifier}`);
-      setTitleBpa(response.data);
-      setCountrules(response.data.countRules);
-    } catch(e) {
-      console.log("Erro: ", e);
+    async function apiGetTitle() {
+        try {
+            const response = await api.get(`/title/get/${identifier}`);
+            setTitleBpa(response.data);
+            setCountRules(response.data.countRules);
+        } catch (e) {
+            console.log("Erro: ", e);
+        }
+        setLoading(false);
     }
-    setLoading(false);
-  }
 
-  async function apiDeleteBPA() {
-    setLoadingBpa(true);
-    try {
-      await api.post(`/bpa/delete/${identifier}`);
-      getDates();
-      setBpa({});
-      openSnackBarFun(false, "BPA apagado com sucesso!");
-    } catch(e) {
-      console.log(e.response);
-      openSnackBarFun();
+    async function apiDeleteBPA() {
+        setLoadingBpa(true);
+        try {
+            await api.post(`/bpa/delete/${user.key}`, [identifier]);
+            getDates();
+            setBpa({});
+            openSnackBarFun(false, "BPA apagado com sucesso!");
+        } catch (e) {
+            console.log(e.response);
+            openSnackBarFun();
+        }
+        setLoadingBpa(false);
     }
-    setLoadingBpa(false);
-  }
 
-  async function apiExecuteRules() {
-    setLoadingBpa(true);
-    try {
-      const countB = await api.post("/treatment/deleteperpa/execute/0", { "dateBpa": getFormatedDate() });
-      const countA = await api.post("/treatment/replacement/pa/execute/0", { "dateBpa": getFormatedDate() });
-      const countC = await api.post("/treatment/replacement/pa/cbo/execute/0", { "dateBpa": getFormatedDate() });
-      const countD = await api.post("/treatment/replacement/custom/execute/0", { "dateBpa": getFormatedDate() });
-      openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data + countD.data} linhas alteradas`);
-      
-    } catch(e) {
-      openSnackBarFun();
+    async function apiExecuteRules() {
+        setLoadingBpa(true);
+        try {
+            const date = getFormattedDate();
+            const countB = await api.post("/treatment/deleteperpa/execute/0", { "dateBpa": date });
+            const countA = await api.post("/treatment/replacement/pa/execute/0", { "dateBpa": date });
+            const countC = await api.post("/treatment/replacement/pa/cbo/execute/0", { "dateBpa": date });
+            const countD = await api.post("/treatment/replacement/custom/execute/0", { "dateBpa": date });
+            openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data + countD.data} linhas alteradas`);
+
+        } catch (e) {
+            openSnackBarFun();
+        }
+        setLoadingBpa(false);
     }
-    setLoadingBpa(false);
-  }
 
-  async function apiExecuteRuleCepBlank() {
-    setLoadingBpa(true);
-    try {
-      const count = await api.post("/treatment/address/execute", { "dateBpa": getFormatedDate() });
-      openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
+    async function apiExecuteRuleCepBlank() {
+        setLoadingBpa(true);
+        try {
+            const count = await api.post("/treatment/address/execute", { "dateBpa": getFormattedDate() });
+            openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
 
-    } catch(e) {
-      console.log(e);
-      openSnackBarFun();
+        } catch (e) {
+            console.log(e);
+            openSnackBarFun();
+        }
+        setLoadingBpa(false);
     }
-    setLoadingBpa(false);
-  }
 
-  async function apiExecuteRuleAddressIncomplete() {
-    setLoadingBpa(true);
-    try {
-      const count = await api.post("/treatment/address/execute/cep", { "dateBpa": getFormatedDate() });
-      openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
-    } catch(e) {
-      console.log(e);
-      openSnackBarFun();
+    async function apiExecuteRuleAddressIncomplete() {
+        setLoadingBpa(true);
+        try {
+            const count = await api.post("/treatment/address/execute/cep", { "dateBpa": getFormattedDate() });
+            openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
+        } catch (e) {
+            console.log(e);
+            openSnackBarFun();
+        }
+        setLoadingBpa(false);
     }
-    setLoadingBpa(false);
-  }
 
-  function hasOnlyWhitEspace(str) {
-    if(/^\s*$/.test(str)) {
-      return "Em branco"
+    function hasOnlyWhitEspace(str) {
+        if (/^\s*$/.test(str)) {
+            return "Em branco"
+        }
+
+        return str;
     }
-  
-    return str;
-  }
 
-  function handleClickOpen(key) {
-    if(key === "rules") {
-      if(countRules == 0) {
-        openSnackBarFun(true, "Crie novas regras para executar essa ação!")
-      } else {
-        setOpen({...open, [key]: true});
-      }
-    } else {
-      setOpen({...open, [key]: true});
-    }
-  }
-
-  function handleClickClose() {
-    setOpen({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
-  }
-
-  return (
-    <div className='w-full'>
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 }
-            }}
-            className="w-full bg-[#2a3042] text-white"
-        >
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                CABEÇALHO
-            </Typography>
-            <>
-                <div className='hover:mb-4'>
-                  <Link to="/file/edit/title" className="has-arrow">
-                    <Tooltip title="Editar" placement='top'>
-                        <IconButton>
-                            <EditIcon color="primary"/>
-                        </IconButton>
-                    </Tooltip>
-                  </Link>
-                </div>
-                <div className='hover:mb-4'>
-                  <Tooltip title="Preencher endereço" placement='top' onClick={() => handleClickOpen("cep")}>
-                      <IconButton>
-                        <AddHomeIcon className='text-yellow-300'/>
-                      </IconButton>
-                  </Tooltip>
-                </div>
-                <div className='hover:mb-4'>
-                <Tooltip title="Corrigir CEP" placement='top' onClick={() => handleClickOpen("cepBlank")}>
-                    <IconButton>
-                      <AddLocationAltIcon className='text-white'/>
-                    </IconButton>
-                </Tooltip>
-                </div>
-                <div className='hover:mb-4'>
-                <Tooltip title="Executar regras" placement='top' onClick={() => handleClickOpen("rules")}>
-                    <IconButton>
-                      <DomainVerificationIcon className='text-green-400'/>
-                    </IconButton>
-                </Tooltip>
-                </div>
-                <div className='hover:mb-4'>
-                <Tooltip title="Apagar" placement='top' onClick={() => handleClickOpen("delete")}>
-                    <IconButton>
-                        <DeleteIcon color="error"/>
-                    </IconButton>
-                </Tooltip>
-                </div>
-            </>
-        </Toolbar>
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 1200 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                      {
-                          headCells.map((head, index) => (
-                              <TableCell key={index} align='center' className="p-4">
-                                  <p className="uppercase font-bold text-[#2a3042]">
-                                      {head.label}
-                                  </p>
-                              </TableCell>
-                          ))
-                      }
-                  </TableRow>
-                </TableHead>
-                    {
-                      !(identifier == '') && !loading &&
-                      <TableBody>
-                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
-                          <TableCell align="center">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    }
-            </Table>
-            {
-              identifier == '' || loading &&
-                <div className='flex justify-center my-2'>
-                  <img src={loadingSvg} alt="loading..." width={50}/>
-                </div>
+    function handleClickOpen(key) {
+        if (key === "rules") {
+            if (countRules == 0) {
+                openSnackBarFun(true, "Crie novas regras para executar essa ação!")
+            } else {
+                setOpen({ ...open, [key]: true });
             }
-        </TableContainer>
-        <Dialog
-          open={open.rules}
-          onClose={() => handleClickClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-              Executar {countRules} regras?
-          </DialogTitle>
-          <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                  Essa ação executará todas as regras registradas na sua conta nesse BPA.
-              </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              color='error'
-              onClick={handleClickClose}
+        } else {
+            setOpen({ ...open, [key]: true });
+        }
+    }
+
+    function handleClickClose() {
+        setOpen({ "edit": false, "rules": false, "delete": false, "cep": false, "cepBlank": false });
+    }
+
+    return (
+        <div className='w-full'>
+            <Toolbar
+                sx={{
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 }
+                }}
+                className="w-full bg-[#2a3042] text-white"
             >
-              FECHAR
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => {
-                apiExecuteRules();
-                handleClickClose();
-              }}
-            >
-              EXECUTAR
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={open.cep || open.cepBlank}
-          onClose={() => handleClickClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-              Tem a certeza?
-          </DialogTitle>
-          <DialogContent>
-              <DialogContentText id="alert-dialog-description">
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    variant="h6"
+                    id="tableTitle"
+                    component="div"
+                >
+                    CABEÇALHO
+                </Typography>
+                <>
+                    <div className='hover:mb-4'>
+                        <Link to="/file/edit/title" className="has-arrow">
+                            <Tooltip title="Editar" placement='top'>
+                                <IconButton>
+                                    <EditIcon color="primary" />
+                                </IconButton>
+                            </Tooltip>
+                        </Link>
+                    </div>
+                    <div className='hover:mb-4'>
+                        <Tooltip title="Preencher endereço" placement='top' onClick={() => handleClickOpen("cep")}>
+                            <IconButton>
+                                <AddHomeIcon className='text-yellow-300' />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                    <div className='hover:mb-4'>
+                        <Tooltip title="Corrigir CEP" placement='top' onClick={() => handleClickOpen("cepBlank")}>
+                            <IconButton>
+                                <AddLocationAltIcon className='text-white' />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                    <div className='hover:mb-4'>
+                        <Tooltip title="Executar regras" placement='top' onClick={() => handleClickOpen("rules")}>
+                            <IconButton>
+                                <DomainVerificationIcon className='text-green-400' />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                    <div className='hover:mb-4'>
+                        <Tooltip title="Apagar" placement='top' onClick={() => handleClickOpen("delete")}>
+                            <IconButton>
+                                <DeleteIcon color="error" />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                </>
+            </Toolbar>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 1200 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            {
+                                headCells.map((head, index) => (
+                                    <TableCell key={index} align='center' className="p-4">
+                                        <p className="uppercase font-bold text-[#2a3042]">
+                                            {head.label}
+                                        </p>
+                                    </TableCell>
+                                ))
+                            }
+                        </TableRow>
+                    </TableHead>
+                    {
+                        !(identifier == '') && !loading &&
+                        <TableBody>
+                            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
+                                <TableCell align="center">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    }
+                </Table>
                 {
-                  open.cep ?
-                    "EM MANUTENÇÃO" //"Essa ação substituirá os campos em branco no endereço do paciênte em BPA-I"
-                  :
-                    "Essa ação substituirá o endereço completo em BPA-I onde o CEP do paciênte for branco"
+                    identifier == '' || loading &&
+                    <div className='flex justify-center my-2'>
+                        <img src={loadingSvg} alt="loading..." width={50} />
+                    </div>
                 }
-              </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              color='error'
-              onClick={handleClickClose}
+            </TableContainer>
+            <Dialog
+                open={open.rules}
+                onClose={() => handleClickClose()}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
             >
-              FECHAR
-            </Button>
-            <Button
-              variant="contained"
-              color='success'
-              onClick={() => {
-                if(open.cep) {
-                  // apiExecuteRuleAddressIncomplete();
-                } else {
-                  apiExecuteRuleCepBlank();
-                }
-                handleClickClose();
-              }}
+                <DialogTitle id="alert-dialog-title">
+                    Executar {countRules} regras?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Essa ação executará todas as regras registradas na sua conta nesse BPA.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        color='error'
+                        onClick={handleClickClose}
+                    >
+                        FECHAR
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => {
+                            apiExecuteRules();
+                            handleClickClose();
+                        }}
+                    >
+                        EXECUTAR
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={open.cep || open.cepBlank}
+                onClose={() => handleClickClose()}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
             >
-              EXECUTAR
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={open.delete}
-          onClose={() => handleClickClose()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-              Tem a certeza?
-          </DialogTitle>
-          <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                  Essa ação apagará permanentemente o arquivo BPA
-              </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              onClick={handleClickClose}
+                <DialogTitle id="alert-dialog-title">
+                    Tem a certeza?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {
+                            open.cep ?
+                                "EM MANUTENÇÃO" //"Essa ação substituirá os campos em branco no endereço do paciênte em BPA-I"
+                                :
+                                "Essa ação substituirá o endereço completo em BPA-I onde o CEP do paciênte for branco"
+                        }
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        color='error'
+                        onClick={handleClickClose}
+                    >
+                        FECHAR
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color='success'
+                        onClick={() => {
+                            if (open.cep) {
+                                // apiExecuteRuleAddressIncomplete();
+                            } else {
+                                apiExecuteRuleCepBlank();
+                            }
+                            handleClickClose();
+                        }}
+                    >
+                        EXECUTAR
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={open.delete}
+                onClose={() => handleClickClose()}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
             >
-              FECHAR
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => {
-                apiDeleteBPA();
-                handleClickClose();
-              }}
-            >
-              APAGAR
-            </Button>
-          </DialogActions>
-        </Dialog>
-    </div>
-  );
+                <DialogTitle id="alert-dialog-title">
+                    Tem a certeza?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Essa ação apagará permanentemente o arquivo BPA
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        onClick={handleClickClose}
+                    >
+                        FECHAR
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => {
+                            apiDeleteBPA();
+                            handleClickClose();
+                        }}
+                    >
+                        APAGAR
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
 }

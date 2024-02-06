@@ -47,6 +47,7 @@ function UploadFpo() {
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
                     const response = e.response.data[0];
+                    
                     switch (response && response.errorType) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
@@ -261,7 +262,6 @@ function UploadFpo() {
                                         selectedFiles.length > 0 && !loading &&
                                             <Button
                                                 variant="contained"
-                                                loading={loading}
                                                 onClick={() => {
                                                     setSelectedFiles([]);
                                                 }}

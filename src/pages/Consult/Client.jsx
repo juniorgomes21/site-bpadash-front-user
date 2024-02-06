@@ -1,29 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import api from "../../services/api";
 import SnackBarContext from "../../contexts/managerService";
 import TextField from '@mui/material/TextField';
 import { LoadingButton } from "@mui/lab";
-import { Card, CardBody, CardTitle, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import { Card, CardBody, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import SearchIcon from '@mui/icons-material/Search';
-import "react-datepicker/dist/react-datepicker.css";
 import { maskCEP, maskCPF, maskCell, maskPointThree } from "../../Validation&Formatation/formatation";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import { CircularProgress } from "@mui/material";
 import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
+import "react-datepicker/dist/react-datepicker.css";
 
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const field = [
     {
@@ -99,10 +86,10 @@ const field = [
 
 function Client() {
 
-    document.title="Consultar Profissional";
+    document.title="Consultar Paciente";
     
     const { openSnackBarFun } = useContext(SnackBarContext);
-    const { getFormatedDate } = useContext(DateGlobalBpaContext);
+    const { getFormattedDate } = useContext(DateGlobalBpaContext);
     const [cnsPac, setCnsPac] = useState('');
     const [client, setClient] = useState({});
     const [loading, setLoading] = useState(false);
@@ -112,14 +99,21 @@ function Client() {
         setLoading(true);
         setClient({});
         try {
-            const response = await api.get(`/user/get/${getFormatedDate()}/${cnsPac}`);
+            const response = await api.get(`/user/get/${getFormattedDate()}/${cnsPac}`);
             setClient(response.data);
         } catch (e) {
             const response = e.response.data;
-            if(response && response === "NOT FOUND") {
-                openSnackBarFun(true, "Nenhum paciênte encontrado!");
-            } else {
-                openSnackBarFun();
+            
+            switch(response && response) {
+                case "NOT FOUND":
+                    openSnackBarFun(true, "Nenhum paciente encontrado!");
+                    break;
+                case "NOT EXIST DATE BPA":
+                    openSnackBarFun(true, "Você não possuí BPA na data selecionada!");
+                    break;
+                default:
+                    openSnackBarFun();
+                    break;
             }
         }
         setLoading(false);
@@ -141,9 +135,9 @@ function Client() {
         <div className="page-content relative">
             <Container fluid className="mb-10">
                 {/* Render Breadcrumbs */}
-                <Breadcrumbs title="Profissional" breadcrumbItem="Consultar profissional" />
+                <Breadcrumbs title="Paciente" breadcrumbItem="Consultar de Paciente" />
                 <AlertCustom
-                    msg="A consulta do paciênte é feita no arquivo BPA selecionado"
+                    msg="A consulta do paciente é realizada no arquivo BPA selecionado"
                     type="info"
                 />
                 <div className="flex justify-center items-end w-full mt-5">
