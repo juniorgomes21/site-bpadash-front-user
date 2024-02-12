@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import Login from "../pages/Authentication/Login";
 import Logout from "../pages/Authentication/Logout";
 import Bpa from "../pages/bpa/bpa/Bpa";
-import StorageMemory from "../pages/Dashboard/StorageMemory";
+import StorageMemory from "../pages/Graphics/Storage/StorageMemory";
 import Upload from "../pages/upload/file/Upload";
 import Download from "../pages/Download/Download";
 import Bpai from "../pages/bpa/bpai/edit/Bpai";
@@ -29,8 +29,9 @@ import UploadFpo from "../pages/upload/file/UploadFpo";
 import FpoEdit from "../pages/Consult/FpoEdit";
 import TimeLineFpo from "../pages/Timeline/TimeLineFpo";
 import Client from "../pages/Consult/Client";
-import SexGraphics from "../pages/Graphics/SexGraphics";
+import Graphics from "../pages/Graphics/month/Graphics";
 import Welcome from "../pages/Dashboard/welcome/Welcome";
+import GraphicsYear from "../pages/Graphics/year/GraphicsYear";
 
 
 const authProtectedRoutes = [
@@ -43,8 +44,8 @@ const authProtectedRoutes = [
     { path: "/file/consult/customers", component: Client },
     { path: "/file/consult/professionals", component: ProfessionalEdit },
     { path: "/storage/memory", component: StorageMemory },
-    { path: "/graphics/sex", component: SexGraphics },
-
+    { path: "/graphics", component: Graphics },
+    { path: "/graphics/year", component: GraphicsYear },
     { path: "/upload/bpa", component: Upload },
     { path: "/upload/bpai", component: UploadBpai },
     { path: "/upload/bpac", component: UploadBpac },

@@ -8,7 +8,7 @@ import loadingGif from "../../../assets/images/loading/Iphone-spinner-2.gif";
 const sellingData = [
     { name: "Pacientes", desc: "0 - 20 anos", key: "yong" },
     { name: "Pacientes", desc: "21 - 50 anos", key: "middleAge" },
-    { name: "Pacientes", desc: "51 - 130 anos +", key: "old" }
+    { name: "Pacientes", desc: "51 anos +", key: "old" }
 ]
 
 function TotalSellingProduct () {

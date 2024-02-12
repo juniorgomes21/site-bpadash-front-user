@@ -4,6 +4,8 @@ import ReactApexChart from "react-apexcharts";
 import { maskMoney } from "../../../Validation&Formatation/formatation";
 import api from "../../../services/api";
 import DatePickerContext from "../../../contexts/DateGlobalBpa";
+import loadingGif from "../../../assets/images/loading/Iphone-spinner-2.gif";
+import AlertCustom from "../../../GlobalComponents/AlertCustom";
 
 const options = {
     chart: {
@@ -57,12 +59,28 @@ function Earning() {
 
     const { year } = useContext(DatePickerContext);
     const [invoicing, setInvoicing] = useState(initialGraphics);
+    const [loading, setLoading] = useState(true);
+    const [existFpo, setExistFpo] = useState(true);
 
     useEffect(() => {
+        apiExistFpo();
         apiGetProcedure();
     }, [year])
 
+    async function apiExistFpo() {
+        setLoading(true);
+        try {
+            const response = await api.get(`/user/exist/fpo`);
+
+            setExistFpo(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+        setLoading(false);
+    }
+
     async function apiGetProcedure() {
+        setLoading(true);
         try {
             const response = await api.get(`/graphics/bpa/invoicing/per/month/${year}`);
 
@@ -80,29 +98,47 @@ function Earning() {
         } catch (e) {
             console.log(e);
         }
+        setLoading(false);
     }
 
     return (
-        <Card className="border-[1px] border-zinc-400">
-            <CardBody>
-                <CardTitle className="mb-4">Faturamento anual</CardTitle>
-                <Row>
-                    <Col lg="12">
-                        <div id="line-chart" dir="ltr">
-                            <ReactApexChart
-                                series={[{
-                                    name: "Valor Faturado",
-                                    data: invoicing
-                                }]}
-                                options={options}
-                                type="line"
-                                height={320}
-                                className="apex-charts"
-                            />
-                        </div>
-                    </Col>
-                </Row>
-            </CardBody>
+        <Card className="border-[1px] border-zinc-400 h-full">
+            {
+                !loading ?
+                    <CardBody>
+                        <CardTitle className="mb-4">Faturamento anual</CardTitle>
+                        <Row>
+                            <Col lg="12">
+                                {
+                                    existFpo ?
+                                        <div id="line-chart" dir="ltr">
+                                            <ReactApexChart
+                                                series={[{
+                                                    name: "Valor Faturado",
+                                                    data: invoicing
+                                                }]}
+                                                options={options}
+                                                type="line"
+                                                height={320}
+                                                className="apex-charts"
+                                            />
+                                        </div>
+                                    :
+                                        <div>
+                                            <AlertCustom
+                                                type="warning"
+                                                msg="Faça upload do arquivo FPO"
+                                            />
+                                        </div>
+                                }
+                            </Col>
+                        </Row>
+                    </CardBody>
+                :
+                    <div className="flex justify-center items-center w-full h-full">
+                        <img src={loadingGif} alt="loading..." />
+                    </div>
+            }
         </Card>
     )
 }

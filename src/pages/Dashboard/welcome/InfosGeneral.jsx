@@ -18,7 +18,6 @@ function InfosGeneral() {
     useEffect(() => {
         getTotalBpa();
         getTotalRoles();
-        getInvoicingYear();
     }, [])
 
     useEffect(() => {

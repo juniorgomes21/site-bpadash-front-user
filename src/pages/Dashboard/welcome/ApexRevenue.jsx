@@ -3,6 +3,7 @@ import { Card, CardBody, CardTitle } from "reactstrap";
 import ReactApexChart from "react-apexcharts";
 import DatePickerContext from "../../../contexts/DateGlobalBpa";
 import api from "../../../services/api";
+import loadingGif from "../../../assets/images/loading/Iphone-spinner-2.gif";
 
 
 const options = {
@@ -105,12 +106,14 @@ function ApexRevenue() {
     const { year } = useContext(DatePickerContext);
 
     const [procedures, setProcedures] = useState(initialGraphics);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         apiGetProcedure();
     }, [year])
 
     async function apiGetProcedure() {
+        setLoading(true);
         try {
             const response = await api.get(`/graphics/bpa/procedures/per/month/${year}`);
             let dates = Array(12).fill(0);
@@ -127,27 +130,35 @@ function ApexRevenue() {
         } catch (e) {
             console.log(e);
         }
+        setLoading(false);
     }
 
     return (
-        <Card className="border-[1px] border-zinc-400">
-            <CardBody>
-                <CardTitle className="mb-4">
-                    Procedimentos anual
-                </CardTitle>
-                <div id="revenue-chart">
-                    <ReactApexChart
-                        options={options}
-                        series={[{
-                            name: "Procedimentos",
-                            data: procedures,
-                        }]}
-                        type="bar"
-                        height="330"
-                        className="apex-charts"
-                    />
-                </div>
-            </CardBody>
+        <Card className="border-[1px] border-zinc-400 h-full">
+            {
+                !loading ?
+                    <CardBody>
+                        <CardTitle className="mb-4">
+                            Procedimentos anual
+                        </CardTitle>
+                        <div id="revenue-chart">
+                            <ReactApexChart
+                                options={options}
+                                series={[{
+                                    name: "Procedimentos",
+                                    data: procedures,
+                                }]}
+                                type="bar"
+                                height="330"
+                                className="apex-charts"
+                            />
+                        </div>
+                    </CardBody>
+                :
+                    <div className="flex justify-center items-center w-full h-full">
+                        <img src={loadingGif} alt="loading..." />
+                    </div>
+            }
         </Card>
     )
 }

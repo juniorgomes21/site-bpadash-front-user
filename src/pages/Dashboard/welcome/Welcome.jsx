@@ -15,7 +15,8 @@ import TotalSellingProduct from "./TotalSellingProduct";
 import InfosGeneral from "./InfosGeneral";
 import Storage from "../Storage";
 import TotalPercentSex from "./TotalPercentSex";
-
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const supports = [
     {
@@ -54,16 +55,48 @@ function Welcome(props) {
             <Container fluid>
                 {/* Render Breadcrumbs */}
                 <Breadcrumbs
-                    title="Visão geral do ano corrente"
+                    title="Visão geral"
                     breadcrumbItem="Tela Inicial"
                 />
                 <div className="mb-5">
-                    <h1 className="mb-2">
-                        Os gráficos variam de acordo com a DATA GERAL do sistema.
-                    </h1>
-                    <h1>
-                        ATENÇÃO! Alguns gráficos só começarão a ser exibidos quando houver pelo menos um arquivo FPO e BPA.
-                    </h1>
+                    <div className="mt-1">
+                        <h1 className="mb-2 mt-2">
+                            Os gráficos variam de acordo com a DATA GERAL do sistema.
+                        </h1>
+                        <p className="mb-2">Recomendação para upload de arquivo. Faça upload de pelo menos um arquivo FPO antes do BPA.</p>
+                        <div className="flex items-center">
+                            <Link to="/upload/professionals">
+                                <div className="flex flex-col - items-center">
+                                    <InsertDriveFileIcon sx={{ fontSize: 30, color: "#4b74f8" }}/>
+                                    <p>
+                                        PROF
+                                    </p>
+                                </div>
+                            </Link>
+                            <div className="mx-3 mb-2">
+                                <ArrowRightAltIcon sx={{ color: "#4b74f8" }}/>
+                            </div>
+                            <Link to="/upload/fpo">
+                                <div className="flex flex-col - items-center">
+                                    <InsertDriveFileIcon sx={{ fontSize: 30, color: "#4b74f8" }} />
+                                    <p>
+                                        FPO
+                                    </p>
+                                </div>
+                            </Link>
+                            <div className="mx-3 mb-2">
+                                <ArrowRightAltIcon sx={{ color: "#4b74f8" }}/>
+                            </div>
+                            <Link to="/upload/bpa">
+                                <div className="flex flex-col - items-center">
+                                    <InsertDriveFileIcon sx={{ fontSize: 30, color: "#4b74f8" }} />
+                                    <p>
+                                        BPA
+                                    </p>
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
                 <Row>
                     <Col xl="4">
@@ -174,11 +207,9 @@ function Welcome(props) {
                             </CardBody>
                         </Card>
 
-                        <Card className="border-[1px] border-zinc-400">
-                            <CardBody>
-                                <SalesAnalytics />
-                            </CardBody>
-                        </Card>
+                        <CardBody>
+                            <SalesAnalytics />
+                        </CardBody>
 
                         <Card className="border-[1px] border-zinc-400">
                             <CardBody>
@@ -287,11 +318,15 @@ function Welcome(props) {
                     </Col>
                     <Col xl="8">
                         <InfosGeneral />
+                        
+                        <Row>
+                            <Earning />
+                        </Row>
 
-                        <Earning />
-
-                        <ApexRevenue />
-
+                        <Row>
+                            <ApexRevenue />
+                        </Row>
+                        
                         <TotalSellingProduct />
 
                         <TotalPercentSex />

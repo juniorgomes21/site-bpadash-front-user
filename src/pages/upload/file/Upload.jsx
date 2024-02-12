@@ -131,7 +131,7 @@ function Upload() {
         <div className="page-content">
             <Container fluid className="mb-10">
             {/* Render Breadcrumbs */}
-                <Breadcrumbs title="Projects" breadcrumbItem="Create New" />
+                <Breadcrumbs title="UPLOAD BPA" breadcrumbItem="UPLOAD BPA" />
                 {
                     loading ?
                         <DivLoadingSvg

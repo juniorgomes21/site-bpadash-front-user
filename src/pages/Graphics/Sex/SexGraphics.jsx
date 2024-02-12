@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState, useContext } from "react";
 import { Container } from "reactstrap";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
 import { BarChart } from '@mui/x-charts/BarChart';
-import api from "../../services/api";
-import DateGlobalBpaContext from "../../contexts/DateGlobalBpa";
-import { formatMonth } from "../../Validation&Formatation/formatation";
+import api from "../../../services/api";
+import DateGlobalBpaContext from "../../../contexts/DateGlobalBpa";
+import { formatMonth } from "../../../Validation&Formatation/formatation";
 
 
 function SexGraphics(props) {

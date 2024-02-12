@@ -1,84 +1,121 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import getChartColorsArray from "../../../components/Common/ChartsDynamicColor";
+import { Card, CardBody, CardTitle } from "reactstrap";
+import api from "../../../services/api";
+import loadingGif from "../../../assets/images/loading/Iphone-spinner-2.gif";
 
-const DashedLine = ({ dataColors }) => {
-  const dashedLineChartColors = getChartColorsArray(dataColors);
 
-  const series = [
-    {
-      name: "Session Duration",
-      data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
+const options = {
+    chart: { 
+        zoom: { enabled: false },
+        toolbar: { show: false }
     },
-    {
-      name: "Page Views",
-      data: [36, 42, 60, 42, 13, 18, 29, 37, 36, 51, 32, 35],
+    colors: ["#52d132", "#15b0bb", "#5f0faa"],
+    dataLabels: { enabled: false },
+    stroke: {
+        width: [3, 4, 3],
+        curve: "straight",
+        dashArray: [0, 8, 5]
     },
-    {
-      name: "Total Visits",
-      data: [89, 56, 74, 98, 72, 38, 64, 46, 84, 58, 46, 49],
+    title: {
+        text: "",
+        align: "left"
     },
-  ];
-  const options = {
-    chart: { zoom: { enabled: !1 }, toolbar: { show: !1 } },
-    colors: dashedLineChartColors,
-    dataLabels: { enabled: !1 },
-    stroke: { width: [3, 4, 3], curve: "straight", dashArray: [0, 8, 5] },
-    title: { text: "Page Statistics", align: "left" },
-    markers: { size: 0, hover: { sizeOffset: 6 } },
+    markers: {
+        size: 0,
+        hover: { sizeOffset: 6 }
+    },
     xaxis: {
-      categories: [
-        "01 Jan",
-        "02 Jan",
-        "03 Jan",
-        "04 Jan",
-        "05 Jan",
-        "06 Jan",
-        "07 Jan",
-        "08 Jan",
-        "09 Jan",
-        "10 Jan",
-        "11 Jan",
-        "12 Jan",
-      ],
+        categories: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
     },
     tooltip: {
-      y: [
-        {
-          title: {
-            formatter: function (e) {
-              return e + " (mins)";
+        y: [
+            {
+                title: {
+                    formatter: function (e) {
+                        return e;
+                    },
+                },
             },
-          },
-        },
-        {
-          title: {
-            formatter: function (e) {
-              return e + " per session";
+            {
+                title: {
+                    formatter: function (e) {
+                        return e;
+                    },
+                },
             },
-          },
-        },
-        {
-          title: {
-            formatter: function (e) {
-              return e;
+            {
+                title: {
+                    formatter: function (e) {
+                        return e;
+                    },
+                },
             },
-          },
-        },
-      ],
+        ],
     },
     grid: { borderColor: "#f1f1f1" },
-  };
-
-  return (
-    <ReactApexChart
-      options={options}
-      series={series}
-      type="line"
-      height="380"
-      className="apex-charts"
-    />
-  );
 };
+
+function DashedLine({ year }) {
+
+    const [yongs, setYongs] = useState([]);
+    const [middleAges, setMiddleAges] = useState([]);
+    const [olds, setOlds] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getFiles();
+    }, [year]);
+
+    async function getFiles() {
+        setLoading(true);
+        try {
+            const response = await api.get(`/graphics/age/year/${year}`);
+            setYongs(response.data.yongs);
+            setMiddleAges(response.data.middleAges);
+            setOlds(response.data.olds);
+
+        } catch (e) {
+            console.log(e);
+        }
+        setLoading(false);
+    }
+
+    return (
+        <Card>
+            {
+                !loading ?
+                    <CardBody>
+                        <CardTitle className="mb-4">Distribuição por Idade Anual</CardTitle>
+                        <ReactApexChart
+                            options={options}
+                            series={[
+                                {
+                                    name: "0 - 20 anos",
+                                    data: yongs,
+                                },
+                                {
+                                    name: "21 - 50 anos",
+                                    data: middleAges,
+                                },
+                                {
+                                    name: "51 anos+",
+                                    data: olds,
+                                }
+                            ]}
+                            type="line"
+                            height="380"
+                            className="apex-charts"
+                        />
+                    </CardBody>
+                :
+                    <div className="flex justify-center items-center w-full h-full">
+                        <img src={loadingGif} alt="loading..." />
+                    </div>
+
+            }
+        </Card>
+    )
+}
 
 export default DashedLine;

@@ -242,51 +242,12 @@ function SidebarContent(props) {
                                 <li>
                                     <Link to="/storage/memory">{props.t("Controle de Memória")}</Link>
                                 </li>
-                                {/* <li>
-                                    <Link to="/graphics/sex">{props.t("Sexo")}</Link>
-                                </li> */}
-                {/* <li>
-                  <Link to="/dashboard-saas">{props.t("Produção CNSMED (QT)")}</Link>
-                </li>
-                <li>
-                  <Link to="/dashboard-crypto">{props.t("Produção CNSMED (R$)")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Produção por Procedimento")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Análise Geral")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Relatório de Custos")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Idade")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Sexo")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Raça")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por IBGE")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por CBO")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por CNSMED")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Data de Atendimento")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Procedimento (BPA-I)")}</Link>
-                </li>
-                <li>
-                  <Link to="/blog">{props.t("Distribuição por Procedimento (BPA-C)")}</Link>
-                </li> */}
+                                <li>
+                                    <Link to="/graphics">{props.t("Gráficos do mês")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/graphics/year">{props.t("Gráficos do Ano")}</Link>
+                                </li>
                             </ul>
                         </li>
 
