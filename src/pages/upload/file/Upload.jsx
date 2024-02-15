@@ -18,8 +18,6 @@ function Upload() {
 
     document.title="Upload BPA";
     
-    const user = JSON.parse(localStorage.getItem("@User"));
-
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getDates } = useContext(AuthContext);
 
@@ -45,7 +43,7 @@ function Upload() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewBpa', JSON.stringify(paramNewBpa));
-                    await api.post(`/bpa/create/${user.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/bpa/create`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     await getDates();
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");

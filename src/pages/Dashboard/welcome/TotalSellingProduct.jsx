@@ -65,10 +65,10 @@ function TotalSellingProduct () {
 
 
     return (
-        <Card className="border-[1px] border-zinc-400">
+        <Card className="border-[1px] border-zinc-400 w-full">
             <CardBody>
                 <CardTitle className="mb-4">
-                    Total de pacientes { percents["total"] ? percents["total"] : "0"}
+                    Total de pacientes: { percents["total"] ? percents["total"] : "0"}
                 </CardTitle>
                 <div className="table-responsive mt-4">
                     <Table className="table align-middle mb-0">

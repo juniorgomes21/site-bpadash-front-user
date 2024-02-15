@@ -32,6 +32,11 @@ import Client from "../pages/Consult/Client";
 import Graphics from "../pages/Graphics/month/Graphics";
 import Welcome from "../pages/Dashboard/welcome/Welcome";
 import GraphicsYear from "../pages/Graphics/year/GraphicsYear";
+import TermsUse from "../pages/Terms&Use/TermsUse";
+import MetricsPa from "../pages/Metrics/MetricsPa";
+import MetricsCbo from "../pages/Metrics/MetricsCbo";
+import MetricsCnsmed from "../pages/Metrics/MetricsCnsmed";
+import ReloadDataBpa from "../pages/Configurations/ReloadDataBpa";
 
 
 const authProtectedRoutes = [
@@ -51,13 +56,18 @@ const authProtectedRoutes = [
     { path: "/upload/bpac", component: UploadBpac },
     { path: "/upload/fpo", component: UploadFpo },
     { path: "/upload/professionals", component: UploadProfessional },
+    { path: "/metrics/pa", component: MetricsPa },
+    { path: "/metrics/cbo", component: MetricsCbo },
+    { path: "/metrics/cnsmed", component: MetricsCnsmed },
     { path: "/download/bpa", component: Download },
     { path: "/validation/file", component: Validation },
     { path: "/timeline/bpa", component: TimeLineBpa },
     { path: "/timeline/fpo", component: TimeLineFpo },
     { path: "/timeline/professionals", component: TimeLineProfessionals },
     { path: "/inconsistency", component: Inconsistency },
+    { path: "/configurations/reload/file/bpa", component: ReloadDataBpa },
     { path: "/configurations/files", component: FilesConf },
+    { path: "/configurations/terms&Use", component: TermsUse },
     { path: "/configurations/register", component: Profile },
     { path: "/configurations/password", component: ChangePass },
     { path: "/treatment/pa", component: TreatmentPa },
@@ -71,9 +81,7 @@ const authProtectedRoutes = [
 ];
 
 const publicRoutes = [
-
     { path: "/login", component: Login },
-    { path: "/mayra/clarisse", component: Mayra },
 ];
 
 export { authProtectedRoutes, publicRoutes };

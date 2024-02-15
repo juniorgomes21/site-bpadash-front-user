@@ -82,7 +82,7 @@ function DashedLine({ year }) {
     }
 
     return (
-        <Card>
+        <Card className="border-[1px] border-zinc-400 h-full">
             {
                 !loading ?
                     <CardBody>

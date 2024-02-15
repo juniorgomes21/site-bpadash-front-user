@@ -43,9 +43,16 @@ obs: Perguntar ao usuário se realmente deseja Substituir antes de executar tare
 =================================== A FAZERES ===============================================
 
 () avaliar se os graficos estão resetando quando apaga um arquivo BPAC e BPAI
+() verificar a data do arquivo FPO se está sendo pega ao apagar o arquivo.
+() validação de entrada BPAI no frontEnd.
+() Adicionar reset para recalcular o gerenciamento no BPA na execução das regras.
+() perguntar se BPAC é um atendimento individual.
+() dizer se os graficos estão usando BPAI, BPAC ou ambos.
+() analisar se todos os pontos de atualização de BPA faz a mudança no armazenamento corretamente descontando do tamanho do arquivo BPA e armazenamento do usuário.
+
 
 () colocar uma referencia para o usuário identificar qual pacote está usando em configurações
-() colocar o número de regras que o usuário tem
+(x) colocar o número de regras que o usuário tem
 () adicionar @Transectional em todos os métodos que utilizam armazenamento do usuário
 () avaliar as regras em executar todas as regras.
 () lembrar de atualizar o os valores do usuário quando fazer alteração upload e nova regra

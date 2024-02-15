@@ -267,7 +267,6 @@ function ReplacementBpac(props) {
             await api.post( url + `/edit/${obj.id}`, obj);
             openSnackBarFun(false, "Regra salva");
         } catch (e) {
-            console.log(e.response);
             switch (e.response.data) {
                 case "PARANS EQUALS":
                     openSnackBarFun(true, "Você não pode ter critérios com campos iguais");
@@ -673,7 +672,7 @@ function ReplacementBpac(props) {
                         msg={`As regras serão aplicadas no arquivo BPA do mês de ${formatNameMonth(month)} de ${year}`}
                     />
                     <p className="flex justify-center mt-8 text-center text-sm">
-                        Adicione regras de substituição de campo. Aqui, você escolhe um campo no arquivo BPA que será substituído e pode adicionar até 3 critérios para que essa regra seja aplicada. Ao executar a regra, todos os campos escolhidos por você que atenderem aos critérios informados serão substituídos pelo novo valor do campo especificado.
+                        Adicione regras de substituição de campo. Aqui, você escolhe um campo no arquivo BPA que será substituído e pode adicionar até 3 critérios para que essa regra seja aplicada. Ao executar a regra, todos os campos escolhidos por você que atenderem aos critérios informados serão substituídos pelo novo valor especificado para o campo.
                     </p>
                     {
                         loading ?
@@ -1478,7 +1477,7 @@ function ReplacementBpac(props) {
                                 open.delete ?
                                     "Deseja realmente apagar essa regras?"
                                 :
-                                    `Essa regra será executa no arquivo ${(ruleObj.index >= 0 && rules.ruleTreatmentReplaceCustoList[ruleObj.index].executeBpac) ? "BPA-C" : "BPA-I"}`
+                                    `Essa regra será executa no arquivo ${(ruleObj.index && ruleObj.index >= 0 && rules.ruleTreatmentReplaceCustoList[ruleObj.index].executeBpac) ? "BPA-C" : "BPA-I"}`
                             }
                         </DialogTitle>
                         <DialogContent>

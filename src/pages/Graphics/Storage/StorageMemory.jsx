@@ -63,19 +63,19 @@ function StorageMemory(props) {
             <div className="page-content">
                 <Container fluid>
                     <Breadcrumbs
-                        title={props.t("Meu Armazenamento")}
-                        breadcrumbItem={props.t("Meu Armazenamento")}
+                        title={props.t("Armazenamento")}
+                        breadcrumbItem={props.t("Armazenamento")}
                     />
-                    <p>Acompanhe seu armazenamento usado</p>
+                    <p>Acompanhe o armazenamento usado</p>
                     <div className="flex justify-center mt-10 w-full">
                         <Storage dataColors='["--bs-primary"]' />
                     </div>
                     <div className="flex justify-center mt-10">
-                            <Col lg={8}>
-                                <Card>
+                            <Col lg={10}>
+                                <Card className="border-[1px] border-zinc-400">
                                     <CardBody>
                                         <CardTitle className="mb-4">
-                                            Porcentagem de uso de seus arquivos
+                                            Porcentagem de uso
                                         </CardTitle>
                                         <ColumnWithDataLabels data={series.percents} />
                                     </CardBody>

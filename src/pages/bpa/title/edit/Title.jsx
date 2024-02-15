@@ -187,78 +187,78 @@ function Title(props) {
         <>
             <div className="page-content">
                 <Container fluid>
-                    <Breadcrumbs title={props.t("Título BPA")} breadcrumbItem={props.t("Título BPA")} />
                     {
                         Object.keys(titleBpa).length == 0 ?
-                            <div className="flex justify-center">
+                        <div className="flex justify-center">
                                 <AlertCustom
-                                    msg={`Nenhum BPA-I encontrado no período ${formatMonth(month)} de ${year}`}
+                                    msg={`Nenhum BPA encontrado no período ${formatMonth(month)} de ${year}`}
                                     type="info"
                                 />
                             </div>
                         :
-                            <>
-                                <TableContainer component={Paper} className="mt-5">
-                                    <Table sx={{ minWidth: 1200 }} size="small" aria-label="a dense table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell
-                                                    align="center"
-                                                    padding="normal"
-                                                    className="p-2 sticky left-0 bg-default"
-                                                >
-                                                
-                                                </TableCell>
-                                                {
-                                                    headCells.map((head, index) => (
-                                                        <TableCell key={index} align='center' className="p-4 bg-default">
-                                                            <Tooltip title={head.name} placement="top">
-                                                                <p className="uppercase font-bold text-white cursor-pointer">
-                                                                    {head.label}
-                                                                </p>
-                                                            </Tooltip>
-                                                        </TableCell>
-                                                    ))
-                                                }
-                                            </TableRow>
-                                        </TableHead>
+                        <>
+                            <Breadcrumbs title={props.t("Título BPA")} breadcrumbItem={props.t("Título BPA")} />
+                            <TableContainer component={Paper} className="mt-5">
+                                <Table sx={{ minWidth: 1200 }} size="small" aria-label="a dense table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                align="center"
+                                                padding="normal"
+                                                className="p-2 sticky left-0 bg-default"
+                                            >
+                                            
+                                            </TableCell>
                                             {
-                                                !loading &&
-                                                    <TableBody>
-                                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                                            <TableCell align="center" className="sticky left-0 bg-default w-[4.5rem]">
-                                                                <IconButton onClick={ e => {
-                                                                        handleOpenEdit();
-                                                                        e.stopPropagation();
-                                                                    }}
-                                                                >
-                                                                    <EditIcon className="text-white"/>
-                                                                </IconButton>
-                                                            </TableCell>
-                                                            <TableCell align="center" className="truncate p-3">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
-                                                            <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
+                                                headCells.map((head, index) => (
+                                                    <TableCell key={index} align='center' className="p-4 bg-default">
+                                                        <Tooltip title={head.name} placement="top">
+                                                            <p className="uppercase font-bold text-white cursor-pointer">
+                                                                {head.label}
+                                                            </p>
+                                                        </Tooltip>
+                                                    </TableCell>
+                                                ))
                                             }
-                                    </Table>
-                                    {
-                                        loading &&
-                                            <div className='flex justify-center my-2'>
-                                                <img src={loadingSvg} alt="loading..." width={50}/>
-                                            </div>
-                                    }
-                                </TableContainer>
-                            </>
+                                        </TableRow>
+                                    </TableHead>
+                                        {
+                                            !loading &&
+                                                <TableBody>
+                                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                        <TableCell align="center" className="sticky left-0 bg-default w-[4.5rem]">
+                                                            <IconButton onClick={ e => {
+                                                                    handleOpenEdit();
+                                                                    e.stopPropagation();
+                                                                }}
+                                                            >
+                                                                <EditIcon className="text-white"/>
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell align="center" className="truncate p-3">{hasOnlyWhitEspace(titleBpa.hdr)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.mvm)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.lin)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.flh)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.smtVrf)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.rsp)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.sgl)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.cgccpf)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dst)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.dstIn)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.versao)}</TableCell>
+                                                        <TableCell align="center" className="truncate">{hasOnlyWhitEspace(titleBpa.fim)}</TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                        }
+                                </Table>
+                                {
+                                    loading &&
+                                        <div className='flex justify-center my-2'>
+                                            <img src={loadingSvg} alt="loading..." width={50}/>
+                                        </div>
+                                }
+                            </TableContainer>
+                        </>
                     }
                 </Container>
             </div>

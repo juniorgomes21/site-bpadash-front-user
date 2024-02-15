@@ -47,7 +47,6 @@ function RadialChartRace() {
             array.push(obj.noInformation);
 
             setSeries(array);
-            console.log(array);
         } catch (e) {
             console.log(e.response);
         }

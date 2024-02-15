@@ -45,13 +45,16 @@ function ColumnWithDataLabels() {
             let arrayPercents = [];
             let arrayCnsmed = [];
             let occurrences = [];
-
+            console.log(response.data);
             for(let i = 0; i < 10; i++) {
-                const obj = response.data[i];
-                
-                arrayPercents.push(obj.percent);
-                arrayCnsmed.push(obj.cnsmed);
-                occurrences.push(obj.occurrences);
+                try {
+                    const obj = response.data[i];
+                    occurrences.push(obj.occurrences);
+                    arrayCnsmed.push(obj.cnsmed);
+                    arrayPercents.push(obj.percent);
+                } catch(e) {
+                    break;
+                }
             }
 
             setCnsmed(arrayCnsmed);

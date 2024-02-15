@@ -92,13 +92,13 @@ function PieChart() {
                             </Col>
                             <Col sm={4}>
                             <div className="text-center">
-                                <h5 className="mb-0 font-size-20">{Math.round(total * (26 / 100))}</h5>
+                                <h5 className="mb-0 font-size-20">{Math.round(total * (series[0] / 100))}</h5>
                                 <p className="text-muted">Homens</p>
                             </div>
                             </Col>
                             <Col sm={4}>
                             <div className="text-center">
-                                <h5 className="mb-0 font-size-20">{Math.round(total * (74 / 100))}</h5>
+                                <h5 className="mb-0 font-size-20">{Math.round(total * (series[1] / 100))}</h5>
                                 <p className="text-muted">Mulheres</p>
                             </div>
                             </Col>

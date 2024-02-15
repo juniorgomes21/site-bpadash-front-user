@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,6 +20,7 @@ import { Link } from "react-router-dom"
 import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Tooltip from "@mui/material/Tooltip";
+import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 
 const names = [
     'cnes',
@@ -63,25 +64,26 @@ const names = [
 
 export default function TableBpai({ identifier }) {
 
+    const { getFormattedDate } = useContext(DateGlobalBpaContext);
+
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
     const [bpai, setBpai] = useState([]);
-    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [totalPage, setTotalPage] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
 
     useEffect(() => {
-        apiGetBPAI();
+        apiGet();
     }, [page, size]);
 
-    async function apiGetBPAI() {
+    async function apiGet() {
         setLoading(true);
         try {
-            const responseBPAC = await api.get(`/bpai/get/${identifier}?page=${page > 0 ? page - 1 : page}&size=${size}`);
-            setBpai(responseBPAC.data.content);
-            setTotalPage(responseBPAC.data.totalPages);
-            setTotalElements(responseBPAC.data.totalElements);
+            const responseBpac = await api.get(`/bpai/get/${getFormattedDate()}?page=${page > 0 ? page - 1 : page}&size=${size}`);
+            setBpai(responseBpac.data.content);
+            setTotalPage(responseBpac.data.totalPages);
+            setTotalElements(responseBpac.data.totalElements);
         } catch (e) {
             console.log("Erro: ", e.response);
         }
@@ -94,14 +96,6 @@ export default function TableBpai({ identifier }) {
 
     function handleChangePage(_event, value) {
         setPage(value);
-    }
-
-    function hasOnlyWhitEspace(str) {
-        if (/^\s*$/.test(str)) {
-            return "Em branco"
-        }
-
-        return str;
     }
 
     function auxMask(field, value) {

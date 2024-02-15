@@ -9,42 +9,53 @@ import logoLightPng from "../../assets/images/logo_bpa0.png";
 import bpa from "../../assets/images/bpa.png";
 
 function Sidebar(props) {
+    return (
+        <>
+            <div className="vertical-menu">
+                <div className="navbar-brand-box">
+                    <Link to="/" className="logo logo-light">
+                        <span className="logo-sm">
+                            <img
+                                src={logoLightPng}
+                                alt=""
+                                style={{ height: 50, width: 80, marginTop: 20 }}
+                            />
+                        </span>
+                        <span className="logo-lg">
+                            <div className="flex justify-center items-center">
+                                <img
+                                    src={bpa}
+                                    style={{ height: 80, width: 140 }}
+                                />
+                            </div>
+                        </span>
+                    </Link>
+                </div>
+                <div data-simplebar className="h-100">
+                    {props.type !== "condensed" ? (
+                        <SidebarContent />
+                    ) : (
+                        <SidebarContent />
+                    )}
+                </div>
 
-  return (
-    <>
-      <div className="vertical-menu">
-        <div className="navbar-brand-box">
-          <Link to="/" className="logo logo-light">
-            <span className="logo-sm">
-              <img src={logoLightPng} alt="" style={{ height: 50, width: 80, marginTop: 20 }} />
-            </span>
-            <span className="logo-lg">
-              <div className="flex justify-center items-center">
-                <img src={bpa} style={{ height: 80, width: 140 }} />
-              </div>
-            </span>
-          </Link>
-        </div>
-        <div data-simplebar className="h-100">
-          {props.type !== "condensed" ? <SidebarContent /> : <SidebarContent />}
-        </div>
-        
-        <div className="sidebar-background"></div>
-      </div>
-    </>
-  );
-};
+                <div className="sidebar-background"></div>
+            </div>
+        </>
+    );
+}
 
 Sidebar.propTypes = {
-  type: PropTypes.string,
+    type: PropTypes.string,
 };
 
-const mapStatetoProps = state => {
-  return {
-    layout: state.Layout,
-  };
+const mapStatetoProps = (state) => {
+    return {
+        layout: state.Layout,
+    };
 };
 export default connect(
-  mapStatetoProps,
-  {}
+    mapStatetoProps,
+    {}
 )(withRouter(withTranslation()(Sidebar)));
+

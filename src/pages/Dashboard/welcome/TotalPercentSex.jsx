@@ -64,7 +64,7 @@ function TotalPercentSex() {
         <Card className="border-[1px] border-zinc-400">
             <CardBody>
                 <CardTitle className="mb-4">
-                    Total de pacientes { percents["total"] ? percents["total"] : "0"}
+                    Total de pacientes: { percents["total"] ? percents["total"] : "0"}
                 </CardTitle>
                 <div className="table-responsive mt-4">
                     <Table className="table align-middle mb-0">

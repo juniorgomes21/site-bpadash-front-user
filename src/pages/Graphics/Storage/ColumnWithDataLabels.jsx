@@ -92,7 +92,7 @@ const options = {
         },
     },
     title: {
-        text: "Monthly Inflation in Argentina, 2002",
+        text: "",
         floating: true,
         offsetY: 330,
         align: "center",

@@ -158,8 +158,19 @@ function TreatmentPa(props) {
             handleClose();
             openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch(response) {
+                case 'ERROR': {
+                    window.location.reload();
+                    break;
+                } case 'NOT FOUND BPA': {
+                    openSnackBarFun(true, "Data BPA não encontrada!");
+                    break;
+                } default: {
+                    openSnackBarFun(true, "Ops, algo deu errado!");
+                }
+            }
         }
         setLoadingAction(false);
     }
@@ -172,8 +183,19 @@ function TreatmentPa(props) {
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
 
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+
+            switch(response) {
+                case 'ERROR': {
+                    window.location.reload();
+                    break;
+                } case 'NOT FOUND BPA': {
+                    openSnackBarFun(true, "Data BPA não encontrada!");
+                    break;
+                } default: {
+                    openSnackBarFun(true, "Ops, algo deu errado!");
+                }
+            }
         }
         setLoading(false);
     }

@@ -155,7 +155,7 @@ function SidebarContent(props) {
         return datex === getFormattedDate();
     }
 
-    return (
+    return ( 
         <>
             <SimpleBar className="h-100" ref={ref}>
                 <div id="sidebar-menu">
@@ -253,6 +253,24 @@ function SidebarContent(props) {
 
                         <li>
                             <Link to="/#" className="has-arrow">
+                                <i className="bx bx-ruler"></i>
+                                <span>{props.t("Métricas")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/metrics/pa">{props.t("PA")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/metrics/cbo">{props.t("CBO")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/metrics/cnsmed">{props.t("CNSMED")}</Link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
                                 <PageviewIcon sx={{ fontSize: 20, mr: 1.5 }} />
                                 <span>{props.t("Consultas")}</span>
                             </Link>
@@ -342,6 +360,9 @@ function SidebarContent(props) {
                             </Link>
                             <ul className="sub-menu" aria-expanded="false">
                                 <li>
+                                    <Link to="/configurations/reload/file/bpa">{props.t("Recalcular Dados BPA")}</Link>
+                                </li>
+                                <li>
                                     <Link to="/configurations/files">{props.t("Arquivos de Validações")}</Link>
                                 </li>
                                 <li>
@@ -349,6 +370,9 @@ function SidebarContent(props) {
                                 </li>
                                 <li>
                                     <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/configurations/terms&Use">{props.t("Termos de uso")}</Link>
                                 </li>
                                 <li>
                                     <Link to="/logout">{props.t("Sair")}</Link>

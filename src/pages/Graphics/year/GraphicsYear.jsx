@@ -42,7 +42,7 @@ function GraphicsYear() {
                     </Col>
                 </Row>
 
-                <Row>
+                <Row className="mt-10">
                     <Col lg={6}>
                         <LineApexChart year={year}/>
                     </Col>

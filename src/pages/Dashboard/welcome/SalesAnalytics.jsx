@@ -34,8 +34,7 @@ function SalesAnalytics() {
             const arrayM = response.data;
             setPas(arrayM);
     
-            let sumTotal = arrayM.reduce((sum, item) => sum + item.occurrences, 0);
-            setTotal(sumTotal);
+            setTotal(arrayM[0].total);
 
             const array = arrayM.slice(0, 3).map(obj => obj.percent);
             const num = 100 - array.reduce((sum, percent) => sum + percent, 0);

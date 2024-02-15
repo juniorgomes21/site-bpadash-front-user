@@ -107,7 +107,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     async function apiDeleteBPA() {
         setLoadingBpa(true);
         try {
-            await api.post(`/bpa/delete/${user.key}`, [identifier]);
+            await api.post(`/bpa/delete`, [identifier]);
             getDates();
             setBpa({});
             openSnackBarFun(false, "BPA apagado com sucesso!");
@@ -210,13 +210,13 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
                             </Tooltip>
                         </Link>
                     </div>
-                    <div className='hover:mb-4'>
+                    {/* <div className='hover:mb-4'>
                         <Tooltip title="Preencher endereço" placement='top' onClick={() => handleClickOpen("cep")}>
                             <IconButton>
                                 <AddHomeIcon className='text-yellow-300' />
                             </IconButton>
                         </Tooltip>
-                    </div>
+                    </div> */}
                     <div className='hover:mb-4'>
                         <Tooltip title="Corrigir CEP" placement='top' onClick={() => handleClickOpen("cepBlank")}>
                             <IconButton>

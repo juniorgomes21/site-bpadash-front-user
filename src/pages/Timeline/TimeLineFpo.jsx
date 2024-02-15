@@ -76,7 +76,7 @@ function TimeLineFpo(props) {
         <>
             <div className="page-content">
                 <Container fluid>
-                    <Breadcrumbs title={props.t("Linha do Tempo")} breadcrumbItem={props.t("Linha do Tempo Profissionais")} />
+                    <Breadcrumbs title={props.t("Linha do Tempo")} breadcrumbItem={props.t("Linha do Tempo FPO")} />
                     {
                         loading ?
                             <div className="flex justify-center mt-20">

@@ -24,7 +24,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EmailIcon from '@mui/icons-material/Email';
 import { blue } from '@mui/material/colors';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
@@ -116,6 +116,11 @@ function TableManager({ data }) {
                                         Linha do tempo
                                     </p>
                                 </TableCell>
+                                <TableCell align="center">
+                                    <p className="uppercase font-bold text-[#2a3042]">
+                                        Upload
+                                    </p>
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -135,8 +140,8 @@ function TableManager({ data }) {
                                     </TableCell>
                                     <TableCell align="center">{skeleton[index].name}</TableCell>
                                     <TableCell className="flex justify-center">
-                                        <div className={`flex justify-center items-center p-2 ${ percent > 70.0 ? "bg-red-500" : "bg-green-400"} rounded-xl`}>
-                                            <p className="text-white">
+                                        <div className={`flex justify-center items-center p-1 ${ percent > 70.0 ? "bg-red-500" : "bg-green-400"} rounded-xl`}>
+                                            <p className="text-white font-bold">
                                                 {percent} %
                                             </p>
                                         </div>
@@ -152,11 +157,17 @@ function TableManager({ data }) {
                                         <Link to={`/timeline/${skeleton[index].url}`}>
                                             <Button
                                                 variant="contained"
-                                                endIcon={
-                                                    <NavigationIcon fontSize="small" />
-                                                }
                                             >
-                                                IR
+                                                <NavigationIcon fontSize="small" />
+                                            </Button>
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Link to={`/upload/${skeleton[index].url}`}>
+                                            <Button
+                                                variant="contained"
+                                            >
+                                                <CloudUploadIcon />
                                             </Button>
                                         </Link>
                                     </TableCell>

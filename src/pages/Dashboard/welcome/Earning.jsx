@@ -83,7 +83,7 @@ function Earning() {
         setLoading(true);
         try {
             const response = await api.get(`/graphics/bpa/invoicing/per/month/${year}`);
-
+            
             let dates = Array(12).fill(0);
 
             for (let month = 1; month <= 12; month++) {

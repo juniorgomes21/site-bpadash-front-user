@@ -4,6 +4,8 @@ import ReactApexChart from "react-apexcharts";
 import DatePickerContext from "../../../contexts/DateGlobalBpa";
 import api from "../../../services/api";
 import loadingGif from "../../../assets/images/loading/Iphone-spinner-2.gif";
+import AuthContext from "../../../contexts/Auth";
+import AlertCustom from "../../../GlobalComponents/AlertCustom";
 
 
 const options = {
@@ -104,6 +106,7 @@ const initialGraphics = [
 function ApexRevenue() {
 
     const { year } = useContext(DatePickerContext);
+    const { dates } = useContext(AuthContext);
 
     const [procedures, setProcedures] = useState(initialGraphics);
     const [loading, setLoading] = useState(true);
@@ -141,18 +144,28 @@ function ApexRevenue() {
                         <CardTitle className="mb-4">
                             Procedimentos anual
                         </CardTitle>
-                        <div id="revenue-chart">
-                            <ReactApexChart
-                                options={options}
-                                series={[{
-                                    name: "Procedimentos",
-                                    data: procedures,
-                                }]}
-                                type="bar"
-                                height="330"
-                                className="apex-charts"
-                            />
-                        </div>
+                        {
+                            dates.length > 0 ?
+                                <div id="revenue-chart">
+                                    <ReactApexChart
+                                        options={options}
+                                        series={[{
+                                            name: "Procedimentos",
+                                            data: procedures,
+                                        }]}
+                                        type="bar"
+                                        height="330"
+                                        className="apex-charts"
+                                    />
+                                </div>
+                            :
+                                <div>
+                                    <AlertCustom
+                                        type="warning"
+                                        msg="Faça upload do arquivo BPA"
+                                    />
+                                </div>
+                        }
                     </CardBody>
                 :
                     <div className="flex justify-center items-center w-full h-full">

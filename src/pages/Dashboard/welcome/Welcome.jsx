@@ -188,7 +188,7 @@ function Welcome(props) {
                                                     <i className="mdi mdi-arrow-right ms-1" />
                                                 </Link>
                                                 <Link
-                                                    to="/configurations/register"
+                                                    to="/configurations/terms&Use"
                                                     className="btn btn-primary  btn-sm"
                                                 >
                                                     Termos&Uso{" "}
