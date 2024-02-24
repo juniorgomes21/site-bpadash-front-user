@@ -6,10 +6,6 @@ import api from "../../../services/api";
 import DatePickerContext from "../../../contexts/DateGlobalBpa";
 
 
-const colors = [
-    "#3fd9e4",
-]
-
 function ColumnWithDataLabels() {
 
     const { month, year, getFormattedDate } = useContext(DatePickerContext);
@@ -29,7 +25,7 @@ function ColumnWithDataLabels() {
         "000000000000000"
     ])
     const [cnsmedHover, setCnsmedHover] = useState("");
-    const [series, setSeries] = useState([2.5, 3.2, 5.0, 10.1, 4.2, 3.8, 3, 2.4, 4.0, 1.2, 3.5, 0.8]); 
+    const [series, setSeries] = useState([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0]); 
     const [loading, setLoading] = useState(true);
 
 

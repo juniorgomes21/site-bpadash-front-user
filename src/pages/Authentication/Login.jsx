@@ -3,8 +3,6 @@ import React, { useContext, useState } from "react";
 import {
     Row,
     Col,
-    CardBody,
-    Card,
     Container,
     Form,
     Input,
@@ -14,13 +12,10 @@ import {
 import { withRouter, Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import profile from "../../assets/images/profile-img.png";
-import logo from "../../assets/images/bpa.png";
+import logo from "../../assets/images/logo_bpadash_dark_full.png";
 import LoadingButton from "@mui/lab/LoadingButton";
 import AuthContext from "../../contexts/Auth";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
-import logodark from "../../assets/images/logo-dark.png";
-import logolight from "../../assets/images/logo-light.png";
 import CarouselPage from "./CarouselPage";
 
 function Login(props) {
@@ -56,7 +51,7 @@ function Login(props) {
                             <div className="auth-full-page-content p-md-5 p-4">
                                 <div className="w-100">
                                     <div className="d-flex flex-column h-100">
-                                        <div className="flex justify-center items-center bg-default rounded-3xl mb-3">
+                                        <div className="flex justify-center items-center rounded-3xl mb-3">
                                             <img
                                                 src={logo}
                                                 alt=""

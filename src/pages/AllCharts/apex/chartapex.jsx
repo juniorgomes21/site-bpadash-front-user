@@ -50,7 +50,14 @@ const options = {
     },
     yaxis: {
         title: {
-            text: "Temperature",
+            text: "Analise Por Sexo",
+            
+        },
+        labels: {
+            show: true,
+            formatter: function (val) {
+                return Number.parseInt(val) + "%";
+            },
         },
         min: 0,
     },

@@ -115,7 +115,7 @@ function Bpac(props) {
         if (selected.length > 0) {
             setLoading(true);
             try {
-                await api.post("/bpac/delete", { list: selected });
+                await api.post(`/bpac/delete/${getFormattedDate()}`, { list: selected });
                 await apiGet();
                 setOpenDelete(false);
                 openSnackBarFun(

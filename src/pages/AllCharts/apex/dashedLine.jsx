@@ -28,6 +28,18 @@ const options = {
     xaxis: {
         categories: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
     },
+    yaxis: {
+        title: {
+            text: "Analise Por Idade",
+        },
+        labels: {
+            show: true,
+            formatter: function (val) {
+                return Number.parseInt(val) + "%";
+            },
+        },
+        min: 0,
+    },
     tooltip: {
         y: [
             {

@@ -59,6 +59,9 @@ function UploadBpac(props) {
                     const response = e.response.data[0];
 
                     switch (response && response.errorType) {
+                        case "NOT FOUND BPA":
+                            openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                            break;
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
@@ -66,7 +69,7 @@ function UploadBpac(props) {
                             openSnackBarFun(true, "Não existe um arquivo com a data informada!");
                             break;
                         case "FILE INVALID":
-                            openSnackBarFun(true, "Arquivo não contem linhas BPA-I");
+                            openSnackBarFun(true, "Arquivo não contem linhas BPA-C");
                             break;    
                         default:
                             setErrorsFile(e.response.data);
@@ -116,6 +119,7 @@ function UploadBpac(props) {
         setErrorMonth(false);
         setErrorYear(false);
         setSelectedFiles([]);
+        setErrorsFile([]);
         setDisplayedErrors([]);
     }
 

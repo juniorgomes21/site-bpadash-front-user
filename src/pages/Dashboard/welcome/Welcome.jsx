@@ -42,13 +42,12 @@ const supports = [
     }
 ]
 
-function Welcome(props) {
+function Welcome() {
 
     document.title = "Bem-vindo";
 
     const user = JSON.parse(localStorage.getItem("@User"));
 
-    const { userProfile } = props;
 
     return (
         <div className="page-content">
@@ -108,13 +107,12 @@ function Welcome(props) {
                                             <h5 className="text-primary">
                                                 Bem-vindo de volta!
                                             </h5>
-                                            <p>Aqui estão algumas métricas da sua conta</p>
                                         </div>
                                     </Col>
                                     <Col xs="5" className="align-self-end">
                                         <img
                                             src={profile1}
-                                            alt=""
+                                            alt="avatar"
                                             className="img-fluid"
                                         />
                                     </Col>
@@ -135,61 +133,21 @@ function Welcome(props) {
                                         <h5 className="font-size-15 text-truncate">
                                             {user.name}
                                         </h5>
-                                        <p className="text-muted mb-0 text-truncate">
-                                            {userProfile.designation}
-                                        </p>
                                     </Col>
 
-                                    <Col sm={8}>
+                                    <Col sm="8">
                                         <div className="pt-4">
-                                            <Row>
-                                                <Col xs="6">
-                                                    <h5 className="font-size-15">
-                                                        {user.packageName}
-                                                        <BookmarkIcon
-                                                            color="success"
-                                                            className="text-orange-600"
-                                                            sx={{
-                                                                fontSize: 20,
-                                                                mr: 1,
-                                                                color:
-                                                                    user.packageName ===
-                                                                    "bronze"
-                                                                        ? "#945c25"
-                                                                        : user.packageName ===
-                                                                            "gold"
-                                                                        ? "#ffd700"
-                                                                        : "#6f7270",
-                                                            }}
-                                                        />
-                                                    </h5>
-                                                    <p className="text-muted mb-0">
-                                                        Seu pacote
-                                                    </p>
-                                                </Col>
-                                                <Col
-                                                    xs="6"
-                                                    className="flex flex-col items-end"
-                                                >
-                                                    <h5 className="font-size-15">
-                                                        {user.storageTotal}
-                                                    </h5>
-                                                    <p className="text-muted mb-0">
-                                                        Armazenamento total
-                                                    </p>
-                                                </Col>
-                                            </Row>
-                                            <div className=" flex justify-between mt-4">
+                                            <div className="flex flex-wrap justify-between mt-4">
                                                 <Link
                                                     to="/configurations/register"
-                                                    className="btn btn-primary  btn-sm"
+                                                    className="btn btn-primary btn-sm w-32 mt-2"
                                                 >
                                                     Visualizar Perfil{" "}
                                                     <i className="mdi mdi-arrow-right ms-1" />
                                                 </Link>
                                                 <Link
                                                     to="/configurations/terms&Use"
-                                                    className="btn btn-primary  btn-sm"
+                                                    className="btn btn-primary btn-sm w-32 mt-2"
                                                 >
                                                     Termos&Uso{" "}
                                                     <i className="mdi mdi-arrow-right ms-1" />
@@ -201,9 +159,43 @@ function Welcome(props) {
                             </CardBody>
                         </Card>
 
-                        <Card className="border-[1px] border-zinc-400">
-                            <CardBody className=" flex justify-center">
-                                <Storage />
+                        <Card className="flex flex-col items-center border-[1px] border-zinc-400">
+                            <Storage />
+                            <CardBody className=" flex justify-center w-full">
+                                <Row className="flex justify-between w-full">
+                                    <Col
+                                        xs="6"
+                                        className="font-bold"
+                                    >
+                                        <h5 className="flex font-size-15">
+                                            {user.packageName}
+                                            <BookmarkIcon
+                                                color="success"
+                                                className="text-orange-600"
+                                                sx={{
+                                                    fontSize: 20,
+                                                    mr: 1,
+                                                    color:
+                                                        user.packageName ===
+                                                        "bronze"
+                                                            ? "#945c25"
+                                                            : user.packageName ===
+                                                                "ouro"
+                                                            ? "#ffd700"
+                                                            : "#6f7270",
+                                                }}
+                                            />
+                                        </h5>
+                                    </Col>
+                                    <Col
+                                        xs="6"
+                                        className="text-end"
+                                    >
+                                        <h5 className="font-size-15 font-bold">
+                                            {user.storageTotal}
+                                        </h5>
+                                    </Col>
+                                </Row>
                             </CardBody>
                         </Card>
 
@@ -216,9 +208,6 @@ function Welcome(props) {
                                 <CardTitle className="mb-4">
                                     Informações pessoais
                                 </CardTitle>
-                                <p className="text-muted mb-4">
-                                    {userProfile.personalDetail}
-                                </p>
                                 <div className="table-responsive">
                                     <Table className="table-nowrap mb-0">
                                         <tbody>
@@ -339,12 +328,11 @@ function Welcome(props) {
 }
 
 Welcome.propTypes = {
-    userProfile: PropTypes.any,
     onGetUserProfile: PropTypes.func,
 };
 
 const mapStateToProps = ({ contacts }) => ({
-    userProfile: contacts.userProfile,
+
 })
 
 const mapDispatchToProps = (dispatch) => ({

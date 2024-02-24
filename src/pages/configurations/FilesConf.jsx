@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
@@ -15,13 +15,9 @@ import Select from "@mui/material/Select";
 import { formatMonth } from "../../Validation&Formatation/formatation";
 import api from "../../services/api";
 import { Button } from "@mui/material";
+import SnackBarContext from "../../contexts/managerService";
 
 const files = [
-    {
-        name: "Ocupação",
-        acronym: "CBO",
-        show: true,
-    },
     {
         name: "FPO",
         acronym: "FPO",
@@ -31,21 +27,13 @@ const files = [
         name: "Profissionais",
         acronym: "PROF",
         show: false,
-    },
-    {
-        name: "Logradouro",
-        acronym: "CEP",
-        show: true,
-    },
-    {
-        name: "Procedimentos",
-        acronym: "PROC",
-        show: true,
-    },
+    }
 ];
 
 function FilesConf(props) {
     document.title = "Configuração dos Arquivos";
+
+    const { openSnackBarFun } = useContext(SnackBarContext);
 
     const [fileConfigs, setFileConfigs] = useState([]);
     const [indexState, setIndexState] = useState(0);
@@ -53,7 +41,7 @@ function FilesConf(props) {
     const [year, setYear] = useState("");
     const [datesMonths, setDatesMonths] = useState([]);
     const [datesYears, setDatesYears] = useState([]);
-    const [nameFile, setNameFile] = useState("Ocupação");
+    const [nameFile, setNameFile] = useState("FPO");
 
     useEffect(() => {
         getFiles();
@@ -61,8 +49,13 @@ function FilesConf(props) {
 
     async function getFiles() {
         try {
+            // arrumar BAck
             const response = await api.get("/sigtap/get/all/dates");
+            
+            console.log(response.data);
+
             setFileConfigs(response.data);
+
             const item = response.data[0];
 
             if (item.dateCurrent.length > 0) {
@@ -76,6 +69,7 @@ function FilesConf(props) {
                 );
                 setDatesMonths(newArray[0]);
             }
+
         } catch (e) {
             console.log(e);
             console.log("Erro ao buscar os arquivos");
@@ -144,6 +138,7 @@ function FilesConf(props) {
     async function onChangeObj(obj) {
         try {
             await api.post("/sigtap/update/date", obj);
+            openSnackBarFun(false, "Comando salvo!");
         } catch (e) {
             console.log(e.response);
         }
@@ -172,9 +167,9 @@ function FilesConf(props) {
                     {fileConfigs.length > 0 && (
                         <>
                             <div className="flex justify-center text-base">
-                                <p>Configure individualmente os arquivos </p>
+                                <p>Configure individualmente os arquivos</p>
                             </div>
-                            <div className="flex flex-wrap justify-around w-full my-12">
+                            <div className="flex flex-wrap justify-evenly w-full my-12">
                                 {files.map((file, index) => (
                                     <div
                                         key={index}

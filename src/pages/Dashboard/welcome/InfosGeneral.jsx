@@ -68,103 +68,113 @@ function InfosGeneral() {
 
     return (
         <Row>
-            <Col md="3" className=''>
-                <Card className="mini-stats-wid border-[1px] border-zinc-400">
-                    <CardBody>
-                        <div className="d-flex">
-                            <div className="flex-grow-1">
-                                <p className="fw-medium mb-2">
-                                    Arquivos BPA salvos
-                                </p>
-                                <h4 className="text-base mb-0">{totalBpa}</h4>
-                            </div>
-                            <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                <span className="avatar-title">
-                                    <i className={"bx bx-check-circle font-size-24"} />
-                                </span>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-            </Col>
-            <Col md="3" className=''>
-                <Card className="mini-stats-wid border-[1px] border-zinc-400">
-                    <CardBody>
-                        <div className="d-flex">
-                            <div className="flex-grow-1">
-                                <p className="fw-medium mb-2">
-                                    Regras salvas
-                                </p>
-                                {
-                                    loading.totalRoles ?
-                                        <img src={loadingGif} width={23} alt="loading..." />
-                                    :
-                                        <h4 className="text-base mb-0">
-                                            {totalRoles[0] + " de " + totalRoles[1]}
-                                        </h4>
-                                }
-                            </div>
-                            <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                <span className="avatar-title">
-                                    <i className={"bx bx-purchase-tag font-size-24"} />
-                                </span>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-            </Col>
-            <Col md="3" className=''>
-                <Card className="mini-stats-wid border-[1px] border-zinc-400">
-                    <CardBody>
-                        <div className="d-flex">
-                            <div className="flex-grow-1">
-                                <p className="fw-medium mb-2">
-                                    {`Faturamento do mês`}
-                                </p>
-                                {
-                                    loading.invoicing ?
-                                        <img src={loadingGif} width={23} alt="loading..." />
-                                    :
-                                        <h4 className="text-base mb-0">
-                                            {invoicing}
-                                        </h4>
-                                }
-                            </div>
-                            <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                <span className="avatar-title">
-                                    <i className={"bx bx-dollar-circle font-size-24"} />
-                                </span>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-            </Col>
-            <Col md="3" className=''>
-                <Card className="mini-stats-wid border-[1px] border-zinc-400">
-                    <CardBody>
-                        <div className="d-flex">
-                            <div className="flex-grow-1">
-                                <p className="fw-medium mb-2">
-                                    {`Faturamento anual`}
-                                </p>
-                                {
-                                    loading.invoicingYear ?
-                                        <img src={loadingGif} width={23} alt="loading..." />
-                                    :
-                                        <h4 className="text-base mb-0">
-                                            {invoicingYear}
-                                        </h4>
-                                }
-                            </div>
-                            <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
-                                <span className="avatar-title">
-                                    <i className={"bx bx-dollar-circle font-size-24"} />
-                                </span>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-            </Col>
+            <div className="flex justify-between flex-wrap">
+                <div className="w-64">
+                    <Col md={12} className=''>
+                        <Card className="mini-stats-wid border-[1px] border-zinc-400">
+                            <CardBody>
+                                <div className="d-flex">
+                                    <div className="flex-grow-1">
+                                        <p className="fw-medium mb-2">
+                                            Arquivos BPA salvos
+                                        </p>
+                                        <h4 className="text-base mb-0">{totalBpa}</h4>
+                                    </div>
+                                    <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
+                                        <span className="avatar-title">
+                                            <i className={"bx bx-check-circle font-size-24"} />
+                                        </span>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </div>
+                <div className="w-64">
+                    <Col md={12} className=''>
+                        <Card className="mini-stats-wid border-[1px] border-zinc-400">
+                            <CardBody>
+                                <div className="d-flex">
+                                    <div className="flex-grow-1">
+                                        <p className="fw-medium mb-2">
+                                            Regras salvas
+                                        </p>
+                                        {
+                                            loading.totalRoles ?
+                                                <img src={loadingGif} width={23} alt="loading..." />
+                                            :
+                                                <h4 className="text-base mb-0">
+                                                    {totalRoles[0] + " de " + totalRoles[1]}
+                                                </h4>
+                                        }
+                                    </div>
+                                    <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
+                                        <span className="avatar-title">
+                                            <i className={"bx bx-purchase-tag font-size-24"} />
+                                        </span>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </div>
+                <div className="w-64">
+                    <Col md={12} className=''>
+                        <Card className="mini-stats-wid border-[1px] border-zinc-400">
+                            <CardBody>
+                                <div className="d-flex">
+                                    <div className="flex-grow-1">
+                                        <p className="fw-medium mb-2">
+                                            {`Faturamento do mês`}
+                                        </p>
+                                        {
+                                            loading.invoicing ?
+                                                <img src={loadingGif} width={23} alt="loading..." />
+                                            :
+                                                <h4 className="text-base mb-0">
+                                                    {invoicing}
+                                                </h4>
+                                        }
+                                    </div>
+                                    <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
+                                        <span className="avatar-title">
+                                            <i className={"bx bx-dollar-circle font-size-24"} />
+                                        </span>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </div>
+                <div className="w-64">
+                    <Col md={12} className=''>
+                        <Card className="mini-stats-wid border-[1px] border-zinc-400">
+                            <CardBody>
+                                <div className="d-flex">
+                                    <div className="flex-grow-1">
+                                        <p className="fw-medium mb-2">
+                                            {`Faturamento anual`}
+                                        </p>
+                                        {
+                                            loading.invoicingYear ?
+                                                <img src={loadingGif} width={23} alt="loading..." />
+                                            :
+                                                <h4 className="text-base mb-0">
+                                                    {invoicingYear}
+                                                </h4>
+                                        }
+                                    </div>
+                                    <div className="mini-stat-icon avatar-sm align-self-center rounded-circle bg-primary">
+                                        <span className="avatar-title">
+                                            <i className={"bx bx-dollar-circle font-size-24"} />
+                                        </span>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </div>
+            </div>
         </Row>
     )
 }

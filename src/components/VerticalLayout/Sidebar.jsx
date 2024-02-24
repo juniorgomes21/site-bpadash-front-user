@@ -22,10 +22,10 @@ function Sidebar(props) {
                             />
                         </span>
                         <span className="logo-lg">
-                            <div className="flex justify-center items-center">
+                            <div className="flex justify-center items-center mt-2">
                                 <img
                                     src={bpa}
-                                    style={{ height: 80, width: 140 }}
+                                    style={{ height: 80, width: 100 }}
                                 />
                             </div>
                         </span>

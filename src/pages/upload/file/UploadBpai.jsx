@@ -137,6 +137,7 @@ function UploadBpai(props) {
         setErrorMonth(false);
         setErrorYear(false);
         setSelectedFiles([]);
+        setErrorsFile([]);
         setDisplayedErrors([]);
     }
 
