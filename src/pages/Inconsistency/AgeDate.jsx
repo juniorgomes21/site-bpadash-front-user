@@ -20,6 +20,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 function AgeDate({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [person, setPerson] = useState({});
     const [ageDate, setAgeDate] = useState([]);
@@ -60,22 +62,30 @@ function AgeDate({ dateBpa, refresh }) {
                 ageDate.forEach( age => {
                     ids.push(age.id);
                 });
-                await api.post(`/bpai/update/0`, {"ids": ids, "key": "birthDate"});
+                await api.post(`/bpai/update/0/${employee.key}`, {"ids": ids, "key": "birthDate"});
 
             } else {
                 const obj = {
                     "key" : "birthDate",
                     "date": startDate.toLocaleDateString().split("/")[2] + startDate.toLocaleDateString().split("/")[1] + startDate.toLocaleDateString().split("/")[0]
                 }
-                await api.post(`/bpai/update/${person.id}`, obj);
+                await api.post(`/bpai/update/${person.id}/${employee.key}`, obj);
             }
 
             await inAgeDate();
             handleClose();
             openSnackBarFun(false, (upAll ? "Todas as datas foram atualizadas" : "Nova data salva"));
         } catch (e) {
-            console.log(e);
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
             setError(true);
         }
         setLoading(false);

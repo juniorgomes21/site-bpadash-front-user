@@ -18,6 +18,8 @@ import Radio from '@mui/material/Radio';
 
 function InOccupation({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
@@ -66,15 +68,25 @@ function InOccupation({ dateBpa, refresh }) {
             } else {
                 cboOld = occupations["errorsOccupationBpaiDTOS"].find(item => item.id === occupation.id).cbo
             }
-            await api.post(`/${arqName}/update/${occupation.id}`, { "cbo": (occupation.cbo + "-" + (updateAll ? '1' : '0') + "-" + cboOld), "dateBpa": dateBpa, "key": "cbo" });
+            await api.post(`/${arqName}/update/${occupation.id}/${employee.key}`, { "cbo": (occupation.cbo + "-" + (updateAll ? '1' : '0') + "-" + cboOld), "dateBpa": dateBpa, "key": "cbo" });
             // await inOccupation();
             handleClose();
             openSnackBarFun(false, "CBO salvo");
             setUpdateAll(false);
+
         } catch (e) {
-            setMsgError(e.response.data[0] && e.response.data[0].message);
-            setUpdateAll(false);
-            setError(true);
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    setMsgError(e.response.data[0] && e.response.data[0].message);
+                    setUpdateAll(false);
+                    setError(true);
+                }
+            }
         }
         setLoading(false);
     }

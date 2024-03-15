@@ -17,6 +17,8 @@ import "react-datepicker/dist/react-datepicker.css";
 function Upload() {
 
     document.title="Upload BPA";
+
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
     
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getDates } = useContext(AuthContext);
@@ -43,13 +45,15 @@ function Upload() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewBpa', JSON.stringify(paramNewBpa));
-                    await api.post(`/bpa/create`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/bpa/create/${employee.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     await getDates();
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
+
                 } catch(e) {
-                    const response = e.response.data[0];
-                    switch (response && response.errorType) {
+                    const response = e.response.data;
+
+                    switch (response) {
                         case "EXIST DATE":
                             openSnackBarFun(true, "Já existe um arquivo com a data informada!");
                             break;
@@ -58,7 +62,10 @@ function Upload() {
                             break;
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
-                            break;  
+                            break;
+                        case "FORBIDDEN":
+                            openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                            break;
                         default:
                             setErrorsFile(e.response.data);
                             const nextErrors = e.response.data.slice(0, 5);
@@ -276,6 +283,7 @@ function Upload() {
                                             variant="contained"
                                             onClick={() => {
                                                 setSelectedFiles([]);
+                                                setErrorsFile([]);
                                             }}
                                             sx={{
                                                 mr: 2

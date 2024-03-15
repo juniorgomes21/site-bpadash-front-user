@@ -24,6 +24,7 @@ function TimeLineFpo(props) {
     document.title="Linha do Tempo";
 
     const screenSize = window.screen.width;
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
 
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(true);
@@ -49,12 +50,18 @@ function TimeLineFpo(props) {
     async function apiDelete() {
         setLoading(true);
         try {
-            await api.post("/fpo/delete", select);
-            openSnackBarFun(false, "Arquivos apagados!")
-            setSelect([]);
+            await api.post(`/fpo/delete/${employee.key}`, select);
             apiGetTimeLine();
+            setSelect([]);
+            openSnackBarFun(false, "Arquivos apagados!")
         } catch(e) {
-            //
+            const response = e.response.data;
+            
+            if(response && response === "FORBIDDEN") {
+                openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+            } else {
+                openSnackBarFun();
+            }
         }
         setLoading(false);
     }

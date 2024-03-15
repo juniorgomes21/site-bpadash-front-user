@@ -19,6 +19,8 @@ function UploadFpo() {
 
     document.title="Novo Documento FPO";
     
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
@@ -42,13 +44,13 @@ function UploadFpo() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewFpo', JSON.stringify(paramNewFpo));
-                    await api.post('/fpo/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/fpo/create/${employee.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    const response = e.response.data[0];
+                    const response = e.response.data;
                     
-                    switch (response && response.errorType) {
+                    switch (response) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
@@ -57,6 +59,9 @@ function UploadFpo() {
                             break;
                         case "FILE INVALID":
                             openSnackBarFun(true, "O arquivo não é um arquivo FPO!");
+                            break;
+                        case "FORBIDDEN":
+                            openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
                             break;
                         default:
                             setErrorsFile(e.response.data);
@@ -264,6 +269,7 @@ function UploadFpo() {
                                                 variant="contained"
                                                 onClick={() => {
                                                     setSelectedFiles([]);
+                                                    setErrorsFile([]);
                                                 }}
                                                 sx={{
                                                     mr: 2

@@ -20,6 +20,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 function InFpo({ dateBpa, refresh}) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { reloadErrors, reloadErrorsFun, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [fpo, setFpo] = useState({});
@@ -71,13 +73,22 @@ function InFpo({ dateBpa, refresh}) {
                 "pa": fpo.pa + "-" + (updateAll === 'false' ? '0' : '1') + "-" + pa,
                 "key": "pa"
             };
-            await api.post(`/${fpo.type}/update/${fpo.id}`, obj);
+            await api.post(`/${fpo.type}/update/${fpo.id}/${employee.key}`, obj);
             reloadErrorsFun();
             handleClose();
             openSnackBarFun(false, "PA salvo");
+            
         } catch (e) {
-            console.log(e.response);
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
             setError(true);
         }
         setLoading(false);

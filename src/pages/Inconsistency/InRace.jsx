@@ -19,6 +19,8 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InRace({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+    
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
     const [race, setRace] = useState({});
@@ -57,18 +59,27 @@ function InRace({ dateBpa, refresh }) {
                 races.forEach( race => {
                     ids.push(race.id);
                 });
-                await api.post(`/bpai/update/${0}`, { "race": race.raceInvalid, "ids": ids, "key": "race" });
+                await api.post(`/bpai/update/${0}/${employee.key}`, { "race": race.raceInvalid, "ids": ids, "key": "race" });
 
             } else {
-                await api.post(`/bpai/update/${race.id}`, { "race": race.raceInvalid, "key": "race" });
+                await api.post(`/bpai/update/${race.id}/${employee.key}`, { "race": race.raceInvalid, "key": "race" });
             }
 
             await inRace();
             handleClose();
             openSnackBarFun(false, "Raça alterada");
         } catch (e) {
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
             setError(true);
-            openSnackBarFun();
         }
         setLoading(false);
     }

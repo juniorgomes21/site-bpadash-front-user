@@ -85,6 +85,8 @@ function Bpai(props) {
 
     document.title = "Editar BPA-I";
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { month, year, getFormattedDate } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     
@@ -161,7 +163,7 @@ function Bpai(props) {
     async function apiEdit() {
         setLoading(true);
         try {
-            await api.post(`/bpai/edit/${bpai.id}`, bpai);
+            await api.post(`/bpai/edit/${bpai.id}/${employee.key}`, bpai);
             await apiGet();
             handleCloseEdit();
             openSnackBarFun(false, "BPA-I editado");
@@ -170,7 +172,13 @@ function Bpai(props) {
                 setErrorMessages(e.response.data);
                 openSnackBarFun(true, e.response.data[0].message);
             } else {
-                openSnackBarFun()
+                const response = e.response.data;
+                
+                if(response && response === "FORBIDDEN") {
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+                } else {
+                    openSnackBarFun();
+                }
             }
         }
         setLoading(false);
@@ -180,7 +188,7 @@ function Bpai(props) {
         if (selected.length > 0) {
             setLoading(true);
             try {
-                await api.post(`/bpai/delete/${getFormattedDate()}`, { list: selected });
+                await api.post(`/bpai/delete/${getFormattedDate()}/${employee.key}`, { list: selected });
                 await apiGet();
                 setOpenDelete(false);
                 openSnackBarFun(
@@ -198,8 +206,11 @@ function Bpai(props) {
                     } case 'NOT FOUND BPA': {
                         openSnackBarFun(true, "Data BPA não encontrada!");
                         break;
+                    } case 'FORBIDDEN': {
+                        openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+                        break;
                     } default: {
-                        openSnackBarFun(true, "Ops, algo deu errado!");
+                        openSnackBarFun();
                     }
                 }
             }

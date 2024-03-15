@@ -12,6 +12,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 function InProcedure({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { loadingErrorsFiles, reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -48,12 +50,20 @@ function InProcedure({ dateBpa, refresh }) {
             procedures.errorsSexBpai.forEach( procedure => {
                 ids.push(procedure.id);
             });
-            await api.post(`/bpai/update/${0}`, { "ids": ids, "key": "sexProcedure" });
+            await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "sexProcedure" });
             await inProcedure();
             openSnackBarFun(false, lengthSerives > 1 ? "Sexos Alterados" : "Sexo Alterado");
         } catch(e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
         setLoading(false);
     }

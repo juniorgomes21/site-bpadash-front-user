@@ -44,6 +44,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function Bpac(props) {
 
     document.title = "Editar BPA-C";
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
 
     const { month, year, getFormattedDate } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
@@ -96,7 +97,7 @@ function Bpac(props) {
     async function apiEdit() {
         setLoading(true);
         try {
-            await api.post(`/bpac/edit/${bpac.id}`, bpac);
+            await api.post(`/bpac/edit/${bpac.id}/${employee.key}`, bpac);
             await apiGet();
             handleCloseEdit();
             openSnackBarFun(false, "BPA-C editado");
@@ -105,9 +106,16 @@ function Bpac(props) {
                 setErrorMessages(e.response.data);
                 openSnackBarFun(true, e.response.data[0].message);
             } else {
-                openSnackBarFun()
+                const response = e.response.data;
+                
+                if(response && response === "FORBIDDEN") {
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+                } else {
+                    openSnackBarFun();
+                }
             }
         }
+
         setLoading(false);
     }
 
@@ -115,7 +123,7 @@ function Bpac(props) {
         if (selected.length > 0) {
             setLoading(true);
             try {
-                await api.post(`/bpac/delete/${getFormattedDate()}`, { list: selected });
+                await api.post(`/bpac/delete/${getFormattedDate()}/${employee.key}`, { list: selected });
                 await apiGet();
                 setOpenDelete(false);
                 openSnackBarFun(
@@ -132,6 +140,9 @@ function Bpac(props) {
                         break;
                     } case 'NOT FOUND BPA': {
                         openSnackBarFun(true, "Data BPA não encontrada!");
+                        break;
+                    } case 'FORBIDDEN': {
+                        openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
                         break;
                     } default: {
                         openSnackBarFun(true, "Ops, algo deu errado!");

@@ -18,22 +18,31 @@ import AuthContext from "../../contexts/Auth";
 import AlertCustom from "../../GlobalComponents/AlertCustom";
 import CarouselPage from "./CarouselPage";
 
+
 function Login(props) {
+
     document.title = "Login";
 
-    const { loadingLogin, errorLogin, handleLogin } = useContext(AuthContext);
+    const { loadingLogin, errorLogin, msgError, handleLogin } = useContext(AuthContext);
 
-  const [passwordShow, setPasswordShow] = useState(false);
+    const [passwordShow, setPasswordShow] = useState(false);
 
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            userName: "",
             email: "",
             password: "",
         },
         validationSchema: Yup.object({
-            email: Yup.string().required("Por favor informe seu Email"),
-            password: Yup.string().required("Por favor informe sua senha"),
+            email: Yup.string()
+                .required("Por favor informe seu Email")
+                .min(10, "O email deve ter no mínimo 10 caracteres")
+                .max(50, "O email deve ter no máximo 50 caracteres"),
+            password: Yup.string()
+                .required("Por favor informe sua senha")
+                .min(8, "Sua senha deve ter no mínimo 8 caracteres")
+                .max(50, "Sua senha deve ter no máximo 50 caracteres"),
         }),
         onSubmit: (values) => {
             handleLogin(values.email, values.password);
@@ -71,6 +80,14 @@ function Login(props) {
                                             </div>
 
                                             <div className="mt-4">
+                                                {errorLogin && (
+                                                    <div className="my-3">
+                                                        <AlertCustom
+                                                            msg={msgError}
+                                                            type="error"
+                                                        />
+                                                    </div>
+                                                )}
                                                 <Form
                                                     className="form-horizontal"
                                                     onSubmit={(e) => {
@@ -79,14 +96,6 @@ function Login(props) {
                                                         return false;
                                                     }}
                                                 >
-                                                    {errorLogin && (
-                                                        <div className="my-3">
-                                                            <AlertCustom
-                                                                msg="Email ou senha inválida!"
-                                                                type="error"
-                                                            />
-                                                        </div>
-                                                    )}
 
                                                     <div className="mb-3">
                                                         <Label className="form-label">
@@ -133,9 +142,9 @@ function Login(props) {
                                                             )}
                                                     </div>
 
-                                                        <Label className="form-label">
-                                                            Senha
-                                                        </Label>
+                                                    <Label className="form-label">
+                                                        Senha
+                                                    </Label>
                                                     <div className="input-group auth-pass-inputgroup">
                                                         <Input
                                                             name="password"
@@ -145,7 +154,11 @@ function Login(props) {
                                                                     .password ||
                                                                 ""
                                                             }
-                                                            type={passwordShow ? "text" : "password"}
+                                                            type={
+                                                                passwordShow
+                                                                    ? "text"
+                                                                    : "password"
+                                                            }
                                                             placeholder="Sua senha"
                                                             onChange={
                                                                 validation.handleChange
@@ -164,7 +177,16 @@ function Login(props) {
                                                                     : false
                                                             }
                                                         />
-                                                        <button onClick={() => setPasswordShow(!passwordShow)} className="btn btn-light " type="button" id="password-addon">
+                                                        <button
+                                                            onClick={() =>
+                                                                setPasswordShow(
+                                                                    !passwordShow
+                                                                )
+                                                            }
+                                                            className="btn btn-light "
+                                                            type="button"
+                                                            id="password-addon"
+                                                        >
                                                             <i className="mdi mdi-eye-outline"></i>
                                                         </button>
                                                         {validation.touched

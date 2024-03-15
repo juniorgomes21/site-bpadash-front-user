@@ -18,6 +18,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 function AgeMinMax({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const dateNow = new Date();
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun, loadingErrorsFiles } = useContext(SnackBarContext);
     const [ageMaxMin, setAgeMaxMin] = useState({});
@@ -62,17 +64,27 @@ function AgeMinMax({ dateBpa, refresh }) {
                     ids.push(age.id);
                 });
 
-                await api.post(`/bpai/update/${0}`, { "ids": ids, "key": "ageMaxMin" });
+                await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "ageMaxMin" });
 
             } else {
-                await api.post(`/bpai/update/${ageMaxMin.id}`, { "age": ageMaxMin.age, "key": "ageMaxMin" });
+                await api.post(`/bpai/update/${ageMaxMin.id}/${employee.key}`, { "age": ageMaxMin.age, "key": "ageMaxMin" });
             }
+
             await inAgeMaxMin();
             handleClose();
             openSnackBarFun(false, "IDADE salva");
         } catch (e) {
-            console.log(e);
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
+
             setError(true);
         }
         setLoading(false);

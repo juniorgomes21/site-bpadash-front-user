@@ -27,7 +27,8 @@ function TimeLineBpa(props) {
     document.title="Linha do Tempo BPA";
 
     const screenSize = window.screen.width;
-    
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { month, year } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getDates } = useContext(AuthContext);
@@ -54,12 +55,20 @@ function TimeLineBpa(props) {
     async function apiDelete() {
         try {
             setLoading(true);
-            await api.post(`/bpa/delete`, select);
+            await api.post(`/bpa/delete/${employee.key}`, select);
             await getDates();
             openSnackBarFun(false, "Arquivos apagados!")
             setSelect([]);
             apiGetTimeLine();
         } catch(e) {
+            const response = e.response.data;
+            
+            if(response && response === "FORBIDDEN") {
+                openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+            } else {
+                openSnackBarFun();
+            }
+            
             setLoading(false);
         }
     }

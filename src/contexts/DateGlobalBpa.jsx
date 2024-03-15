@@ -5,7 +5,9 @@ import 'regenerator-runtime/runtime'
 const DateGlobalBpaContext = createContext(DateGlobalBpaProvider);
 
 export function DateGlobalBpaProvider({ children }) {
+
     const date = new Date();
+    
     const [month, setMonth] = useState(localStorage.getItem("@Month") == null ? date.getMonth() + 1 : localStorage.getItem("@Month"));
     const [year, setYear] = useState(localStorage.getItem("@Year") == null ? date.getFullYear() : localStorage.getItem("@Year"));
 

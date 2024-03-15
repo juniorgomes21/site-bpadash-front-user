@@ -28,6 +28,8 @@ function TreatmentPa(props) {
     document.title = "Tratamento BPA";
 
     const url = "/treatment/replacement/pa";
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormattedDate } = useContext(DatePickerContext);
     const [rulePA, setRulePA] = useState({});
@@ -154,9 +156,10 @@ function TreatmentPa(props) {
         setLoadingAction(true);
         handleClose();
         try {
-            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
+            const response = await api.post(url + `/execute/${ruleObj.id}/${employee.key}`, { "dateBpa": getFormattedDate() });
             handleClose();
             openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
+            
         } catch (e) {
             const response = e.response.data;
             
@@ -166,6 +169,9 @@ function TreatmentPa(props) {
                     break;
                 } case 'NOT FOUND BPA': {
                     openSnackBarFun(true, "Data BPA não encontrada!");
+                    break;
+                } case "FORBIDDEN": {
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
                     break;
                 } default: {
                     openSnackBarFun(true, "Ops, algo deu errado!");
@@ -179,7 +185,7 @@ function TreatmentPa(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post(url + "/execute/0", { "dateBpa": getFormattedDate() });
+            const response = await api.post(url + `/execute/0/${employee.key}`, { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
 
         } catch (e) {
@@ -191,6 +197,9 @@ function TreatmentPa(props) {
                     break;
                 } case 'NOT FOUND BPA': {
                     openSnackBarFun(true, "Data BPA não encontrada!");
+                    break;
+                } case "FORBIDDEN": {
+                    openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                     break;
                 } default: {
                     openSnackBarFun(true, "Ops, algo deu errado!");

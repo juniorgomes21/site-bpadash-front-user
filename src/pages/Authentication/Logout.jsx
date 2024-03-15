@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import AuthContext from "../../contexts/Auth";
 
-function Logout(props) {
+function Logout() {
 
   const { handleLogout } = useContext(AuthContext);
 

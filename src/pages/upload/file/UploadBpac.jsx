@@ -25,6 +25,8 @@ function UploadBpac(props) {
 
     document.title="Upload BPA-C";
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { dates } = useContext(AuthContext);
     const [bytes, setBytes] = useState(0);
@@ -52,13 +54,14 @@ function UploadBpac(props) {
                 try {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
-                    await api.post(`/bpac/create/${month}/${year}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/bpac/create/${month}/${year}/${employee.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "BPA-C salvo!");
+                    
                 } catch(e) {
-                    const response = e.response.data[0];
-
-                    switch (response && response.errorType) {
+                    const response = e.response.data;
+                    
+                    switch (response) {
                         case "NOT FOUND BPA":
                             openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
                             break;
@@ -70,7 +73,10 @@ function UploadBpac(props) {
                             break;
                         case "FILE INVALID":
                             openSnackBarFun(true, "Arquivo não contem linhas BPA-C");
-                            break;    
+                            break;
+                        case "FORBIDDEN":
+                            openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                            break;
                         default:
                             setErrorsFile(e.response.data);
                             const nextErrors = e.response.data.slice(0, 5);
@@ -300,6 +306,7 @@ function UploadBpac(props) {
                                                 variant="contained"
                                                 onClick={() => {
                                                     setSelectedFiles([]);
+                                                    setErrorsFile([]);
                                                 }}
                                                 sx={{
                                                     mr: 2

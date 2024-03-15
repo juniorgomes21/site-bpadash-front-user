@@ -27,7 +27,8 @@ function TimeLineProfessionals(props) {
     document.title="Linha do Tempo";
 
     const screenSize = window.screen.width;
-    
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { getFormattedDate } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(true);
@@ -53,12 +54,19 @@ function TimeLineProfessionals(props) {
     async function apiDelete() {
         setLoading(true);
         try {
-            await api.post("/prof/delete", select);
+            await api.post(`/prof/delete/${employee.key}`, select);
             openSnackBarFun(false, "Arquivos apagados!")
             setSelect([]);
             apiGetTimeLine();
+            
         } catch(e) {
-            //
+            const response = e.response.data;
+            
+            if(response && response === "FORBIDDEN") {
+                openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+            } else {
+                openSnackBarFun();
+            }
         }
         setLoading(false);
     }

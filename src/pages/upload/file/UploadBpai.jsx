@@ -22,6 +22,8 @@ function UploadBpai(props) {
 
     document.title="Upload BPA-I";
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [bytes, setBytes] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -64,13 +66,13 @@ function UploadBpai(props) {
                 try {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
-                    await api.post(`/bpai/create/${month}/${year}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/bpai/create/${month}/${year}/${employee.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "BPA-I salvo!");
                 } catch(e) {
-                    const response = e.response.data[0];
-
-                    switch (response && response.errorType) {
+                    const response = e.response.data;
+                    
+                    switch (response) {
                         case "NOT STORAGE":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
                             break;
@@ -79,7 +81,10 @@ function UploadBpai(props) {
                             break;
                         case "FILE INVALID":
                             openSnackBarFun(true, "Arquivo não contem linhas BPA-I");
-                            break;    
+                            break; 
+                        case "FORBIDDEN":
+                            openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                            break;   
                         default:
                             setErrorsFile(e.response.data);
                             const nextErrors = e.response.data.slice(0, 5);
@@ -315,6 +320,7 @@ function UploadBpai(props) {
                                                 variant="contained"
                                                 onClick={() => {
                                                     setSelectedFiles([]);
+                                                    setErrorsFile([]);
                                                 }}
                                                 sx={{
                                                     mr: 2

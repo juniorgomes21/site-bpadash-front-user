@@ -51,11 +51,7 @@ export default function TableBpac({ identifier }) {
     async function apiGetBPAC() {
         setLoading(true);
         try {
-            const response = await api.get(
-                `/bpac/get/${getFormattedDate()}?page=${
-                    page > 0 ? page - 1 : page
-                }&size=${size}`
-            );
+            const response = await api.get(`/bpac/get/${getFormattedDate()}?page=${ page > 0 ? page - 1 : page }&size=${size}`);
             setBpacList(response.data.content);
             setTotalPage(response.data.totalPages);
             setTotalElements(response.data.totalElements);

@@ -36,6 +36,8 @@ function SidebarContent(props) {
     setDefaultLocale('pt-BR');
 
     const user = JSON.parse(localStorage.getItem("@User"));
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { dates } = useContext(AuthContext);
     const { month, year, startDateChange, getFormattedDate } = useContext(DateGlobalBpaContext);
     const [open, setOpen] = useState(false);
@@ -340,9 +342,9 @@ function SidebarContent(props) {
                         </li>
 
                         <li>
-                            <Link to="/validation/file" className="">
+                            <Link to="/history/actions" className="">
                                 <i className="bx bx-task"></i>
-                                <span>{props.t("Validação de arquivo")}</span>
+                                <span>{props.t("Histórico de ações")}</span>
                             </Link>
                         </li>
 
@@ -352,6 +354,23 @@ function SidebarContent(props) {
                                 <span>{props.t("Download BPA")}</span>
                             </Link>
                         </li>
+
+                        <li>
+                            <Link to="/employee/register" className="">
+                                <i className="bx bxs-user-detail"></i>
+                                <span>{props.t("Meus Dados")}</span>
+                            </Link>
+                        </li>
+
+                        {
+                            employee.master &&
+                                <li>
+                                    <Link to="/users/registered" className="">
+                                        <i className="bx bxs-user"></i>
+                                        <span>{props.t("Funcionários")}</span>
+                                    </Link>
+                                </li>
+                        }
 
                         <li>
                             <Link to="/#" className="has-arrow">
@@ -368,9 +387,12 @@ function SidebarContent(props) {
                                 <li>
                                     <Link to="/configurations/register">{props.t("Cadastro")}</Link>
                                 </li>
-                                <li>
-                                    <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
-                                </li>
+                                {
+                                    employee.master &&
+                                        <li>
+                                            <Link to="/configurations/password">{props.t("Mudar Senha")}</Link>
+                                        </li>
+                                }
                                 <li>
                                     <Link to="/configurations/terms&Use">{props.t("Termos de uso")}</Link>
                                 </li>

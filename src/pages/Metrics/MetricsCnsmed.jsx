@@ -42,7 +42,7 @@ const headCells = [
     },
     {
         id: 'mvm',
-        label: 'Ocorrências',
+        label: 'Atendimentos',
     },
     {
         id: 'lin',

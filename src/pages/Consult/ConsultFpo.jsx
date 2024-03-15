@@ -51,10 +51,11 @@ const field = [
 ]
 
 
-function FpoEdit() {
+function ConsultFpo() {
 
     document.title="Consultar FPO";
-    
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [pa, setPa] = useState('');
     const [fpo, setFpo] = useState({});
@@ -64,14 +65,21 @@ function FpoEdit() {
     async function apiGet() {
         setLoading(true);
         try {
-            const response = await api.get(`/fpo/get/${pa}`);
+            const response = await api.get(`/fpo/get/${pa}/${employee.key}`);
             setFpo(response.data);
         } catch (e) {
             const response = e.response.data;
-            if(response && response === "NOT EXIST DATE FPO") {
-                openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
-            } else {
-                openSnackBarFun(true, "Nenhum FPO encontrado no arquivo!");
+
+            switch (response) {
+                case "NOT EXIST DATE FPO":
+                    openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                case "NOT FOUND SESSION":
+                    openSnackBarFun(true, "Nenhum FPO encontrado no arquivo!");
+                    break;
             }
         }
         setLoading(false);
@@ -174,4 +182,4 @@ function FpoEdit() {
     )
 }
 
-export default FpoEdit;
+export default ConsultFpo;

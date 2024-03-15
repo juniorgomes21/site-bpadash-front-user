@@ -22,6 +22,8 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InProfessionals({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { loadingErrorsFiles, openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
@@ -57,15 +59,23 @@ function InProfessionals({ dateBpa, refresh }) {
         setLoading(true);
         try {
             const cnsmedOld = professionals.find(item => item.id === professional.id).cnsmed;
-            await api.post(`/bpai/update/${professional.id}`, { "cnsmed": (professional.cnsmed + "-" + (updateAll === 'false' ? '0' : '1') + "-" + cnsmedOld), "dateBpa": dateBpa, "key": "cnsmedProfessional"});
+            await api.post(`/bpai/update/${professional.id}/${employee.key}`, { "cnsmed": (professional.cnsmed + "-" + (updateAll === 'false' ? '0' : '1') + "-" + cnsmedOld), "dateBpa": dateBpa, "key": "cnsmedProfessional"});
             setUpdateAll('false');
             await inProfessionals();
             handleClose();
             openSnackBarFun(false, "CNSMED salvo");
         } catch (e) {
-            console.log(e.response);
-            setUpdateAll('false');
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    setUpdateAll('false');
+                    setMsgError("Ops, algo deu errado");
+                }
+            }
             setError(true);
         }
         setLoading(false);

@@ -18,6 +18,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 function InQtService({ dateBpa, refresh }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { reloadErrors, setHaveErrors, openSnackBarFun, setLoadingErrorsFun, loadingErrorsFiles} = useContext(SnackBarContext);
     const [service, setService] = useState({});
     const [qtService, setQtService] = useState([]);
@@ -59,17 +61,26 @@ function InQtService({ dateBpa, refresh }) {
                     ids.push(qt.id);
                 });
 
-                await api.post(`/bpai/update/${0}`, { "key": "qtService", "ids": ids });
+                await api.post(`/bpai/update/${0}/${employee.key}`, { "key": "qtService", "ids": ids });
 
             } else {
-                await api.post(`/bpai/update/${service.id}`, { "key": "qtService", "qtService": [service.qt, service.qtMax]});
+                await api.post(`/bpai/update/${service.id}/${employee.key}`, { "key": "qtService", "qtService": [ service.qt, service.qtMax ]});
             }
             await inQtService();
             handleClose();
             openSnackBarFun(false, "Quntidade alterada");
         } catch (e) {
-            console.log(e);
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    setMsgError("Ops, algo deu errado");
+                }
+            }
+
             setError(true);
         }
         setLoading(false);

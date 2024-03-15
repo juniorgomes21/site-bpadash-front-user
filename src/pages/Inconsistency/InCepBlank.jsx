@@ -16,6 +16,8 @@ import SouthIcon from '@mui/icons-material/South';
 
 function InCep({ dateBpa }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun, setHaveErrors, setLoadingErrorsFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState({ "single": false, "all": false });
     const [cep, setCep] = useState({});
@@ -56,17 +58,25 @@ function InCep({ dateBpa }) {
                     ids.push(cep.id);
                 });
 
-                await api.post(`/bpai/update/0`, { "key": "cepBlank", "ids": ids });
+                await api.post(`/bpai/update/0/${employee.key}`, { "key": "cepBlank", "ids": ids });
                 
             } else {
-                await api.post(`/bpai/update/${cep.id}`, { "key": "cepBlank", "cep": cep.cepInvalid });
+                await api.post(`/bpai/update/${cep.id}/${employee.key}`, { "key": "cepBlank", "cep": cep.cepInvalid });
             }
             await inCep();
             handleClose();
             openSnackBarFun(false, ( upAll ? "Todos CEPs atualizados" : "CEP salvo"));
         } catch (e) {
-            console.log(e);
-            setMsgError("Ops, algo deu errado");
+            const response = e.response.data;
+            
+            switch (response) {
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
             setError(true);
         }
         setLoading(false);

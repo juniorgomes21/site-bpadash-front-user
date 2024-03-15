@@ -11,30 +11,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import api from "../../../../services/api";
-import PaginationPer from "../../PaginationPer";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import Checkbox from '@mui/material/Checkbox';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Slide from '@mui/material/Slide';
 import LoadingButton from "@mui/lab/LoadingButton";
-import CachedIcon from '@mui/icons-material/Cached';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SelectColl from "../../SelectColl";
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import SnackBarContext from "../../../../contexts/managerService";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
-import Alert from '@mui/material/Alert';
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
 import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 import Tooltip from '@mui/material/Tooltip';
@@ -127,6 +115,8 @@ function Title(props) {
 
     document.title="Editar Título";
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { month, year } = useContext(DateGlobalBpaContext);
     const [titleBpa, setTitleBpa] = useState({});
@@ -152,7 +142,7 @@ function Title(props) {
     async function apiEditTitle() {
         setLoading(true);
         try {
-          const response = await api.post(`/title/edit/${titleBpa.id}`, titleBpa);
+          const response = await api.post(`/title/edit/${titleBpa.id}/${employee.key}`, titleBpa);
           setTitleBpa(response.data);
           handleClose();
           openSnackBarFun(false, "Título editado");
@@ -160,7 +150,7 @@ function Title(props) {
           setErrorMessages(e.response.data);
         }
         setLoading(false);
-      }
+    }
 
     function handleChangeInput(e) {
         const { name, value } = e.target;

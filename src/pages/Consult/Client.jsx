@@ -88,6 +88,8 @@ function Client() {
 
     document.title="Consultar Paciente";
     
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormattedDate } = useContext(DateGlobalBpaContext);
     const [cnsPac, setCnsPac] = useState('');
@@ -99,9 +101,10 @@ function Client() {
         setLoading(true);
         setClient({});
         try {
-            const response = await api.get(`/user/get/${getFormattedDate()}/${cnsPac}`);
+            const response = await api.get(`/bpai/get/${getFormattedDate()}/${cnsPac}/${employee.key}`);
             setClient(response.data);
         } catch (e) {
+            console.log(e);
             const response = e.response.data;
             
             switch(response && response) {
@@ -111,9 +114,11 @@ function Client() {
                 case "NOT EXIST DATE BPA":
                     openSnackBarFun(true, "Você não possuí BPA na data selecionada!");
                     break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
                 default:
                     openSnackBarFun();
-                    break;
             }
         }
         setLoading(false);

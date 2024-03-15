@@ -81,6 +81,8 @@ const headCells = [
 
 export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
 
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { getDates } = useContext(AuthContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormattedDate } = useContext(DateGlobalBpaContext);
@@ -96,6 +98,7 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     async function apiGetTitle() {
         try {
             const response = await api.get(`/title/get/${identifier}`);
+            console.log(response.data);
             setTitleBpa(response.data);
             setCountRules(response.data.countRules);
         } catch (e) {
@@ -107,13 +110,18 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     async function apiDeleteBPA() {
         setLoadingBpa(true);
         try {
-            await api.post(`/bpa/delete`, [identifier]);
+            await api.post(`/bpa/delete/${employee.key}`, [ identifier ]);
             getDates();
             setBpa({});
             openSnackBarFun(false, "BPA apagado com sucesso!");
         } catch (e) {
-            console.log(e.response);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            if(response && response === "FORBIDDEN") {
+                openSnackBarFun(true, "Você não tem autorização para continuar com essa ação.");
+            } else {
+                openSnackBarFun();
+            }
         }
         setLoadingBpa(false);
     }
@@ -122,13 +130,14 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
         setLoadingBpa(true);
         try {
             const date = getFormattedDate();
-            const countB = await api.post("/treatment/deleteperpa/execute/0", { "dateBpa": date });
-            const countA = await api.post("/treatment/replacement/pa/execute/0", { "dateBpa": date });
-            const countC = await api.post("/treatment/replacement/pa/cbo/execute/0", { "dateBpa": date });
-            const countD = await api.post("/treatment/replacement/custom/execute/0", { "dateBpa": date });
+            const countB = await api.post(`/treatment/deleteperpa/execute/0/${employee.key}`, { "dateBpa": date });
+            const countA = await api.post(`/treatment/replacement/pa/execute/0/${employee.key}`, { "dateBpa": date });
+            const countC = await api.post(`/treatment/replacement/pa/cbo/execute/0/${employee.key}`, { "dateBpa": date });
+            const countD = await api.post(`/treatment/replacement/custom/execute/0/${employee.key}`, { "dateBpa": date });
             openSnackBarFun(false, `Todas regras executadas, ${countA.data + countB.data + countC.data + countD.data} linhas alteradas`);
 
         } catch (e) {
+            console.log(e);
             openSnackBarFun();
         }
         setLoadingBpa(false);
@@ -137,12 +146,25 @@ export default function TitleBpa({ identifier, setBpa, setLoadingBpa }) {
     async function apiExecuteRuleCepBlank() {
         setLoadingBpa(true);
         try {
-            const count = await api.post("/treatment/address/execute", { "dateBpa": getFormattedDate() });
+            const count = await api.post(`/treatment/address/execute/${employee.key}`, { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Regra executada, ${count.data} linhas BPA-I alteradas`);
 
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            console.log(e.response);
+
+            switch (e.response.data) {
+                case "NOT FOUND BPA":
+                    handleClose();
+                    openSnackBarFun("Arquivo BPA não encontrado");
+                    break;
+                case "FORBIDDEN":
+                    handleClose();
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default:
+                    handleClose();
+                    openSnackBarFun();
+            }
         }
         setLoadingBpa(false);
     }

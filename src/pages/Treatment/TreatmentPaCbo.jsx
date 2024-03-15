@@ -29,6 +29,8 @@ function TreatmentPaCbo(props) {
     document.title = "Substituição de CBO";
 
     const url = "/treatment/replacement/pa/cbo";
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormattedDate } = useContext(DatePickerContext);
     const [rulePaCbo, setRulePaCbo] = useState({});
@@ -51,7 +53,7 @@ function TreatmentPaCbo(props) {
             const response = await api.get(url + "/get");
             setRulePaCbo(response.data);
         } catch (e) {
-            console.log(e);
+            // console.log(e);
         }
         setLoading(false);
     }
@@ -157,12 +159,23 @@ function TreatmentPaCbo(props) {
         setLoadingAction(true);
         handleClose();
         try {
-            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
+            const response = await api.post(url + `/execute/${ruleObj.id}/${employee.key}`, { "dateBpa": getFormattedDate() });
             handleClose();
             openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
         setLoadingAction(false);
     }
@@ -171,12 +184,23 @@ function TreatmentPaCbo(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post(url + "/execute/0", { "dateBpa": getFormattedDate() });
+            const response = await api.post( url + `/execute/0/${employee.key}`, { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas ${response.data} linhas alteradas`);
 
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
         setLoading(false);
     }
@@ -194,7 +218,7 @@ function TreatmentPaCbo(props) {
 
         if (dialog === "edit") {
             const rule = rulePaCbo.ruleTreatmentPaCboList.find(item => item.id === id);
-            setParansCbo({ "pa": rule.pa, "cboCurrent": rule.cboCurrent, "cboNew": rule.cboNew });
+            setParansCbo({ "pa": rule.paCurrent, "cboCurrent": rule.cboCurrent, "cboNew": rule.cboNew });
         }
 
         setOpen({ ...open, [dialog]: true });
@@ -280,7 +304,7 @@ function TreatmentPaCbo(props) {
                                                     <div className="flex justify-between items-center font-bold border-default border-[1px] rounded-lg p-2">
                                                         <div className="flex flex-col">
                                                             <div className="flex">
-                                                                <p>PA: </p> <p className="ml-2">{rule.pa}</p> <p className="mx-1">/</p> <p> CBO: </p><p className="ml-2">{rule.cboCurrent}</p>
+                                                                <p>PA: </p> <p className="ml-2">{rule.paCurrent}</p> <p className="mx-1">/</p> <p> CBO: </p><p className="ml-2">{rule.cboCurrent}</p>
                                                             </div>
                                                             <div className="flex mt-2">
                                                                 <p> NOVO CBO: </p>

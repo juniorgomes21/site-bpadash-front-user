@@ -33,7 +33,7 @@ function App() {
               key={idx}
               path={route.path}
               isAuthProtected={true}
-              layout={VerticalLayout}
+              layout={route.path.includes("/login/employee") ? NonAuthLayout : VerticalLayout}
               component={route.component}
             />
           ))}

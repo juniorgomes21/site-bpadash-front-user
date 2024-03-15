@@ -19,6 +19,8 @@ function UploadProfessional() {
 
     document.title="Novo Documento de Profissionais";
     
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
@@ -42,13 +44,13 @@ function UploadProfessional() {
                     const formData = new FormData();
                     formData.append('file', selectedFiles[0]);
                     formData.append('paramNewProfessionals', JSON.stringify(paramNewProfessionals));
-                    await api.post('/prof/create', formData, { headers: { 'Content-Type': 'multipart/form-data'}});
+                    await api.post(`/prof/create/${employee.key}`, formData, { headers: { 'Content-Type': 'multipart/form-data'}});
                     reset();
                     openSnackBarFun(false, "Arquivo salvo!");
                 } catch(e) {
-                    const response = e.response.data[0];
+                    const response = e.response.data;
 
-                    switch (response && response.errorType) {
+                    switch (response) {
                         case "EXIST DATE":
                             openSnackBarFun(true, "Já existe um arquivo de profissionais na data informada!");
                             break;
@@ -57,6 +59,9 @@ function UploadProfessional() {
                             break;
                         case "FILE INVALID":
                             openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
+                            break;
+                        case "FORBIDDEN":
+                            openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
                             break;
                         default:
                             openSnackBarFun();
@@ -255,6 +260,7 @@ function UploadProfessional() {
                                             variant="contained"
                                             onClick={() => {
                                                 setSelectedFiles([]);
+                                                setErrorsFile([]);
                                             }}
                                             sx={{
                                                 mr: 2

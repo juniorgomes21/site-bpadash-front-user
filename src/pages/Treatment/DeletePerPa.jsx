@@ -26,8 +26,9 @@ import { formatMonth } from "../../Validation&Formatation/formatation";
 
 function DeletePerPa(props) {
 
-    //meta title
     document.title="Apagar por PA";
+
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
 
     const url = "/treatment/deleteperpa";
     const { openSnackBarFun } = useContext(SnackBarContext);
@@ -127,13 +128,25 @@ function DeletePerPa(props) {
         setLoadingAction(true);
         handleClose();
         try {
-          const response = await api.post( url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
+          const response = await api.post( url + `/execute/${ruleObj.id}/${employee.key}`, { "dateBpa": getFormattedDate() });
           handleClose();
           openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
         } catch (e) {
-          console.log(e);
-          openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
+        
         setLoadingAction(false);
     }
 
@@ -141,11 +154,25 @@ function DeletePerPa(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post( url + "/execute/0", { "dateBpa": getFormattedDate() });
+            const response = await api.post( url + `/execute/0/${employee.key}`, { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
+
         } catch (e) {
-            openSnackBarFun();
+            const response = e.response.data;
+
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
+
         setLoading(false);
     }
 

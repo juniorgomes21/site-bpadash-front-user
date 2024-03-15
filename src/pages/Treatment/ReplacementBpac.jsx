@@ -45,9 +45,12 @@ const fieldsList = [
 
 function ReplacementBpac(props) {
     
-    document.title = "Substituir valor BPA-C";
+    document.title = "Substituir valor BPA";
     
     const url = "/treatment/replacement/custom";
+    
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+
     const { month, year } = useContext(DatePickerContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
     const { getFormattedDate } = useContext(DatePickerContext);
@@ -304,12 +307,24 @@ function ReplacementBpac(props) {
         setLoadingAction(true);
         handleClose();
         try {
-            const response = await api.post(url + `/execute/${ruleObj.id}`, { "dateBpa": getFormattedDate() });
+            const response = await api.post(url + `/execute/${ruleObj.id}/${employee.key}`, { "dateBpa": getFormattedDate() });
             handleClose();
             openSnackBarFun(false, `Regra executada, ${response.data} linhas alteradas`);
+
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
         setLoadingAction(false);
     }
@@ -318,11 +333,23 @@ function ReplacementBpac(props) {
         setLoading(true);
         handleClose();
         try {
-            const response = await api.post( url + "/execute/0", { "dateBpa": getFormattedDate() });
+            const response = await api.post( url + `/execute/0/${employee.key}`, { "dateBpa": getFormattedDate() });
             openSnackBarFun(false, `Todas regras executadas, ${response.data} linhas alteradas`);
+
         } catch (e) {
-            console.log(e);
-            openSnackBarFun();
+            const response = e.response.data;
+            
+            switch (response) {
+                case "NOT FOUND BPA":
+                    openSnackBarFun(true, "Arquivo na data selecionada não encontrado!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Espaço de armazenamento insuficiente!");
+                    break;
+                default: {
+                    openSnackBarFun();
+                }
+            }
         }
         setLoading(false);
     }

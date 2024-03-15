@@ -39,10 +39,6 @@ function BPA(props) {
         setLoading(false);
     }
 
-    function xxx() {
-        history.push("/file/edit/bpac");
-    }
-
     return (
         <>
             <div className="page-content">
@@ -52,7 +48,7 @@ function BPA(props) {
                             {Object.keys(bpa).length > 0 && (
                                 <div
                                     className="flex justify-center text-base border-2 border-[#2a3042] rounded-xl p-2"
-                                    onClick={() => xxx()}
+                                    onClick={() => { history.push("/file/edit/bpac") }}
                                 >
                                     <div>
                                         <p>Tamanho do Documento:</p>

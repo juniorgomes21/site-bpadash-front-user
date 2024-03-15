@@ -84,6 +84,8 @@ function ProfessionalEdit() {
 
     document.title="Consultar Profissional";
     
+    const employee = JSON.parse(localStorage.getItem("@Employee"));
+    
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [open, setOpen] = useState(false);
     const [professional, setProfessional] = useState({});
@@ -95,17 +97,21 @@ function ProfessionalEdit() {
     async function apiGetProfessional() {
         setLoading(true);
         try {
-            const response = await api.get(`/prof/get/${idProfessional}`);
+            const response = await api.get(`/prof/get/${idProfessional}/${employee.key}`);
             setProfessional(response.data);
+
         } catch (e) {
             const response = e.response.data;
             
-            switch(response && response) {
+            switch(response) {
                 case "NOT FOUND":
                     openSnackBarFun(true, "Nenhum profissional encontrado!");
                     break;
                 case "NOT EXIST DATE":
                     openSnackBarFun(true, "Nenhum arquivo encontrado data informada, por favor faço o upload do arquivo!");
+                    break;
+                case "FORBIDDEN":
+                    openSnackBarFun(true, "Você não tem autorização para continuar com essa ação");
                     break;
                 default:
                     openSnackBarFun();

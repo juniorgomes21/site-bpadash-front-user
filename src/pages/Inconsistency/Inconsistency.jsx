@@ -215,10 +215,10 @@ function Inconsistency(props) {
                                             )
                                         )}
                                     </div>
-                                    <InFpo // precisa de PA
+                                    <InFpo // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
-                                    />
+                                    /> 
                                     <AgeMinMax
                                         dateBpa={dateBpa}
                                         refresh={refresh}
@@ -231,11 +231,11 @@ function Inconsistency(props) {
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InQtService // precisa de PA
+                                    <InQtService // 
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InDateService
+                                    <InDateService // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
@@ -247,11 +247,11 @@ function Inconsistency(props) {
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InProcedure // precisa de PA
+                                    <InProcedure //
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InOccupation // precisa de PA
+                                    <InOccupation //
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
