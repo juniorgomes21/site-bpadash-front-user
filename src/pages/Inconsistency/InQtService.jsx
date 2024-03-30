@@ -61,15 +61,17 @@ function InQtService({ dateBpa, refresh }) {
                     ids.push(qt.id);
                 });
 
-                await api.post(`/bpai/update/${0}/${employee.key}`, { "key": "qtService", "ids": ids });
+                await api.post(`/bpai/update/${0}/${employee.key}`, { "key": "qtService", "ids": ids, "dateBpa": dateBpa });
 
             } else {
-                await api.post(`/bpai/update/${service.id}/${employee.key}`, { "key": "qtService", "qtService": [ service.qt, service.qtMax ]});
+                console.log([ Number(service.qt), service.qtMax ]);
+                await api.post(`/bpai/update/${service.id}/${employee.key}`, { "key": "qtService", "qtService": [ Number(service.qt), service.qtMax ], "dateBpa": dateBpa });
             }
             await inQtService();
             handleClose();
             openSnackBarFun(false, "Quntidade alterada");
         } catch (e) {
+            console.log(e);
             const response = e.response.data;
             
             switch (response) {
@@ -221,7 +223,7 @@ function InQtService({ dateBpa, refresh }) {
                         onChange={ e => {
                             setError(false);
                             setMsgError('');
-                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 3) setService({...service, ["qt"]: e.target.value});
+                            if(!isNaN(Number(e.target.value))  && e.target.value.length <= 6) setService({...service, ["qt"]: e.target.value});
                         }}
                     />
                 </div>

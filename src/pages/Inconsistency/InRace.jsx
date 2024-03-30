@@ -62,7 +62,7 @@ function InRace({ dateBpa, refresh }) {
                 await api.post(`/bpai/update/${0}/${employee.key}`, { "race": race.raceInvalid, "ids": ids, "key": "race" });
 
             } else {
-                await api.post(`/bpai/update/${race.id}/${employee.key}`, { "race": race.raceInvalid, "key": "race" });
+                await api.post(`/bpai/update/${race.id}/${employee.key}`, { "race": race.raceInvalid, "key": "race", "dateBpa": dateBpa });
             }
 
             await inRace();

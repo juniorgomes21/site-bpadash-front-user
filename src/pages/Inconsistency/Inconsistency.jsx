@@ -65,6 +65,7 @@ function Inconsistency(props) {
     const { dates } = useContext(AuthContext);
     const { month, year, getFormattedDate } = useContext(DateGlobalBpaContext);
     const { haveErrors, haveLoading, setErrorsfiles, setLoadingErrorsfiles } = useContext(SnackBarContext);
+    const loadingApi = haveLoading();
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
@@ -202,7 +203,7 @@ function Inconsistency(props) {
                             ) : (
                                 <>
                                     <div>
-                                        {haveLoading() ? (
+                                        {loadingApi ? (
                                             <div className="flex w-full justify-center mt-4">
                                                 <CircularProgress size={20} />
                                             </div>
@@ -219,19 +220,19 @@ function Inconsistency(props) {
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     /> 
-                                    <AgeMinMax
+                                    <AgeMinMax // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <AgeDate
+                                    <AgeDate // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InCep
+                                    <InCep // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InQtService // 
+                                    <InQtService // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
@@ -239,25 +240,26 @@ function Inconsistency(props) {
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InRace
+                                    <InRace // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InProfessionals
+                                    <InProfessionals // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InProcedure //
+                                    <InProcedure // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
-                                    <InOccupation //
+                                    <InOccupation // ok
                                         dateBpa={dateBpa}
                                         refresh={refresh}
                                     />
                                     <div className="fixed bottom-20 right-10">
                                         <Button
                                             variant="contained"
+                                            disabled={loadingApi}
                                             onClick={() => setRefresh(!refresh)}
                                         >
                                             RECARREGAR

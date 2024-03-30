@@ -1,26 +1,22 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import { Container } from "reactstrap";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
-import {Link} from "react-router-dom";
 import Navbar from "./Navbar";
-import img1 from "../../assets/images/home/team-1-800x800.jpg";
-import img2 from "../../assets/images/home/team-2-800x800.jpg";
-import img3 from "../../assets/images/home/team-3-800x800.jpg";
-import img4 from "../../assets/images/home/team-4-470x470.png";
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import logo from "../../assets/images/logo_bpadash_dark.png";
 import padlockImg from "../../assets/images/home/3092704.jpg";
 import padlockImg2 from "../../assets/images/home/lock.jpg";
 import robot from "../../assets/images/home/robot.avif";
 import regulation from "../../assets/images/home/regulation.jpg";
 import data from "../../assets/images/home/data.avif";
-import bgCircuit from "../../assets/images/home/bgCircuit.avif";
-
 import LockIcon from '@mui/icons-material/Lock';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import Tooltip from "@mui/material/Tooltip";
+import Footer from "./Footer";
 
 function Home(props) {
 
@@ -338,9 +334,9 @@ function Home(props) {
                     </div>
                 </section>
 
-                <section className="py-20 relative block"></section>
+                <Footer />
 
-                <section className="relative block py-24 lg:pt-0 ">
+                {/* <section className="relative block py-24 lg:pt-0 ">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-wrap justify-center lg:-mt-64 -mt-48">
                             <div className="w-full lg:w-6/12 px-4">
@@ -409,7 +405,7 @@ function Home(props) {
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> */}
             </main>
         </>
     );

@@ -78,14 +78,10 @@ function InCep({ dateBpa, refresh }) {
                     ids.push(cep.id);
                 });
 
-                if(errors.haveInvalid) {
-                    await api.post(`/bpai/update/0/${employee.key}`, { "key": "cep", "ids": ids });
-                } else {
-                    await api.post(`/bpai/update/0/${employee.key}`, { "key": "cepBlank", "ids": ids });
-                }
+                await api.post(`/bpai/update/0/${employee.key}`, { "key": errors.haveInvalid ? "cep" : "cepBlank", "ids": ids });
                 
             } else {
-                await api.post(`/bpai/update/${cep.id}`, { "key": "cep", "cep": cep.cepInvalid });
+                await api.post(`/bpai/update/${cep.id}/${employee.key}`, { "key": "cep", "cep": cep.cepInvalid });
             }
             setErrors({ "haveBlank": false, "haveInvalid": false });
             await inCep();

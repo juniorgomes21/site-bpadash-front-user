@@ -42,10 +42,7 @@ function AgeMinMax({ dateBpa, refresh }) {
 
     async function inAgeMaxMin() {
         try {
-            const obj = {
-              "dateBPA": dateBpa
-            }
-            const response = await api.post("/bpa/inconsistency/date/procedure", obj);
+            const response = await api.post("/bpa/inconsistency/date/procedure", { "dateBPA": dateBpa });
             setAgeMaxMins(response.data);
             setErrorsDates(response.data.slice(0, 5));
             setHaveErrors("ageMinMax", response.data.length > 0);
@@ -64,10 +61,10 @@ function AgeMinMax({ dateBpa, refresh }) {
                     ids.push(age.id);
                 });
 
-                await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "ageMaxMin" });
+                await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "ageMaxMin", "dateBpa": dateBpa });
 
             } else {
-                await api.post(`/bpai/update/${ageMaxMin.id}/${employee.key}`, { "age": ageMaxMin.age, "key": "ageMaxMin" });
+                await api.post(`/bpai/update/${ageMaxMin.id}/${employee.key}`, { "age": ageMaxMin.age, "key": "ageMaxMin", "dateBpa": dateBpa });
             }
 
             await inAgeMaxMin();

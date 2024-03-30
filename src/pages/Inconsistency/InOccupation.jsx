@@ -69,7 +69,7 @@ function InOccupation({ dateBpa, refresh }) {
                 cboOld = occupations["errorsOccupationBpaiDTOS"].find(item => item.id === occupation.id).cbo
             }
             await api.post(`/${arqName}/update/${occupation.id}/${employee.key}`, { "cbo": (occupation.cbo + "-" + (updateAll ? '1' : '0') + "-" + cboOld), "dateBpa": dateBpa, "key": "cbo" });
-            // await inOccupation();
+            await inOccupation();
             handleClose();
             openSnackBarFun(false, "CBO salvo");
             setUpdateAll(false);

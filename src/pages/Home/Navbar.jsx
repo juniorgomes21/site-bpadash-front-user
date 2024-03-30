@@ -7,7 +7,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { Tooltip } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 
 
 function Navbar({ bg }) {

@@ -50,8 +50,9 @@ function InProcedure({ dateBpa, refresh }) {
             procedures.errorsSexBpai.forEach( procedure => {
                 ids.push(procedure.id);
             });
-            await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "sexProcedure" });
+            await api.post(`/bpai/update/${0}/${employee.key}`, { "ids": ids, "key": "sexProcedure", "dateBpa": dateBpa });
             await inProcedure();
+            handleClose();
             openSnackBarFun(false, lengthSerives > 1 ? "Sexos Alterados" : "Sexo Alterado");
         } catch(e) {
             const response = e.response.data;

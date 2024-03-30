@@ -59,15 +59,18 @@ function AgeDate({ dateBpa, refresh }) {
         try {
             if(upAll) {
                 const ids = [];
+                
                 ageDate.forEach( age => {
                     ids.push(age.id);
                 });
-                await api.post(`/bpai/update/0/${employee.key}`, {"ids": ids, "key": "birthDate"});
+
+                await api.post(`/bpai/update/0/${employee.key}`, {"ids": ids, "key": "birthDate", "dateBpa": dateBpa});
 
             } else {
                 const obj = {
                     "key" : "birthDate",
-                    "date": startDate.toLocaleDateString().split("/")[2] + startDate.toLocaleDateString().split("/")[1] + startDate.toLocaleDateString().split("/")[0]
+                    "date": startDate.toLocaleDateString().split("/")[2] + startDate.toLocaleDateString().split("/")[1] + startDate.toLocaleDateString().split("/")[0],
+                    "dateBpa": dateBpa
                 }
                 await api.post(`/bpai/update/${person.id}/${employee.key}`, obj);
             }
@@ -203,7 +206,7 @@ function AgeDate({ dateBpa, refresh }) {
                                             <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                                 <div>
                                                     <p>
-                                                        DATA INVÁLIDA: {formatDateString(item.date, true)}
+                                                        DATA INVÁLIDA: {formatDateString(item.date, true).replaceAll("-", "/")}
                                                     </p>
                                                 </div>
                                                 <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, calculateDateBirth(item.age, item.date))}>
@@ -245,7 +248,7 @@ function AgeDate({ dateBpa, refresh }) {
                                             <div key={index} className="flex justify-between items-center border-[1px] border-red-500 rounded-md p-2 my-2">
                                                 <div className="">
                                                     <p>
-                                                        DATA INVÁLIDA: {formatDateString(item.date, true)}
+                                                        DATA INVÁLIDA: {formatDateString(item.date, true).replaceAll("-", "/")}
                                                     </p>
                                                 </div>
                                                 <div className="cursor-pointer" onClick={() => handleClickOpen(item.id, calculateDateBirth(item.age, item.date))}>
@@ -275,7 +278,7 @@ function AgeDate({ dateBpa, refresh }) {
                 <DialogTitle>EDITAR DATA</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
-                    Edite a data de nascimento do BPAI da folha {person.flh} sequência {person.seq}
+                    Edite a data de nascimento na linha BPAI da folha {person.flh} sequência {person.seq}
                 </DialogContentText>
                 <div className="mt-3 h-64">
                     <FormGroup className="mb-4" row>

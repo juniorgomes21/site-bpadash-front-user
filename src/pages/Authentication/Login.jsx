@@ -30,7 +30,6 @@ function Login(props) {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            userName: "",
             email: "",
             password: "",
         },

@@ -124,7 +124,7 @@ function RegisterEmployee(props) {
 
     async function apiSavePermissions() {
         try {
-            await api.post(`/employees/edit/permissions/${employee.key}/${employeeLocal.key}`, employee.permissionsEmployeeDTO);
+            await api.post(`/employees/edit/permissions/${employee.id}/${employeeLocal.key}`, employee.permissionsEmployeeDTO);
             handleClose();
             apiGetEmployeeList();
             openSnackBarFun(false, "Permissões salvas");
@@ -188,7 +188,7 @@ function RegisterEmployee(props) {
                 email: data.email === "" ? employee.email : data.email
             }
 
-            await api.post(`/employees/edit/master/${employee.key}/${employeeLocal.key}`, obj);
+            await api.post(`/employees/edit/master/${employee.id}/${employeeLocal.key}`, obj);
 
             await apiGetEmployeeList();
             handleClose();
@@ -221,7 +221,7 @@ function RegisterEmployee(props) {
         setLoadingAction(true);
         try {
             handleClose();
-            await api.post(`/employees/delete/${employee.key}/${employeeLocal.key}`);
+            await api.post(`/employees/delete/${employee.id}/${employeeLocal.key}`);
             await apiGetEmployeeList();
             openSnackBarFun(false, "Funcionário apagado");
         } catch (e) {
@@ -412,7 +412,7 @@ function RegisterEmployee(props) {
                                 fullWidth
                                 id="newName"
                                 type="text"
-                                label="Usuário"
+                                label="Funcionário"
                                 variant="standard"
                                 error={errorsCreate.name && true}
                                 {...registerCreate("name",
