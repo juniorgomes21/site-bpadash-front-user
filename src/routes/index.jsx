@@ -88,7 +88,7 @@ const authProtectedRoutes = [
 ];
 
 const publicRoutes = [
-    { path: "/", component: Home },
+    { path: "/welcome", component: Home },
     { path: "/prices", component: Prices },
     { path: "/login", component: Login },
 ];

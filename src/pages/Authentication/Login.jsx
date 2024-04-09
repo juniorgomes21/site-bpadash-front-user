@@ -60,13 +60,15 @@ function Login(props) {
                                 <div className="w-100">
                                     <div className="d-flex flex-column h-100">
                                         <div className="flex justify-center items-center rounded-3xl mb-3">
-                                            <img
-                                                src={logo}
-                                                alt=""
-                                                width={200}
-                                                height="10"
-                                                className="auth-logo-dark"
-                                            />
+                                            <Link to="/welcome">
+                                                <img
+                                                    src={logo}
+                                                    alt=""
+                                                    width={200}
+                                                    height="10"
+                                                    className="auth-logo-dark"
+                                                />
+                                            </Link>
                                         </div>
                                         <div className="my-auto">
                                             <div>

@@ -3,6 +3,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import logo from "../../assets/images/logo_bpadash_dark.png";
 import Tooltip from "@mui/material/Tooltip";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 function Footer() {
 
@@ -39,6 +40,15 @@ function Footer() {
                         <LinkedInIcon />
                         <span className="lg:hidden inline-block ml-2">Linkedin</span>
                     </a>
+                </Tooltip>
+                <Tooltip
+                    placement="top"
+                    title="+55 (91) 9 8251-0975"
+                >
+                    <div className="px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold">
+                        <WhatsAppIcon />
+                        <span className="lg:hidden inline-block ml-2">WhatsApp</span>
+                    </div>
                 </Tooltip>
             </div>
         </section>

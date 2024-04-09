@@ -4,12 +4,8 @@ import { useForm } from "react-hook-form";
 import { Container } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
-import { LoadingButton } from "@mui/lab";
+import LoadingButton from "@mui/lab/LoadingButton";
 import api from "../../services/api";
 import SnackBarContext from "../../contexts/managerService";
 
@@ -38,13 +34,10 @@ function ChangePass(props) {
     async function apiChangePassword(data) {
         setLoading(true);
         try {
-            console.log(employee);
             await api.post(`/user/edit/password/${employee.key}`, data);
             openSnackBarFun(false, "Senha Alterada");
             
         } catch (e) {
-            console.log(e);
-
             switch (e.response.data) {
                 case "INCORRECT PASSWORD":
                     setErrorMsg("Senha Incorreta");
@@ -82,6 +75,8 @@ function ChangePass(props) {
                                 variant="outlined"
                                 type="password"
                                 error={errors.password && true}
+                                inputProps={{ maxLength: 50 }}
+
                                 {...register("password",
                                     {
                                         required: "A senha é obrigatória",
@@ -103,6 +98,7 @@ function ChangePass(props) {
                                 label="Nova Senha"
                                 variant="outlined"
                                 type="password"
+                                inputProps={{ maxLength: 50 }}
                                 error={errors.newPassword && true}
                                 {...register("newPassword",
                                     {
@@ -125,6 +121,7 @@ function ChangePass(props) {
                                 label="Repita a nova senha"
                                 variant="outlined"
                                 type="password"
+                                inputProps={{ maxLength: 50 }}
                                 error={errors.confPassword && true}
                                 {...register("confPassword",
                                     {
