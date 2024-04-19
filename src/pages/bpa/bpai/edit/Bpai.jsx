@@ -150,7 +150,7 @@ function Bpai(props) {
     async function apiGet() {
         setLoadingTable(true);
         try {
-            const response = await api.get(`/bpai/get/${getFormattedDate()}?page=${page > 0 ? page - 1 : page}&size=${size}`);
+            const response = await api.post(`/bpai/get/${getFormattedDate()}?page=${page > 0 ? page - 1 : page}&size=${size}`, { pa: "", cnes: "", cnsmed: "", cbo: "", ibge: "", sex: "", race: "00" });
             setBpaiList(response.data.content);
             setTotalPage(response.data.totalPages);
             setTotalElements(response.data.totalElements);

@@ -17,22 +17,24 @@ const names = [
   'fim',
 ];
 
-function EnhancedTableHead() {
+function EnhancedTableHead({ names, tablesVisibleStorage }) {
 
 return (
     <TableHead>
       <TableRow>
           {names.map((name, index) => (
-          <TableCell
-              key={index}
-              align={'center'}
-              padding={'normal'}
-              className="p-4"
-          >
-              <p className="uppercase font-bold text-[#2a3042]">
-                {name}
-              </p>
-          </TableCell>
+            tablesVisibleStorage[index][name] && (
+                <TableCell
+                    key={index}
+                    align={'center'}
+                    padding={'normal'}
+                    className="p-4"
+                >
+                    <p className="uppercase font-bold text-[#2a3042]">
+                        {name}
+                    </p>
+                </TableCell>
+            )
           ))}
       </TableRow>
     </TableHead>

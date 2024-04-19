@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         verifyExpirationTokenAlert();
-        const intervalId = setInterval(verifyExpirationTokenAlert, 0.5 * 60 * 1000); // 10 minutos em milissegundos
+        const intervalId = setInterval(verifyExpirationTokenAlert, 5 * 60 * 1000); // 10 minutos em milissegundos
         return () => clearInterval(intervalId);
     }, []);
     

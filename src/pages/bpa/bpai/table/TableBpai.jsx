@@ -12,15 +12,26 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import api from "../../../../services/api";
 import TitleTable from "./TitleTable";
-import { formatDateString, formatDateStringFull, maskCEP, maskCell, maskCmp, maskPa, maskPointThree } from "../../../../Validation&Formatation/formatation";
+import { formatDateStringFull, maskCEP, maskCell, maskCmp, maskPa, maskPointThree } from "../../../../Validation&Formatation/formatation";
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { Link } from "react-router-dom"
 import EditIcon from '@mui/icons-material/Edit';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import Tooltip from "@mui/material/Tooltip";
 import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
+import SettingsIcon from '@mui/icons-material/Settings';
+import Dialog from '@mui/material/Dialog';
+import AppBar from '@mui/material/AppBar';
+import Slide from '@mui/material/Slide';
+import Button from '@mui/material/Button';
+import DialogBpai from "./DialogBpai";
+import WarningIcon from '@mui/icons-material/Warning';
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const names = [
     'cnes',
@@ -62,7 +73,7 @@ const names = [
     'fim'
 ];
 
-export default function TableBpai({ identifier }) {
+export default function TableBpai() {
 
     const { getFormattedDate } = useContext(DateGlobalBpaContext);
 
@@ -70,20 +81,29 @@ export default function TableBpai({ identifier }) {
     const [size, setSize] = useState(10);
     const [bpai, setBpai] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+    const [tablesVisibleStorage, setTablesVisibleStorage] = useState(JSON.parse(localStorage.getItem("@TablesVisible")));
+    const [filterTableStorage, setFilterTableStorage] = useState(JSON.parse(localStorage.getItem("@FilterTable")));
+
 
     useEffect(() => {
         apiGet();
     }, [page, size]);
 
+    useEffect(() => {
+        apiGet();
+    }, [filterTableStorage]);
+
     async function apiGet() {
         setLoading(true);
         try {
-            const responseBpac = await api.get(`/bpai/get/${getFormattedDate()}?page=${page > 0 ? page - 1 : page}&size=${size}`);
-            setBpai(responseBpac.data.content);
-            setTotalPage(responseBpac.data.totalPages);
-            setTotalElements(responseBpac.data.totalElements);
+            const response = await api.post(`/bpai/get/${getFormattedDate()}?page=${page > 0 ? page - 1 : page}&size=${size}`, filterTableStorage);
+            setBpai(response.data.content);
+            setTotalPage(response.data.totalPages);
+            setTotalElements(response.data.totalElements);
+
         } catch (e) {
             console.log("Erro: ", e.response);
         }
@@ -113,6 +133,41 @@ export default function TableBpai({ identifier }) {
         }
     }
     
+    function handleOpenDialog() {
+        setOpen(true);
+    }
+    
+    function handleSalve() {
+        setTablesVisibleStorage(JSON.parse(localStorage.getItem("@TablesVisible")));
+        setFilterTableStorage(JSON.parse(localStorage.getItem("@FilterTable")));
+        setOpen(false);
+    }
+
+    function handleCloseDialog() {
+        setOpen(false);
+    }
+
+    function haveFilter() {
+        const defaultObj = { pa: "", cnes: "", cnsmed: "", cbo: "", ibge: "", sex: "", race: "00" };
+    
+        // Verifica se o número de chaves nos dois objetos é o mesmo
+        if (Object.keys(filterTableStorage).length !== Object.keys(defaultObj).length) {
+            return true;
+        }
+    
+        // Verifica se as chaves e os valores são os mesmos em ambos os objetos
+        for (let chave in defaultObj) {
+            if (defaultObj.hasOwnProperty(chave)) {
+                if (filterTableStorage[chave] !== defaultObj[chave]) {
+                    return true;
+                }
+            }
+        }
+    
+        // Se todas as chaves e valores forem iguais, retorna falso
+        return false;
+    }
+
     return (
         <>
             <div className='w-full'>
@@ -132,16 +187,22 @@ export default function TableBpai({ identifier }) {
                         >
                             BPA-I
                         </Typography>
-                        <Tooltip title="Filtro BPAI" placement="top" className="mr-2">
-                            <div className="cursor-pointer">
-                                <FilterListIcon />
-                            </div>
-                        </Tooltip>
+                        {
+                            haveFilter() &&
+                                <Tooltip title="Filtro BPAI ativo" placement="top" className="mr-2">
+                                    <div className="cursor-pointer">
+                                        <WarningIcon className="text-orange-500"/>
+                                    </div>
+                                </Tooltip>
+                        }
                         <Link to={`/file/edit/bpai`}>
                             <IconButton>
                                 <EditIcon color="primary" />
                             </IconButton>
                         </Link>
+                        <IconButton onClick={handleOpenDialog}>
+                            <SettingsIcon sx={{ color: "white"}} />
+                        </IconButton>
                     </Toolbar>
                     <TableContainer>
                         <Table
@@ -151,6 +212,7 @@ export default function TableBpai({ identifier }) {
                         >
                             <TitleTable
                                 names={names}
+                                tablesVisibleStorage={tablesVisibleStorage}
                             />
                             <TableBody>
                                 {bpai.map((row, index) => (
@@ -161,11 +223,13 @@ export default function TableBpai({ identifier }) {
                                     >
                                         {
                                             names.map((name, index) => (
-                                                <TableCell key={index} align="center" className="truncate">
-                                                    {
-                                                        auxMask(name, row[name])
-                                                    }
-                                                </TableCell>
+                                                tablesVisibleStorage[index][name] && (
+                                                    <TableCell key={index} align="center" className="truncate">
+                                                        {
+                                                            auxMask(name, row[name])
+                                                        }
+                                                    </TableCell>
+                                                )
                                             ))
                                         }
                                     </TableRow>
@@ -201,6 +265,36 @@ export default function TableBpai({ identifier }) {
                     </div>
                 </Paper>
             </div>
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={handleCloseDialog}
+                TransitionComponent={Transition}
+            >
+                <AppBar sx={{ position: 'relative' }} className="!bg-default">
+                    <Toolbar>
+                        <Button
+                            autoFocus
+                            variant="contained"
+                            color="error"
+                            onClick={handleCloseDialog}
+                        >
+                            Fechar
+                        </Button>
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                        </Typography>
+                        <Button
+                            autoFocus
+                            variant="contained"
+                            color="success"
+                            onClick={handleSalve}
+                        >
+                            salvar
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <DialogBpai />
+            </Dialog>
         </>
     )
 }
