@@ -23,18 +23,12 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Slide from "@mui/material/Slide";
 import LoadingButton from "@mui/lab/LoadingButton";
-import CachedIcon from "@mui/icons-material/Cached";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SelectColl from "../../SelectColl";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import SnackBarContext from "../../../../contexts/managerService";
 import loadingSvg from "../../../../assets/images/svg/loading.svg";
-import Alert from "@mui/material/Alert";
 import { formatMonth } from "../../../../Validation&Formatation/formatation";
 import DateGlobalBpaContext from "../../../../contexts/DateGlobalBpa";
 import AlertCustom from "../../../../GlobalComponents/AlertCustom";
@@ -89,9 +83,7 @@ function Bpai(props) {
 
     const { month, year, getFormattedDate } = useContext(DateGlobalBpaContext);
     const { openSnackBarFun } = useContext(SnackBarContext);
-    
     const [bpaiList, setBpaiList] = useState([]);
-    const [filterActive, setFilterActive] = useState("");
     const [bpai, setBpai] = useState({
         ident: "",
         cnes: "",
@@ -238,22 +230,6 @@ function Bpai(props) {
         setOpenEdit(false);
     }
 
-    function filterAndSetBpaiList(fieldToFilter) {
-        setFilterActive(fieldToFilter);
-        bpaiList.sort((a, b) => {
-            if (a[fieldToFilter] < b[fieldToFilter]) return -1;
-            if (a[fieldToFilter] > b[fieldToFilter]) return 1;
-            return 0;
-        });
-    }
-
-    function filterDefault() {
-        bpaiList.sort((a, b) => {
-            return a.id + b.id;
-        });
-        setFilterActive("");
-    }
-
     function handleClick(id) {
         setSelected((prevSelected) => {
             if (prevSelected.includes(id)) {
@@ -339,54 +315,18 @@ function Bpai(props) {
                                                     }
                                                 />
                                             </TableCell>
-                                            {names.map((name, index) => {
-                                                return (
-                                                    <TableCell
-                                                        key={index}
-                                                        align="center"
-                                                        padding="normal"
-                                                        className="bg-default"
-                                                    >
-                                                        <div className="flex justify-center">
-                                                            <p className="mr-1 uppercase font-bold text-white">
-                                                                {name}
-                                                            </p>
-                                                            {filterActive ==
-                                                            name ? (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        filterDefault();
-                                                                    }}
-                                                                    className="cursor-pointer"
-                                                                >
-                                                                    <ArrowUpwardIcon
-                                                                        className="text-white"
-                                                                        sx={{
-                                                                            fontSize: 19,
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            ) : (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        filterAndSetBpaiList(
-                                                                            name
-                                                                        );
-                                                                    }}
-                                                                    className="cursor-pointer"
-                                                                >
-                                                                    <ArrowDownwardIcon
-                                                                        className="text-white"
-                                                                        sx={{
-                                                                            fontSize: 19,
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </TableCell>
-                                                );
-                                            })}
+                                            {names.map( (name, index) =>
+                                                <TableCell
+                                                    key={index}
+                                                    align={"center"}
+                                                    padding={"normal"}
+                                                    className="p-4"
+                                                >
+                                                    <p className="uppercase font-bold text-white">
+                                                        {name}
+                                                    </p>
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>

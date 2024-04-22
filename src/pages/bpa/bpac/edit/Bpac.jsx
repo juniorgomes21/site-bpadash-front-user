@@ -80,11 +80,7 @@ function Bpac(props) {
     async function apiGet() {
         setLoadingTable(true);
         try {
-            const response = await api.get(
-                `/bpac/get/${getFormattedDate()}?page=${
-                    page > 0 ? page - 1 : page
-                }&size=${size}`
-            );
+            const response = await api.post(`/bpac/get/${getFormattedDate()}?page=${ page > 0 ? page - 1 : page }&size=${size}`, { pa: "", cnes: "", cbo: "" });
             setBpacList(response.data.content);
             setTotalPage(response.data.totalPages);
             setTotalElements(response.data.totalElements);
@@ -257,7 +253,7 @@ function Bpac(props) {
                                     size="small"
                                     aria-label="a dense table"
                                 >
-                                    <TableHead>
+                                    <TableHead className="bg-default">
                                         <TableRow>
                                             <TableCell
                                                 align="center"
@@ -274,54 +270,18 @@ function Bpac(props) {
                                                     }
                                                 />
                                             </TableCell>
-                                            {names.map((name, index) => {
-                                                return (
-                                                    <TableCell
-                                                        key={index}
-                                                        align="center"
-                                                        padding="normal"
-                                                        className="bg-default"
-                                                    >
-                                                        <div className="flex justify-center">
-                                                            <p className="mr-1 uppercase font-bold text-white">
-                                                                {name}
-                                                            </p>
-                                                            {filterActive ==
-                                                            name ? (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        filterDefault();
-                                                                    }}
-                                                                    className="cursor-pointer"
-                                                                >
-                                                                    <ArrowUpwardIcon
-                                                                        className="text-white"
-                                                                        sx={{
-                                                                            fontSize: 19,
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            ) : (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        filterAndSetBpacList(
-                                                                            name
-                                                                        );
-                                                                    }}
-                                                                    className="cursor-pointer"
-                                                                >
-                                                                    <ArrowDownwardIcon
-                                                                        className="text-white"
-                                                                        sx={{
-                                                                            fontSize: 19,
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </TableCell>
-                                                );
-                                            })}
+                                            {names.map((name, index) => (
+                                                <TableCell
+                                                    key={index}
+                                                    align={'center'}
+                                                    padding={'normal'}
+                                                    className="p-4"
+                                                >
+                                                    <p className="uppercase font-bold text-white">
+                                                        {name}
+                                                    </p>
+                                                </TableCell>
+                                            ))}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
