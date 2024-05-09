@@ -28,6 +28,9 @@ import AlertCustom from "../../GlobalComponents/AlertCustom";
 import SettingsIcon from '@mui/icons-material/Settings';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Tooltip } from "@mui/material";
+import FlagIcon from '@mui/icons-material/Flag';
+
+
 
 function SidebarContent(props) {
 
@@ -121,21 +124,27 @@ function SidebarContent(props) {
     }
 
     useEffect(() => {
-        let match = true;
+        let matchDate = false;
 
         dates.forEach( date => {
             const monthF = date[0];
 
             const datex = (date[1] + "-" + (monthF < 10 ? "0" + monthF : monthF) + "-" + "01");
-            const matchDate = datex === getFormattedDate();
 
-            if (matchDate) {
-                match = false;
+            if (datex === getFormattedDate()) {
+                matchDate = true;
                 return;
             }
 
         });
-        setShow(match);
+
+        if(!matchDate && dates.length > 0) {
+            handleListItemClick(dates[0]);
+            show && setShow(false);
+
+        } else if(!matchDate) {
+            setShow(true);
+        }
 
     }, [dates, month, year])
 
@@ -330,6 +339,27 @@ function SidebarContent(props) {
                                 </li>
                                 <li>
                                     <Link to="/treatment/replacement/bpa">{props.t("Substituir valor BPA")}</Link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <Link to="/#" className="has-arrow">
+                                <FlagIcon sx={{ fontSize: 20, mr: 1.5 }} />
+                                <span>{props.t("Metas")}</span>
+                            </Link>
+                            <ul className="sub-menu" aria-expanded="false">
+                                <li>
+                                    <Link to="/goal/per/groups">{props.t("Por Grupo")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/goal/per/groups/graphics">{props.t("Gráficos")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/goal/per/groups/graphics/yearly">{props.t("Gráficos Anual")}</Link>
+                                </li>
+                                <li>
+                                    <Link to="/goal">{props.t("Geral")}</Link>
                                 </li>
                             </ul>
                         </li>

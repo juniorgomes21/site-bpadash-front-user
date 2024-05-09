@@ -134,7 +134,7 @@ function TimeLineBpa(props) {
                                                 key={index}
                                                 className="flex justify-between items-center border-b-[1px] border-zinc-300 hover:border-zinc-400"
                                             >
-                                                <div className="flex items-center w-10/12">
+                                                <div className="flex items-center w-9/12">
                                                     <div
                                                         onClick={ e => {
                                                                 selectBPA(item.identifier);
@@ -161,7 +161,7 @@ function TimeLineBpa(props) {
                                                             </div>
                                                     }
                                                 </div>
-                                                <div className="flex w-2/12">
+                                                <div className="flex w-3/12">
                                                     <div className="flex justify-end font-bold w-3/4">
                                                         <p>{item.fileSize}</p>
                                                     </div>

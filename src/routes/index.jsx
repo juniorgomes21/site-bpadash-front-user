@@ -29,6 +29,7 @@ import ConsultFpo from "../pages/Consult/ConsultFpo";
 import TimeLineFpo from "../pages/Timeline/TimeLineFpo";
 import Client from "../pages/Consult/Client";
 import Graphics from "../pages/Graphics/month/Graphics";
+import GraphicsGoal from "../pages/Goal/Graphics";
 import Welcome from "../pages/Dashboard/welcome/Welcome";
 import GraphicsYear from "../pages/Graphics/year/GraphicsYear";
 import TermsUse from "../pages/Terms&Use/TermsUse";
@@ -41,6 +42,9 @@ import Prices from "../pages/Home/Prices";
 import RegisterEmployee from "../pages/Users/RegisterEmployee";
 import LoginEmployee from "../pages/Authentication/LoginEmployee";
 import DataEmployee from "../pages/Users/DataEmployee";
+import Goal from "../pages/Goal/Goal";
+import PerGroups from "../pages/Goal/PerGroups";
+import GraphicsYearly from "../pages/Goal/GraphicsYearly";
 
 
 const authProtectedRoutes = [
@@ -59,6 +63,10 @@ const authProtectedRoutes = [
     { path: "/graphics/year", component: GraphicsYear },
     { path: "/upload/bpa", component: Upload },
     { path: "/upload/bpai", component: UploadBpai },
+    { path: "/goal", component: Goal },
+    { path: "/goal/per/groups", component: PerGroups },
+    { path: "/goal/per/groups/graphics", component: GraphicsGoal },
+    { path: "/goal/per/groups/graphics/yearly", component: GraphicsYearly },
     { path: "/upload/bpac", component: UploadBpac },
     { path: "/upload/fpo", component: UploadFpo },
     { path: "/upload/professionals", component: UploadProfessional },

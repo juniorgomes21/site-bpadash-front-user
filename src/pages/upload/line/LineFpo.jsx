@@ -147,7 +147,6 @@ function LineFpo() {
 
     async function apiSetLineFpo() {
         try {
-            console.log(fpo);
             const obj = {
                 pa: fpo['pa'],
                 description: fpo['description'],
@@ -159,8 +158,8 @@ function LineFpo() {
                 valueProd: fpo['valueProd'].trim() === '' ? 0 : fpo['valueProd'].replace(/\./g, "").replace(",", "."),
                 valueApro: fpo['valueApro'].trim() === '' ? 0 : fpo['valueApro'].replace(/\./g, "").replace(",", ".")
             }
-            console.log("obj", obj);
             await api.post("/fpo/create/line", obj);
+        
         } catch(e) {
             console.log(e.response);
             setErrorMessages(e.response.data);

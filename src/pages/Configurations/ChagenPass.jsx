@@ -8,6 +8,10 @@ import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import api from "../../services/api";
 import SnackBarContext from "../../contexts/managerService";
+import IconButton from "@mui/material/IconButton";
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import Visibility from "@mui/icons-material/Visibility";
+import InputAdornment from "@mui/material/InputAdornment";
 
 function ChangePass(props) {
     document.title = "Editar Senha";
@@ -24,6 +28,7 @@ function ChangePass(props) {
     const { openSnackBarFun } = useContext(SnackBarContext);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (!employee.master) {
@@ -38,6 +43,8 @@ function ChangePass(props) {
             openSnackBarFun(false, "Senha Alterada");
             
         } catch (e) {
+            console.log(e);
+
             switch (e.response.data) {
                 case "INCORRECT PASSWORD":
                     setErrorMsg("Senha Incorreta");
@@ -73,7 +80,7 @@ function ChangePass(props) {
                                 id="password"
                                 label="Senha Atual"
                                 variant="outlined"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 error={errors.password && true}
                                 inputProps={{ maxLength: 50 }}
 
@@ -97,7 +104,7 @@ function ChangePass(props) {
                                 id="newPassword"
                                 label="Nova Senha"
                                 variant="outlined"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 inputProps={{ maxLength: 50 }}
                                 error={errors.newPassword && true}
                                 {...register("newPassword",
@@ -120,9 +127,22 @@ function ChangePass(props) {
                                 id="confPassword"
                                 label="Repita a nova senha"
                                 variant="outlined"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 inputProps={{ maxLength: 50 }}
                                 error={errors.confPassword && true}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={() => setShowPassword((show) => !show)}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOffIcon />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
                                 {...register("confPassword",
                                     {
                                         required: "confirme a senha",

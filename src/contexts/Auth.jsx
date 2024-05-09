@@ -46,11 +46,11 @@ export function AuthProvider({ children }) {
             const diffInMillis = currentTimeInMillis - new Date().getTime();
             const diffInMinutes = Math.floor(diffInMillis / (1000 * 60));
         
-            if (diffInMinutes <= 30 && diffInMinutes >= 0) {
+            if (diffInMinutes <= 30 && diffInMinutes >= 1) {
                 setDiffInMinutes(diffInMinutes);
                 setState({ openSnackBar: true, vertical: 'top', horizontal: 'center' });
                 
-            } else if (diffInMinutes < 0) {
+            } else if (diffInMinutes < 1) {
                 setOpenDialog(true);
             }
         }
@@ -71,6 +71,8 @@ export function AuthProvider({ children }) {
         setLoadingLogin(true);
         try {
             const response = await api.post('/auth/login', { "email": email, "password": password });
+            
+            setDateForLocalStorage();
 
             localStorage.setItem("@TokenAuthentication", response.data.token);
             localStorage.setItem("@User", JSON.stringify(response.data.userDTO));
@@ -127,6 +129,26 @@ export function AuthProvider({ children }) {
 
     function closeSnackBarFun() {
         setState({ ...state, openSnackBar: false });
+    }
+
+    function setDateForLocalStorage() {
+        const tableBpac = JSON.parse(localStorage.getItem("@TablesVisibleBpac"));
+        const tableFilterBpac = JSON.parse(localStorage.getItem("@FilterTableBpac"));
+        const tableBpai = JSON.parse(localStorage.getItem("@TablesVisible"));
+        const tableFilterBpai = JSON.parse(localStorage.getItem("@FilterTable"));
+
+        if(!tableBpac) {
+            localStorage.setItem("@TablesVisibleBpac", JSON.stringify([{"cnes":true},{"cmp":true},{"cbo":true},{"flh":true},{"seq":true},{"pa":true},{"idade":true},{"qt":true},{"org":true},{"fim":true}]));
+        }
+        if(!tableFilterBpac) {
+            localStorage.setItem("@FilterTableBpac", JSON.stringify({"pa":"","cnes":"","cbo":""}));
+        }
+        if(!tableBpai) {
+            localStorage.setItem("@TablesVisible", JSON.stringify([{"cnes":true},{"cmp":true},{"cnsmed":true},{"cbo":true},{"dtaten":true},{"flh":true},{"seq":true},{"pa":true},{"cnspac":true},{"sexo":true},{"ibge":true},{"cid":true},{"idade":true},{"qt":true},{"caten":true},{"naut":true},{"org":true},{"nmpac":true},{"dtnasc":true},{"raca":true},{"etnia":true},{"nac":true},{"srv":true},{"clf":true},{"equipe_Seq":true},{"equipe_Area":true},{"cnpj":true},{"cep_Pcnte":true},{"lograd_Pcnte":true},{"end_Pcnte":true},{"compl_Pcnte":true},{"num_Pcnte":true},{"bairro_Pcnte":true},{"ddtel_Pcnte":true},{"email_Pcnte":true},{"ine":true},{"fim":true}]));
+        }
+        if(!tableFilterBpai) {
+            localStorage.setItem("@FilterTable", JSON.stringify({"pa":"","cnes":"","cnsmed":"","cbo":"","ibge":"","sex":"","race":"00"}));
+        }
     }
 
     return (

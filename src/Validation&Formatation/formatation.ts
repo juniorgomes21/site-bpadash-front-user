@@ -152,7 +152,8 @@ export function maskPointThree(value: string) {
 
 export function maskPa(value: string) {
 
-    const mascara = `${value[0]}.${value.slice(1, 3)}.${value.slice(3, 5)}.${value.slice(5, 7)}.${value.slice(7, 9)}-${value[9]}`;
+    const valueNine = value[9];
+    const mascara = `${value[0]}.${value.slice(1, 3)}.${value.slice(3, 5)}.${value.slice(5, 7)}.${value.slice(7, 9)}` + (valueNine ? `-${valueNine}` : "");
 
     return mascara;
 }

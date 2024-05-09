@@ -49,10 +49,7 @@ function FilesConf(props) {
 
     async function getFiles() {
         try {
-            // arrumar BAck
             const response = await api.get("/sigtap/get/all/dates");
-            
-            console.log(response.data);
 
             setFileConfigs(response.data);
 
@@ -72,7 +69,6 @@ function FilesConf(props) {
 
         } catch (e) {
             console.log(e);
-            console.log("Erro ao buscar os arquivos");
         }
     }
 

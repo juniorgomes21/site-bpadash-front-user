@@ -64,19 +64,6 @@ export default function TableBpac({ identifier }) {
     const [filterTableStorage, setFilterTableStorage] = useState(JSON.parse(localStorage.getItem("@FilterTableBpac")));
 
     useEffect(() => {
-        // let tablesVisible = [
-        //     { cnes: true },
-        //     { cmp: true },
-        //     { cbo: true },
-        //     { flh: true },
-        //     { seq: true },
-        //     { pa: true },
-        //     { idade: true },
-        //     { qt: true },
-        //     { org: true },
-        //     { fim: true },
-        // ];
-        // localStorage.setItem("@TablesVisibleBpac", JSON.stringify(tablesVisible));
         apiGetBPAC();
     }, [page, size]);
 
@@ -132,7 +119,7 @@ export default function TableBpac({ identifier }) {
     }
 
     function haveFilter() {
-        const defaultObj = { pa: "", cnes: "", cnsmed: "", cbo: "", ibge: "", sex: "", race: "00" };
+        const defaultObj = {"pa":"","cnes":"","cbo":""};
     
         // Verifica se o número de chaves nos dois objetos é o mesmo
         if (Object.keys(filterTableStorage).length !== Object.keys(defaultObj).length) {
